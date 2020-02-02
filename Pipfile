@@ -10,6 +10,9 @@ rope = "*"
 [packages]
 psycopg2-binary = "*"
 django = "*"
+bs4 = "*"
+pandas = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.8"

@@ -20,8 +20,10 @@ from collections import Counter
 import os
 ## Comandos del sistema
 import sys
-## Eliminar stop words
+## Eliminar caracteres especiales
 from nltk.tokenize import RegexpTokenizer
+# sistema de date & time
+from datetime import datetime
 
 
 ## Funciones
@@ -98,8 +100,18 @@ print(top_palabras)
 
 print('Resultado reto G')
 
-palabra_buscar = 'of'
+palabra_buscar = 'the'
 print('El archivo que contiene más veces la palabra ' + palabra_buscar + ' es: ' + max_palabra_archivo(palabra_buscar))
 
 archivo_max_palabras = max(palabras_noticia, key=palabras_noticia.get)
 print('Archivo con mayor cantidad de palabras: ' + archivo_max_palabras)
+
+# Crea el archivo para el almacenamiento de respuestas
+
+fw = open("resultado-"+ datetime.now().strftime("%d-%m-%Y_%I-%M") + ".txt","a+")
+fw.write("Para el archivo " + sys.argv[2] + " las " + sys.argv[1] + " palabras más frecuentes son: \n")
+for palabra in top_palabras:
+    fw.write(str(palabra[0]) + ':' + str(palabra[1]) + '\n')
+fw.write('\n')
+fw.close()
+print('=' * 60)
