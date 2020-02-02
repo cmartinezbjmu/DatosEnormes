@@ -28,7 +28,7 @@ from nltk.tokenize import RegexpTokenizer
 
 def capturar_noticias():
     # Ruta de los archivos
-    path='/Users/cristianmartinez/Documents/django/DatosEnormes/Dataset/'
+    path='../Dataset/'
     grupo_noticias = []
     palabras_noticia = dict()
     frecuencia_palabra_noticia = dict()
