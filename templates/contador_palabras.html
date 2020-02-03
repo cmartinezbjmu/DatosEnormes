@@ -4,8 +4,6 @@
 <body>
     <form method="POST">
         {% csrf_token %}
-        
-
         <!-- {{ form.as_p }} -->
         <div class="form-group">
             <label for="nombre_archivo" class="txt_negrita">Nombre del archivo</label>
@@ -14,6 +12,13 @@
         </div>
         <button type="submit">Contar Palabras</button>
     </form>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </body>
 
 </html>

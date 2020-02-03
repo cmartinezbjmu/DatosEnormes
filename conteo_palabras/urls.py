@@ -1,6 +1,6 @@
 from django.urls import path
-from conteo_palabras.views import ContadorView
+from conteo_palabras.views import ContadorView, contadorPalabras
 
 urlpatterns = [
-    path('contar_palabras/', ContadorView.as_view(), name='cuenta_palabras')
+    path('contar_palabras/', contadorPalabras, name='cuenta_palabras')
 ]

@@ -1,11 +1,18 @@
 from django.shortcuts import render
 from django.views.generic.edit import FormView
 from conteo_palabras.forms import ContadorPalabras
+from django.urls import reverse_lazy
+from django.contrib import messages
 
+from bs4 import BeautifulSoup
+## Eliminar caracteres especiales
+from nltk.tokenize import RegexpTokenizer
+## Conteo de palabras
+from collections import Counter
 
 def capturar_noticias(**kwargs):    
     # Ruta de los archivos
-    path='../Dataset/'
+    path='Dataset/'
     grupo_noticias = []
     palabras_noticia = dict()
     frecuencia_palabra_noticia = dict()
@@ -13,24 +20,46 @@ def capturar_noticias(**kwargs):
     argumentos = kwargs.get('archivos', None)
     top = kwargs.get('top', 1)
     #for i in sys.argv[2:len(sys.argv)]:     
-    for i in argumentos[2:len(argumentos)]:     
-        total_palabras = 0
-        with open(path + i, 'rb') as f:
-            s = BeautifulSoup(f, 'html.parser')
-            palabras = []
-            for j in s.find_all('body'):
-                total_palabras += len(contar_palabras(j.text))
-                palabras.append(j.text)
-                grupo_noticias.append(j.text)
-            palabras_noticia.update({i:len(contar_palabras(palabras))})
-            frecuencia_palabra_noticia.update({i:Counter(contar_palabras(palabras))})
-        f.close()
+    total_palabras = 0
+    with open(path + argumentos, 'rb') as f:
+        s = BeautifulSoup(f, 'html.parser')
+        palabras = []
+        for j in s.find_all('body'):
+            total_palabras += len(contar_palabras(j.text))
+            palabras.append(j.text)
+            grupo_noticias.append(j.text)
+        palabras_noticia.update({argumentos:len(contar_palabras(palabras))})
+        frecuencia_palabra_noticia.update({argumentos:Counter(contar_palabras(palabras))})
+
+    f.close()
+    Numero = 10
+    return palabras_noticia
+
+def contar_palabras(noticia):
+    ## Eliminar stop words
+    tokenizer = RegexpTokenizer(r'\w+')
+    lista_palabras = []
+    for i in noticia:
+        frases = tokenizer.tokenize(i)
+        lista_palabras.extend(frases)
+    return lista_palabras
 
 class ContadorView(FormView):
     template_name='contador_palabras.html'
     form_class = ContadorPalabras
-    
 
     def form_valid(self, form):        
         noticias = capturar_noticias(archivos='reut2-000.sgm')
         return super().form_valid(form)
+
+
+def contadorPalabras(request):
+    form = ContadorPalabras(request.POST or None)
+    if form.is_valid():
+        noticias = capturar_noticias(archivos='reut2-000.sgm')
+        messages.success(request, noticias)
+    context = {
+        'form': form
+    }
+
+    return render(request, 'contador_palabras.html', context)
