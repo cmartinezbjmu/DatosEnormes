@@ -107,7 +107,7 @@ venv.bak/
 static_collected
 
 # Exclude machine-specific vs code settings
-.vscode/settings.json
+.vscode/*
 
 # Ignore all text files
 *.txt
