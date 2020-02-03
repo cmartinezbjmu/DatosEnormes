@@ -1,16 +1,21 @@
 <html>
-<title>Contador de palabras</title>
+    <head>
+        {# Cargamos la librería #}
+        {% load bootstrap4 %}
+    
+        {# CSS Bootstrap #}
+        {% bootstrap_css %}
+    
+        
+        
+        <title>Contador de palabras</title>
+    </head>
 
 <body>
-    <form method="POST">
+    <form id="conteo_form" method="POST">
         {% csrf_token %}
-        <!-- {{ form.as_p }} -->
-        <div class="form-group">
-            <label for="nombre_archivo" class="txt_negrita">Nombre del archivo</label>
-            {{ form.nombre_archivo }}
-            <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-        </div>
-        <button type="submit">Contar Palabras</button>
+        {{ form.as_p }}          
+        <button type="submit" class="btn btn-primary">Contar Palabras</button>
     </form>
     {% if messages %}
     <ul class="messages">

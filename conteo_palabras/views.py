@@ -56,8 +56,10 @@ class ContadorView(FormView):
 def contadorPalabras(request):
     form = ContadorPalabras(request.POST or None)
     if form.is_valid():
-        noticias = capturar_noticias(archivos='reut2-000.sgm')
-        messages.success(request, noticias)
+        nombre_archivo = form.cleaned_data['nombre_archivo']
+        noticias = capturar_noticias(archivos=nombre_archivo)
+
+        messages.success(request, 'La cantidad de palabras del archivo ' + nombre_archivo + ' es: ' + str(noticias[nombre_archivo]))
     context = {
         'form': form
     }
