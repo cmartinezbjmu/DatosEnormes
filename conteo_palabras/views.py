@@ -3,7 +3,7 @@ from django.views.generic.edit import FormView
 from conteo_palabras.forms import ContadorPalabras
 from django.urls import reverse_lazy
 from django.contrib import messages
-import os
+
 
 from bs4 import BeautifulSoup
 ## Eliminar caracteres especiales
@@ -56,24 +56,16 @@ class ContadorView(FormView):
 
 def contadorPalabras(request):
     form = ContadorPalabras(request.POST or None)
-    if form.is_valid():
-        archivos = listarArchivos()        
+    if form.is_valid():              
         nombre_archivo = form.cleaned_data['nombre_archivo']
         noticias = capturar_noticias(archivos=nombre_archivo)
 
         messages.success(request, 'La cantidad de palabras del archivo ' + nombre_archivo + ' es: ' + str(noticias[nombre_archivo]))
     context = {
-        'form': form,
-        'archivos': listarArchivos()
+        'form': form        
     }
 
     return render(request, 'contador_palabras.html', context)
 
-def listarArchivos():
-    lista_archivos = []
-    for archivo in os.listdir('Dataset/'):
-        if archivo.endswith('.sgm'):
-            lista_archivos.append(archivo)
-    
-    return sorted(lista_archivos)
+
     

@@ -1,31 +1,32 @@
 <html>
-    <head>
-        {# Cargamos la librería #}
-        {% load bootstrap4 %}
-    
-        {# CSS Bootstrap #}
-        {% bootstrap_css %}
-    
-        
-        
-        <title>Contador de palabras</title>
-    </head>
+
+<head>
+    {# Cargamos la librería #}
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
+
+
+    <title>Contador de palabras</title>
+</head>
 
 <body>
     <form id="conteo_form" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}          
+        {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Contar Palabras</button>
     </form>
-    <h5>Por favor tenga en cuenta que solo se admiten los siguientes archivos:</h5>
+
     {% for archivo in archivos %}
     <li>{{ archivo }}</li>
     {% endfor %}
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>
-        {% endfor %}
+        <h4{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</h4>
+            {% endfor %}
     </ul>
     {% endif %}
 </body>
