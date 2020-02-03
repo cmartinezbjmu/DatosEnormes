@@ -76,10 +76,9 @@ def cantPalabrasArchivo(request):
         noticias = capturar_noticias(archivos=nombre_archivo)
         lista_palabras = contar_palabras(noticias)
         frecuencia_palabras = Counter(lista_palabras)
-        for palabras in frecuencia_palabras:
-            print(palabras + ':' + str(frecuencia_palabras[palabras]))
+        
         context = {
-            'frecuencia_palabras': frecuencia_palabras
+            'frecuencia_palabras': frecuencia_palabras.items
         }
         return render(request, 'frecuencia_palabras.html', context)
         

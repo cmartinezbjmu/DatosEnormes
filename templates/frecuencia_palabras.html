@@ -14,8 +14,8 @@
 
 <body>
     <h5>Esta es la frecuencia de las palabras en el archivo seleccionado</h5>
-    {% for palabra in frecuencia_palabras %}
-    <li>{{ palabra }}: {{ frecuencia_palabras.palabra }}</li>
+    {% for keys, values in frecuencia_palabras %}
+        <li>{{ keys }}: {{ values }}</li>
     {% endfor %}
 
 </body>
