@@ -17,10 +17,14 @@
         {{ form.as_p }}          
         <button type="submit" class="btn btn-primary">Contar Palabras</button>
     </form>
+    <h5>Por favor tenga en cuenta que solo se admiten los siguientes archivos:</h5>
+    {% for archivo in archivos %}
+    <li>{{ archivo }}</li>
+    {% endfor %}
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>
         {% endfor %}
     </ul>
     {% endif %}
