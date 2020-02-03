@@ -54,7 +54,7 @@ ROOT_URLCONF = 'DatosEnormes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'DatosEnormesDB',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'jc1095jc',
     }
 }
 

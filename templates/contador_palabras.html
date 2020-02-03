@@ -1,0 +1,19 @@
+<html>
+<title>Contador de palabras</title>
+
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        
+
+        <!-- {{ form.as_p }} -->
+        <div class="form-group">
+            <label for="nombre_archivo" class="txt_negrita">Nombre del archivo</label>
+            {{ form.nombre_archivo }}
+            <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+        </div>
+        <button type="submit">Contar Palabras</button>
+    </form>
+</body>
+
+</html>

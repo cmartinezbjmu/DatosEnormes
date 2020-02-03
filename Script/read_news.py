@@ -28,13 +28,19 @@ from datetime import datetime
 
 ## Funciones
 
-def capturar_noticias():
+def capturar_noticias(**kwargs):    
     # Ruta de los archivos
     path='../Dataset/'
     grupo_noticias = []
     palabras_noticia = dict()
     frecuencia_palabra_noticia = dict()
-    for i in sys.argv[2:len(sys.argv)]:     
+    if sys.argv:
+        argumentos = sys.argv
+    else:
+        argumentos = kwargs.get('archivos', None)
+        top = kwargs.get('top', 1)
+    #for i in sys.argv[2:len(sys.argv)]:     
+    for i in argumentos[2:len(argumentos)]:     
         total_palabras = 0
         with open(path + i, 'rb') as f:
             s = BeautifulSoup(f, 'html.parser')
@@ -46,7 +52,7 @@ def capturar_noticias():
             palabras_noticia.update({i:len(contar_palabras(palabras))})
             frecuencia_palabra_noticia.update({i:Counter(contar_palabras(palabras))})
         f.close()
-    print(palabras_noticia)
+    #print(palabras_noticia)
 
     #import json
 
@@ -76,15 +82,25 @@ def max_palabra_archivo(palabra):
             max = frecuencia_palabra_noticia[archivo][palabra]
     return nombre_archivo
 
+
+
 noticias, palabras_noticia, frecuencia_palabra_noticia = capturar_noticias()
 lista_palabras = contar_palabras(noticias)
 
 
 ## --------------------------------------
 
-# Resultado reto b
 frecuencia_palabras = Counter(lista_palabras)
-print(len(lista_palabras))
+# Resultado reto a
+print("a) El archivo " + sys.argv[2] + " tiene " + str(len(lista_palabras)) + " palabras")
+
+## --------------------------------------
+
+# Resultado reto b
+
+# print("b) Frecuencia de Palabras")
+# for palabra in frecuencia_palabras:
+#     print(palabra + ': ' + str(frecuencia_palabras[palabra]))
 
 ## --------------------------------------
 
@@ -94,17 +110,24 @@ N = sys.argv[1]
 # Resultado reto c, d, e y f
 # Cantidad de palabras en el top N
 top_palabras = frecuencia_palabras.most_common(int(N))
-print(top_palabras)
+# print("c) Top " + str(N) + " de palabras")
+# for palabras in top_palabras:
+#     print(palabras)
+# 
+# print("d) Top " + str(N) + " de palabras en el archivo " + sys.argv[2])
+# for palabras in top_palabras:
+#     print(palabras)
+
+print("e) Top " + str(N) + " de palabras en los archivos " + ' '.join(sys.argv[2:len(sys.argv)]))   
+for palabras in top_palabras:
+    print(palabras)
 
 ## --------------------------------------
-
-print('Resultado reto G')
-
-palabra_buscar = 'the'
-print('El archivo que contiene más veces la palabra ' + palabra_buscar + ' es: ' + max_palabra_archivo(palabra_buscar))
-
+# Resultado g
+palabra_buscar = 'of'
 archivo_max_palabras = max(palabras_noticia, key=palabras_noticia.get)
-print('Archivo con mayor cantidad de palabras: ' + archivo_max_palabras)
+print('g) El archivo que contiene más veces la palabra ' + palabra_buscar + ' es: ' + max_palabra_archivo(palabra_buscar))
+print('g) Archivo con mayor cantidad de palabras: ' + archivo_max_palabras)
 
 # Crea el archivo para el almacenamiento de respuestas
 

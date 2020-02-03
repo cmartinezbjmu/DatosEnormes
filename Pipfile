@@ -13,6 +13,7 @@ django = "*"
 bs4 = "*"
 pandas = "*"
 nltk = "*"
+django-bootstrap4 = "*"
 
 [requires]
 python_version = "3.8"
