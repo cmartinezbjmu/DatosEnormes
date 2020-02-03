@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from conteo_palabras.forms import ContadorPalabras
 from django.urls import reverse_lazy
@@ -34,7 +34,7 @@ def capturar_noticias(**kwargs):
 
     f.close()
     Numero = 10
-    return palabras_noticia
+    return grupo_noticias
 
 def contar_palabras(noticia):
     ## Eliminar stop words
@@ -44,6 +44,7 @@ def contar_palabras(noticia):
         frases = tokenizer.tokenize(i)
         lista_palabras.extend(frases)
     return lista_palabras
+
 
 class ContadorView(FormView):
     template_name='contador_palabras.html'
@@ -59,8 +60,8 @@ def contadorPalabras(request):
     if form.is_valid():              
         nombre_archivo = form.cleaned_data['nombre_archivo']
         noticias = capturar_noticias(archivos=nombre_archivo)
-
-        messages.success(request, 'La cantidad de palabras del archivo ' + nombre_archivo + ' es: ' + str(noticias[nombre_archivo]))
+        lista_palabras = contar_palabras(noticias)
+        messages.success(request, 'La cantidad de palabras del archivo ' + nombre_archivo + ' es: ' + str(len(lista_palabras)))
     context = {
         'form': form        
     }
@@ -68,4 +69,22 @@ def contadorPalabras(request):
     return render(request, 'contador_palabras.html', context)
 
 
+def cantPalabrasArchivo(request):    
+    form = ContadorPalabras(request.POST or None)
+    if form.is_valid():
+        nombre_archivo = form.cleaned_data['nombre_archivo']
+        noticias = capturar_noticias(archivos=nombre_archivo)
+        lista_palabras = contar_palabras(noticias)
+        frecuencia_palabras = Counter(lista_palabras)
+        for palabras in frecuencia_palabras:
+            print(palabras + ':' + str(frecuencia_palabras[palabras]))
+        context = {
+            'frecuencia_palabras': frecuencia_palabras
+        }
+        return render(request, 'frecuencia_palabras.html', context)
+        
+    context = {
+        'form': form,        
+    }
     
+    return render(request, 'contador_palabras.html', context)

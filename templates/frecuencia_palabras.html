@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    {# Cargamos la librería #}
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
+
+
+    <title>Contador de palabras</title>
+</head>
+
+<body>
+    <h5>Esta es la frecuencia de las palabras en el archivo seleccionado</h5>
+    {% for palabra in frecuencia_palabras %}
+    <li>{{ palabra }}: {{ frecuencia_palabras.palabra }}</li>
+    {% endfor %}
+
+</body>
+
+</html>
