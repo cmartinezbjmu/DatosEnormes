@@ -5,13 +5,13 @@
 
     {# CSS Bootstrap #}
     {% bootstrap_css %}
-    <title>Contador de palabras</title>
+    <title>Calcular top N de palabras</title>
 </head>
 <body>
     <form id="conteo_form" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Contar Palabras</button>
+        <button type="submit" class="btn btn-primary">Calcular</button>
     </form>
     
     {% if messages %}

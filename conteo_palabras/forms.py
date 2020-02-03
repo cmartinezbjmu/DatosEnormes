@@ -16,3 +16,6 @@ class ContadorPalabras(forms.Form):
     nombre_archivo = forms.CharField(required=True, widget=forms.Select(choices=LISTA_ARCHIVOS))
     
 
+class topNPalabrasForm(forms.Form):
+    nombre_archivo = forms.CharField(required=True, widget=forms.Select(choices=LISTA_ARCHIVOS))
+    no_palabras = forms.CharField(required=True, widget=forms.NumberInput)
