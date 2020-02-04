@@ -32,8 +32,28 @@
                     {% endfor %}
                 </div>
             </div>
+
+            <div class='section'>
+                <div align='center' class='flex column plot mt15 mlr15 justify-left align-left'>
+                    <br><br><br>
+                    <h4>Nube de palabras del archivo {{ nombre_archivo }}</h4>
+                    <img src='data:image/png;base64,{{ imag_uri1|safe }}' />
+                </div>
+            </div>
+        
+            <div class='section'>
+                <div align='center' class='flex column plot mt15 mlr15 justify-left align-left'>
+                    <br><br><br>
+                    <h4>Nube de palabras del archivo {{ nombre_archivo2 }}</h4>
+                    <img src='data:image/png;base64,{{ imag_uri2|safe }}' />
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
 {% endblock %}
+
 {% bootstrap_javascript jquery='full' %}
+
+

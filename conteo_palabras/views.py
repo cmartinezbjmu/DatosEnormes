@@ -3,6 +3,12 @@ from django.views.generic.edit import FormView
 from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4, topNPalabrasFormR5
 from django.urls import reverse_lazy
 from django.contrib import messages
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from io import BytesIO
+from base64 import b64encode
+from django.template.loader import get_template
+import urllib
 
 
 from bs4 import BeautifulSoup
@@ -76,9 +82,13 @@ def cantPalabrasArchivo(request):
         noticias = capturar_noticias(archivos=nombre_archivo)
         lista_palabras = contar_palabras(noticias)
         frecuencia_palabras = Counter(lista_palabras)
+        top_palabras = frecuencia_palabras.most_common(len(frecuencia_palabras))
+        # Crea nube de palabras
+        imag_uri = nubePalabras(top_palabras)
         
         context = {
-            'frecuencia_palabras': frecuencia_palabras.items
+            #'frecuencia_palabras': frecuencia_palabras.items
+            'imag_uri': imag_uri
         }
         return render(request, 'frecuencia_palabras.html', context)
         
@@ -87,6 +97,26 @@ def cantPalabrasArchivo(request):
     }
     
     return render(request, 'contador_palabras.html', context)
+
+def nubePalabras(palabras_top):
+    frecuentes_diccionario = dict(palabras_top)
+    wordcloud = WordCloud(background_color="white")
+    wordcloud.generate_from_frequencies(frequencies=frecuentes_diccionario)    
+    plt.figure()
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    #plt.show()
+    figure = plt.gcf()    
+    buf = BytesIO()
+    figure.savefig(buf, format='png', transparent=True, quality=100, dpi=200)
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+    imag_src = b64encode(image_png)
+    image_out = imag_src.decode('utf-8')
+    #imag_uri = 'data:image/png;base64,{}'.format(urllib.parse.quote(imag_src))
+
+    return image_out
 
 
 def topNPalabras(request):
@@ -98,11 +128,14 @@ def topNPalabras(request):
         lista_palabras = contar_palabras(noticias)
         frecuencia_palabras = Counter(lista_palabras)
         top_palabras = frecuencia_palabras.most_common(int(top))
-        
+        # Crea nube de palabras
+        imag_uri = nubePalabras(top_palabras)
+
         context = {
             'top_palabras': top_palabras,
             'nombre_archivo': nombre_archivo,
-            'top': top
+            'top': top,
+            'imag_uri': imag_uri
         }
         return render(request, 'top_n_palabras_result.html', context)
         
@@ -122,11 +155,14 @@ def topNPalabrasR4(request):
         lista_palabras = contar_palabras(noticias)
         frecuencia_palabras = Counter(lista_palabras)
         top_palabras = frecuencia_palabras.most_common(int(top))
-        
+        # Crea nube de palabras
+        imag_uri = nubePalabras(top_palabras)
+
         context = {
             'top_palabras': top_palabras,
             'nombre_archivo': nombre_archivo,
-            'top': top
+            'top': top,
+            'imag_uri': imag_uri
         }
         return render(request, 'top_n_palabras_result.html', context)
         
@@ -152,12 +188,19 @@ def topNPalabrasR5(request):
             frecuencia_palabras = Counter(lista_palabras)
             top_palabras.append(frecuencia_palabras.most_common(int(top)))
         
+        
+        # Crea nube de palabras
+        imag_uri1 = nubePalabras(top_palabras[0])
+        imag_uri2 = nubePalabras(top_palabras[1])
+        
         context = {
             'top_palabras': top_palabras[0],
             'top_palabras2': top_palabras[1],
             'nombre_archivo': nombre_archivo[0],
             'nombre_archivo2': nombre_archivo[1],
-            'top': top
+            'top': top,
+            'imag_uri1': imag_uri1,
+            'imag_uri2': imag_uri2,
         }
         return render(request, 'top_n_palabras_result_r5.html', context)
         
@@ -166,3 +209,6 @@ def topNPalabrasR5(request):
     }
     
     return render(request, 'top_n_palabras.html', context)
+
+
+

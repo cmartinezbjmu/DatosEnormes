@@ -14,10 +14,19 @@
 </head>
 
 <body>
-    <h5>Esta es la frecuencia de las palabras en el archivo seleccionado</h5>
+    
+    <!--
     {% for keys, values in frecuencia_palabras %}
         <li>{{ keys }}: {{ values }}</li>
     {% endfor %}
+    -->
+    <div class='section'>
+        <div align='center' class='flex column plot mt15 mlr15 justify-left align-left'>
+            <br><br><br>
+            <h5>Esta es la nube de las palabras en el archivo seleccionado</h5>
+            <img src='data:image/png;base64,{{ imag_uri|safe }}' />
+        </div>
+    </div>
 
 </body>
 
