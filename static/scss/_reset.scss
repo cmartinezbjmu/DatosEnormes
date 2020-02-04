@@ -1,0 +1,21 @@
+html
+{
+  width: 100vw;
+  height: 100vh;
+  background-color: $bgColor;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+*
+{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+button
+{
+  cursor: pointer;
+}

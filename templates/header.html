@@ -1,0 +1,30 @@
+{% load static %}
+<link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+
+<nav style="background-color:#007bff;" class="navbar navbar-expand-lg navbar-light shadow fixed-top">
+  <div class="container">
+    <a style="font-size: 3rem; font-family: 'Patua One', cursive !important; color: white;" class="navbar-brand" href="#">Datos Enormes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        {% if not request.user.is_authenticated %}
+        <li style="margin-left: 0.5rem" class="nav-item">
+        </li>
+        {% else %}
+        <li style="margin-left: 0.5rem" class="nav-item">
+          <button type="button" class="btn btn-light">
+            <h6 style="margin:0; font-family: 'Patua One', cursive !important;">Perfil</h6>
+          </button>
+        </li>
+        <li style="margin-left: 0.5rem" class="nav-item">
+          <button type="button" class="btn btn-light" >
+            <h6 style="margin:0; font-family: 'Patua One', cursive !important;">Salir</h6>
+          </button>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

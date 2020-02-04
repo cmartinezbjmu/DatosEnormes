@@ -1,0 +1,54 @@
+$bgColor: #FFF;
+$darkColor: #3e3e3e;
+$mainFont: #3e3e3e;
+$ligthFont: #e5e5e5;
+$mainButton: #3891A6;
+
+@import '_reset';
+@import '_fonts';
+@import '_prefix';
+
+@import 'header';
+@import 'galeryList';
+@import 'mediaDetail';
+
+.Page
+{
+  width: 100vw;
+  height: auto;
+}
+
+.PageTitle
+{
+  position: relative;
+  top: 10vh;
+  left: 2vw;
+  color: $darkColor;
+  background-color: $bgColor;
+  display: inline-block;
+  @include align(center);
+  h1
+  {
+    margin: 0vw 1vw;
+  }
+}
+
+.PageBorder
+{
+  width: 97vw;
+  border: solid $darkColor 2px;
+  margin: 7.5vh 1vw 1vh 1vw;
+  padding: 3vh 1vw;
+}
+
+.LinkButton
+{
+  background-color: transparent;
+  border: None;
+  cursor: pointer;
+  height: 100%;
+}
+.accordion-toggle.collapsed:after {
+  background-color: black;
+}
+
