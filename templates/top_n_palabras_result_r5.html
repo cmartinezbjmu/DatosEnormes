@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    {# Cargamos la librería #}
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
+
+
+    <title>Calcular top N de palabras</title>
+</head>
+
+<body>
+    <h5>Este es el top {{ top }} de palabras más frecuentes en el archivo {{ nombre_archivo }}</h5>
+    {% for values in top_palabras %}
+    <ul>
+        <li>{{ values }}</li>
+    </ul>
+    {% endfor %}
+    <h5>Este es el top {{ top }} de palabras más frecuentes en el archivo {{ nombre_archivo2 }}</h5>
+    {% for values in top_palabras2 %}
+    <ul>
+        <li>{{ values }}</li>
+    </ul>
+    {% endfor %}
+</body>
+
+</html>
