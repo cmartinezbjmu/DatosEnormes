@@ -15,8 +15,16 @@
 <body>
     <h5>Este es el top {{ top }} de palabras más frecuentes en el archivo {{ nombre_archivo }}</h5>
     {% for values in top_palabras %}
-        <li>{{ values }}</li>
+    <li>{{ values }}</li>
     {% endfor %}
+
+    <div class='section'>
+        <div align='center' class='flex column plot mt15 mlr15 justify-left align-left'>
+            <br><br><br>
+            <h4>Nube de palabras</h4>
+            <img src='data:image/png;base64,{{ imag_uri|safe }}' />
+        </div>
+    </div>
 
 </body>
 

@@ -39,7 +39,7 @@ def capturar_noticias(**kwargs):
     else:
         argumentos = kwargs.get('archivos', None)
         top = kwargs.get('top', 1)
-    #for i in sys.argv[2:len(sys.argv)]:     
+        
     for i in argumentos[2:len(argumentos)]:     
         total_palabras = 0
         with open(path + i, 'rb') as f:
@@ -52,17 +52,7 @@ def capturar_noticias(**kwargs):
             palabras_noticia.update({i:len(contar_palabras(palabras))})
             frecuencia_palabra_noticia.update({i:Counter(contar_palabras(palabras))})
         f.close()
-    #print(palabras_noticia)
 
-    #import json
-
-    # as requested in comment
-    #exDict = {'exDict': 1}
-
-    #with open('file.txt', 'w') as file:
-    #    file.write(json.dumps(frecuencia_palabra_noticia)) # use `json.loads` to do the reverse
-
-    #print(frecuencia_palabra_noticia)
     return grupo_noticias, palabras_noticia, frecuencia_palabra_noticia
 
 def contar_palabras(noticia):

@@ -14,6 +14,9 @@ bs4 = "*"
 pandas = "*"
 nltk = "*"
 django-bootstrap4 = "*"
+matplotlib = "*"
+wordcloud = "*"
+io = "*"
 
 [requires]
 python_version = "3.8"
