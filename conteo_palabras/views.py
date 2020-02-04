@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
-from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm
+from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4
 from django.urls import reverse_lazy
 from django.contrib import messages
 
@@ -89,8 +89,32 @@ def cantPalabrasArchivo(request):
     return render(request, 'contador_palabras.html', context)
 
 
-def topNPalabras(request):    
+def topNPalabras(request):
     form = topNPalabrasForm(request.POST or None)
+    if form.is_valid():
+        nombre_archivo = 'reut2-000.sgm'
+        top = form.cleaned_data['no_palabras']
+        noticias = capturar_noticias(archivos=nombre_archivo)
+        lista_palabras = contar_palabras(noticias)
+        frecuencia_palabras = Counter(lista_palabras)
+        top_palabras = frecuencia_palabras.most_common(int(top))
+        
+        context = {
+            'top_palabras': top_palabras,
+            'nombre_archivo': nombre_archivo,
+            'top': top
+        }
+        return render(request, 'top_n_palabras_result.html', context)
+        
+    context = {
+        'form': form,        
+    }
+    
+    return render(request, 'top_n_palabras.html', context)
+
+
+def topNPalabrasR4(request):
+    form = topNPalabrasFormR4(request.POST or None)
     if form.is_valid():
         nombre_archivo = form.cleaned_data['nombre_archivo']
         top = form.cleaned_data['no_palabras']
