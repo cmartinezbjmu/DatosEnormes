@@ -22,3 +22,8 @@ class topNPalabrasForm(forms.Form):
 class topNPalabrasFormR4(forms.Form):
     nombre_archivo = forms.CharField(required=True, widget=forms.Select(choices=LISTA_ARCHIVOS))
     no_palabras = forms.CharField(required=True, widget=forms.NumberInput)
+
+class topNPalabrasFormR5(forms.Form):
+    nombre_archivo = forms.CharField(required=True, widget=forms.Select(choices=LISTA_ARCHIVOS))
+    nombre_archivo2 = forms.CharField(required=True, widget=forms.Select(choices=LISTA_ARCHIVOS))
+    no_palabras = forms.CharField(required=True, widget=forms.NumberInput)
