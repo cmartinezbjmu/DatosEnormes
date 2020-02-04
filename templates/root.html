@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Datos Enormes</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Open+Sans|Pacifico" rel="stylesheet">
+  <!-- CSS Style -->
+  <link rel="stylesheet" href="{% static '/css/main.css' %}">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="Page">
+    {% block content %}
+    {% endblock %}
+  </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

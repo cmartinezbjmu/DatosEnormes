@@ -1,23 +1,29 @@
-<html>
-
-<head>
-    {# Cargamos la librería #}
-    {% load bootstrap4 %}
-
-    {# CSS Bootstrap #}
-    {% bootstrap_css %}
-
-
-
-    <title>Calcular top N de palabras</title>
-</head>
-
-<body>
-    <h5>Este es el top {{ top }} de palabras más frecuentes en el archivo {{ nombre_archivo }}</h5>
-    {% for values in top_palabras %}
-        <li>{{ values }}</li>
-    {% endfor %}
-
-</body>
-
-</html>
+{% extends 'root.html' %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="favicon.ico">
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/home.css" xmlns="http://www.w3.org/1999/html">
+<main role="main">
+    <h1 style="padding-top: 4rem; font-size: 2rem; font-weight: bold;" class="text-center mb-xl-5">Calcular top N de palabras</h1>
+    <div class="container mb-4">
+        <div class="row mt-3">
+            <div class="col-md-12 mx-auto">
+                <h5>El top {{ top }} de palabras más frecuentes en el archivo {{ nombre_archivo }}</h5>
+                {% for values in top_palabras %}
+                    <li>{{ values }}</li>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}
+{% bootstrap_javascript jquery='full' %}
