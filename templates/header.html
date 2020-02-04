@@ -1,30 +1,30 @@
-{% load static %}
-<link href="https://fonts.googleapis.com/css?family=Patua+One&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
 
-<nav style="background-color:#007bff;" class="navbar navbar-expand-lg navbar-light shadow fixed-top">
-  <div class="container">
-    <a style="font-size: 3rem; font-family: 'Patua One', cursive !important; color: white;" class="navbar-brand" href="#">Datos Enormes</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
-        {% if not request.user.is_authenticated %}
-        <li style="margin-left: 0.5rem" class="nav-item">
-        </li>
-        {% else %}
-        <li style="margin-left: 0.5rem" class="nav-item">
-          <button type="button" class="btn btn-light">
-            <h6 style="margin:0; font-family: 'Patua One', cursive !important;">Perfil</h6>
-          </button>
-        </li>
-        <li style="margin-left: 0.5rem" class="nav-item">
-          <button type="button" class="btn btn-light" >
-            <h6 style="margin:0; font-family: 'Patua One', cursive !important;">Salir</h6>
-          </button>
-        </li>
-        {% endif %}
-      </ul>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Datos Enormes</a>
     </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/resultados/reto_1/">Reto 1</a></li>
+      <li><a href="/resultados/reto_2/">Reto 2</a></li>
+      <li><a href="/resultados/reto_3/">Reto 3</a></li>
+      <li><a href="/resultados/reto_4/">Reto 4</a></li>
+      <li><a href="/resultados/reto_5/">Reto 5</a></li>
+      <li><a href="/resultados/reto_6/">Reto 6</a></li>
+      <li><a href="/resultados/reto_7/">Reto 7</a></li>
+    </ul>
   </div>
 </nav>
+</body>
+</html>
