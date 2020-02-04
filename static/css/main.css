@@ -1,0 +1,317 @@
+html {
+  width: 100vw;
+  height: 100vh;
+  background-color: #FFF;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1 {
+  font-family: sans-serif !important;
+}
+
+h2, h3 {
+  font-family: "Amatic SC", cursive !important;
+}
+
+h1, h2, h3, h4, h5, p, ul, div {
+  color: #3e3e3e;
+}
+
+header {
+  background-color: rgb(88, 179, 104);
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  padding: 2vw;
+  z-index: 10;
+}
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: white;
+}
+header button {
+  -ms-flex-item-align: center;
+  align-self: center;
+  border: solid #e5e5e5 1px;
+}
+header button h2 {
+  display: inline-block;
+  margin: 0;
+  line-height: 100%;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0vh 1vw;
+}
+header .DarkButton {
+  background-color: white;
+}
+header .DarkButton h2 {
+  color: black;
+}
+header .LigthButton {
+  background-color: white;
+}
+header .LigthButton h2 {
+  color: black;
+}
+header .HeaderOptions {
+  position: absolute;
+  right: 4vh;
+  top: 0;
+  width: 20vw;
+  display: grid;
+  grid-gap: 1vw;
+  padding: 1vw;
+}
+header .LogButtons {
+  grid-template-columns: 1fr 1fr;
+}
+header .UserInfo {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+header .UserInfo img {
+  padding: 0.5vh;
+  max-width: 100%;
+  height: auto;
+  -ms-flex-item-align: center;
+  align-self: center;
+  border-radius: 50%;
+}
+
+.searchBar {
+  margin: 13vh 0vw 0vh 2vw;
+  width: 100%;
+}
+.searchBar h3 {
+  font-weight: 600;
+}
+.searchBar form {
+  display: inline-grid;
+  width: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 2vw;
+}
+.searchBar form div {
+  display: flex;
+  align-items: center;
+}
+.searchBar form div label {
+  margin: 0 1vw 0 0;
+}
+.searchBar form input {
+  background-color: #4eadc3;
+  border: dashed #3891A6 2px;
+}
+
+.galeryTitle {
+  top: 2vh !important;
+}
+
+.mediaList {
+  margin: 0.5vh 1vw 1vh 1vw !important;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1vh;
+}
+@media only screen and (max-width: 1000px) {
+  .mediaList {
+    /* Tablet */
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .mediaList {
+    /* Mobile */
+    grid-template-columns: 1fr;
+  }
+}
+
+.MediaListItem {
+  border: solid #cccccc 1px;
+  background-color: #e6e6e6;
+  width: 100%;
+  height: 45vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 4fr 0.3fr 1fr 1fr;
+  grid-gap: 0.5vw;
+  z-index: 5;
+}
+.MediaListItem h3 {
+  margin: auto;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 4vh;
+  font-weight: 600;
+}
+.MediaListItem .itemDetail {
+  padding: 0vw 0.5vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 1fr 1fr 1fr;
+  font-size: 1.6vh;
+}
+.MediaListItem button {
+  background-color: #3891A6;
+  border: dashed #4eadc3 2px;
+  color: #FFF;
+  font-size: 2vh;
+}
+.MediaListItem button:hover {
+  -webkit-transition: 200ms;
+  transition: 200ms;
+  background-color: #4eadc3;
+}
+
+.MediaDetail {
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1vw;
+  z-index: 5;
+}
+@media only screen and (max-width: 800px) {
+  .MediaDetail {
+    /* Mobile */
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 3vh;
+  }
+}
+
+.MediaItem {
+  border: solid #cccccc 1px;
+  background-color: #e6e6e6;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 5fr 1fr;
+  height: 50vh;
+  width: 100%;
+}
+.MediaItem .itemDetail {
+  padding: 0.5vw 0.5vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 1fr 1fr 1fr;
+  font-size: 1.6vh;
+}
+
+.MediaClips {
+  width: 100%;
+  height: auto;
+}
+.MediaClips h3 {
+  display: inline-block;
+  background-color: #FFF;
+  margin: auto;
+  font-size: 3vh;
+  padding: 0vh 0.5vw;
+  position: relative;
+  top: -3vh;
+}
+.MediaClips .DetailWindow {
+  border: solid #3e3e3e 2px;
+  padding: 1vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 0.5vw;
+}
+.MediaClips .ClipList .Clip {
+  background-color: #e6e6e6;
+  border: dashed #cccccc 2px;
+  display: grid;
+  grid-template-columns: 9fr 1fr;
+}
+.MediaClips .ClipList .Clip h4, .MediaClips .ClipList .Clip p {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  align-self: center;
+}
+.MediaClips .ClipList .Clip .PlayButton {
+  background-color: transparent;
+  border: None;
+  height: 5vh;
+}
+.MediaClips .ClipList .Clip .PlayButton img {
+  height: 100%;
+  padding: 0.5vw;
+}
+.MediaClips .CreateClip {
+  margin-top: 3vh;
+}
+
+.Page {
+  width: 100vw;
+  height: auto;
+  margin-top: 4.6rem;
+}
+
+.PageTitle {
+  position: relative;
+  top: 10vh;
+  left: 2vw;
+  color: #3e3e3e;
+  background-color: #FFF;
+  display: inline-block;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.PageTitle h1 {
+  margin: 0vw 1vw;
+}
+
+.PageBorder {
+  width: 97vw;
+  border: solid #3e3e3e 2px;
+  margin: 7.5vh 1vw 1vh 1vw;
+  padding: 3vh 1vw;
+}
+
+.LinkButton {
+  background-color: transparent;
+  border: None;
+  cursor: pointer;
+  height: 100%;
+}
+/*# sourceMappingURL=main.css.map */
+
+.accordion-toggle:before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f078";
+  float: right;
+  transition: all .5s;
+  -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.accordion-toggle.collapsed:before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f078";
+  float: right;
+  transition: all .5s;
+  -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+}
