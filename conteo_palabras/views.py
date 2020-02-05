@@ -4,8 +4,6 @@ from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabr
 from django.urls import reverse_lazy
 from django.contrib import messages
 import matplotlib
-if matplotlib.get_backend() != "TKAgg":
-    matplotlib.use("TKAgg")
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from io import BytesIO
