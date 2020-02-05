@@ -77,7 +77,8 @@ def cantPalabrasArchivo(request):
         
         context = {
             #'frecuencia_palabras': frecuencia_palabras.items
-            'imag_uri': imag_uri
+            'imag_uri': imag_uri,
+            'nombre_archivo': nombre_archivo
         }
         return render(request, 'frecuencia_palabras.html', context)
         
@@ -134,7 +135,7 @@ def topNPalabras(request):
             'top_palabras': top_palabras,
             'nombre_archivo': nombre_archivo,
             'top': top,
-            #'imag_uri': imag_uri
+            'imag_uri': imag_uri
         }
         return render(request, 'top_n_palabras_result.html', context)
         
