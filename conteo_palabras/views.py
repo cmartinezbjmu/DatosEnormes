@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
-from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4, topNPalabrasFormR5
+from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4, topNPalabrasFormR5, topNPalabrasFormR6
 from django.urls import reverse_lazy
 from django.contrib import messages
+import matplotlib
+if matplotlib.get_backend() != "TKAgg":
+    matplotlib.use("TKAgg")
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from io import BytesIO
@@ -135,7 +138,7 @@ def topNPalabras(request):
             'top_palabras': top_palabras,
             'nombre_archivo': nombre_archivo,
             'top': top,
-            'imag_uri': imag_uri
+            #'imag_uri': imag_uri
         }
         return render(request, 'top_n_palabras_result.html', context)
         
@@ -211,4 +214,44 @@ def topNPalabrasR5(request):
     return render(request, 'top_n_palabras.html', context)
 
 
+def topNPalabrasR6(request):
+    form = topNPalabrasFormR6(request.POST or None)
+    if form.is_valid():
+        nombre_archivo = []
+        top_palabras = []
+        nombre_archivo.append(form.cleaned_data['nombre_archivo'])
+        nombre_archivo.append(form.cleaned_data['nombre_archivo2'])
+        nombre_archivo.append(form.cleaned_data['nombre_archivo3'])
+        top = form.cleaned_data['no_palabras']
+
+        for i in nombre_archivo:
+            noticias = capturar_noticias(archivos=i)
+            lista_palabras = contar_palabras(noticias)
+            frecuencia_palabras = Counter(lista_palabras)
+            top_palabras.append(frecuencia_palabras.most_common(int(top)))
+        
+        # Crea nube de palabras
+        imag_uri1 = nubePalabras(top_palabras[0])
+        imag_uri2 = nubePalabras(top_palabras[1])
+        imag_uri3 = nubePalabras(top_palabras[2])
+        
+        context = {
+            'top_palabras': top_palabras[0],
+            'top_palabras2': top_palabras[1],
+            'top_palabras3': top_palabras[2],
+            'nombre_archivo': nombre_archivo[0],
+            'nombre_archivo2': nombre_archivo[1],
+            'nombre_archivo3': nombre_archivo[2],
+            'top': top,
+            'imag_uri1': imag_uri1,
+            'imag_uri2': imag_uri2,
+            'imag_uri3': imag_uri3,
+        }
+        return render(request, 'top_n_palabras_result_r6.html', context)
+        
+    context = {
+        'form': form,        
+    }
+    
+    return render(request, 'top_n_palabras.html', context)
 
