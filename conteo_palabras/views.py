@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
-from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4, topNPalabrasFormR5, topNPalabrasFormR6
+from conteo_palabras.forms import ContadorPalabras, topNPalabrasForm, topNPalabrasFormR4, topNPalabrasFormR5, topNPalabrasFormR6, topNPalabrasFormR7
 from django.urls import reverse_lazy
 from django.contrib import messages
 import matplotlib
@@ -42,7 +42,6 @@ def capturar_noticias(**kwargs):
         frecuencia_palabra_noticia.update({argumentos:Counter(contar_palabras(palabras))})
 
     f.close()
-    Numero = 10
     return grupo_noticias
 
 def contar_palabras(noticia):
@@ -53,16 +52,6 @@ def contar_palabras(noticia):
         frases = tokenizer.tokenize(i)
         lista_palabras.extend(frases)
     return lista_palabras
-
-
-class ContadorView(FormView):
-    template_name='contador_palabras.html'
-    form_class = ContadorPalabras
-
-    def form_valid(self, form):        
-        noticias = capturar_noticias(archivos='reut2-000.sgm')
-        return super().form_valid(form)
-
 
 def contadorPalabras(request):
     form = ContadorPalabras(request.POST or None)
@@ -76,7 +65,6 @@ def contadorPalabras(request):
     }
 
     return render(request, 'contador_palabras.html', context)
-
 
 def cantPalabrasArchivo(request):    
     form = ContadorPalabras(request.POST or None)
@@ -121,6 +109,16 @@ def nubePalabras(palabras_top):
 
     return image_out
 
+#def frecuencia_palabra_noticia():
+    
+
+def max_palabra_archivo(palabra, archivos, frecuencia_palabra_noticia):
+    max = 0
+    for archivo in archivos: 
+        if frecuencia_palabra_noticia[archivo][palabra] > max:
+            nombre_archivo = archivo
+            max = frecuencia_palabra_noticia[archivo][palabra]
+    return nombre_archivo
 
 def topNPalabras(request):
     form = topNPalabrasForm(request.POST or None)
@@ -255,3 +253,38 @@ def topNPalabrasR6(request):
     
     return render(request, 'top_n_palabras.html', context)
 
+
+
+def topNPalabrasR7(request):
+    form = topNPalabrasFormR7(request.POST or None)
+    if form.is_valid():
+        nombre_archivo = []
+        nombre_archivo.append(form.cleaned_data['nombre_archivo'])
+        nombre_archivo.append(form.cleaned_data['nombre_archivo2'])
+        nombre_archivo.append(form.cleaned_data['nombre_archivo3'])
+        palabra = form.cleaned_data['palabra']
+
+        cantidad_palabras = 0
+        frecuencia_palabra_noticia = dict()
+        for i in nombre_archivo:
+            noticias = capturar_noticias(archivos=i)
+            lista_palabras = contar_palabras(noticias)
+            frecuencia_palabra_noticia.update({i:Counter(contar_palabras(lista_palabras))})
+            if len(lista_palabras) >= cantidad_palabras:
+                cantidad_palabras = len(lista_palabras)
+                archivo = i
+
+        nombre_archivo = max_palabra_archivo(palabra, nombre_archivo, frecuencia_palabra_noticia)
+
+        context = {
+            'nombre_archivo': archivo,
+            'palabra': palabra,
+            'archivo2': nombre_archivo
+        }
+        return render(request, 'top_n_palabras_result_r7.html', context)
+        
+    context = {
+        'form': form,        
+    }
+    
+    return render(request, 'buscador_palabras.html', context)

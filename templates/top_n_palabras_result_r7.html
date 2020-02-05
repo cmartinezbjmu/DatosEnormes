@@ -1,0 +1,34 @@
+{% extends 'root.html' %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="favicon.ico">
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/home.css" xmlns="http://www.w3.org/1999/html">
+<main role="main">
+    <h1 style="padding-top: 4rem; font-size: 2rem; font-weight: bold;" class="text-center mb-xl-5">Buscador de palabras</h1>
+    <div class="container mb-4">
+        <div class="row mt-3">
+            <div class="col-md-12 mx-auto">
+                    <div style="margin-top: 1rem;">
+                        <h5>El archivo que contiene más palabras es: {{ nombre_archivo }}</h5>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <h5>La palabra {{ palabra }} aparece más veces en el archivo {{ archivo2 }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% bootstrap_javascript jquery='full' %}
+
+

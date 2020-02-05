@@ -114,7 +114,7 @@ for palabras in top_palabras:
 
 ## --------------------------------------
 # Resultado g
-palabra_buscar = 'of'
+palabra_buscar = 'year'
 archivo_max_palabras = max(palabras_noticia, key=palabras_noticia.get)
 print('g) El archivo que contiene más veces la palabra ' + palabra_buscar + ' es: ' + max_palabra_archivo(palabra_buscar))
 print('g) Archivo con mayor cantidad de palabras: ' + archivo_max_palabras)
