@@ -1,19 +1,18 @@
+#!/usr/bin/env python
+
 import sys
-from bs4 import BeautifulSoup
+import re
 
+patron_titulo = re.compile('<TITLE>')
+for linea in sys.stdin:
+    if patron_titulo.match(linea):
+        # captira el titulo
+        titulo = re.sub("<.*?>", "", linea).lower()
+        titulo = titulo.strip()
+        palabras = titulo.split()
 
-#with open('reuters-sgm/reut2-000.sgm', 'r') as f:
-#    # Se usa formato HTML para manejo de etiquetas
-#    data = BeautifulSoup(f, 'html.parser')
-#    for titles in data.find_all('title'):
-#        print(titles.text)
-
-for lines in sys.stdin:
-    print(lines)
-    soup = BeautifulSoup(lines, "html.parser")
-    title = soup.find('title')
-    if title:
-        print(title.text)
-    else:
-        print('NOT FOUND')
+        for palabra in palabras:            
+            print '%s\t%s' % (palabra, 1)
+        
+    
     
