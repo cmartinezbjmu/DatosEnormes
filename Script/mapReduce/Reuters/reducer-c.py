@@ -32,6 +32,7 @@ for linea in sys.stdin:
         fecha_larga = fecha
     
     if max_palabras < conteo:
+        print(conteo)
         max_palabras = conteo
         titulo_max_palabras = titulo
         pais_noticia_max = pais
@@ -39,7 +40,7 @@ for linea in sys.stdin:
 
 print 'Promedio de palabras en las noticias es: {:0.2f}'.format((total_palabras/float(total_noticias)))
 print 'La palabra mas larga es: {} y el titulo de la noticia es: {} publicada en la fecha: {}'.format(palabra, titulo_larga, fecha_larga)
-print 'La noticia que tiene mas palabras es: {} con {} palabras, publicada en {}'.format(titulo_max_palabras, conteo, pais)
+print 'La noticia que tiene mas palabras es: {} con {} palabras, publicada en {}'.format(titulo_max_palabras, max_palabras, pais_noticia_max)
 #print('Promedio de palabras en las noticias es: {}'.format(total_palabras/total_noticias))
 #print('La palabra mas larga es: {} y el titulo de la noticia es: {} publicada en la fecha: {}'.format(palabra, titulo_larga, fecha_larga))
-#print('La noticia que tiene mas palabras es: {} con {} palabras, publicada en {}'.format(titulo_max_palabras, conteo, pais))
+#print('La noticia que tiene mas palabras es: {} con {} palabras, publicada en {}'.format(titulo_max_palabras, max_palabras, pais_noticia_max))
