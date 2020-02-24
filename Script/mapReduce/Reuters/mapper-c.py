@@ -57,6 +57,6 @@ for linea in sys.stdin:
         flag = False       
         total_noticias += 1
         longitud_palabra = 0
-        #print '%s\t%s' % (total_noticias, total_palabras)
-        print("{}\t{}\t{}\t{}\t{}".format(total_palabras, palabra_larga, titulo_palabra, fecha_palabra, pais_noticia_max))
+        print '%s\t%s\t%s\t%s\t%s' % (total_palabras, palabra_larga, titulo_palabra, fecha_palabra, pais_noticia_max)
+        #print("{}\t{}\t{}\t{}\t{}".format(total_palabras, palabra_larga, titulo_palabra, fecha_palabra, pais_noticia_max))
     
