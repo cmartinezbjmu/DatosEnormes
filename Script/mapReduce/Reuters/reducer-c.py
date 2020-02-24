@@ -10,7 +10,16 @@ total_noticias = 0
 total_palabras = 0
 longitud = 0
 palabra = ""
+titulo_max_palabras = ""
+titulo_larga = ""
+fecha_larga = ""
 max_palabras = 0
+pais_noticia_max = ""
+conteo = 0
+palabra_larga = ""
+titulo = ""
+fecha = "" 
+pais = ""
 
 # La entrada proviene de la salida del mapper
 for linea in sys.stdin:
@@ -32,7 +41,6 @@ for linea in sys.stdin:
         fecha_larga = fecha
     
     if max_palabras < conteo:
-        print(conteo)
         max_palabras = conteo
         titulo_max_palabras = titulo
         pais_noticia_max = pais

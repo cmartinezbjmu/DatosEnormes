@@ -11,6 +11,8 @@ patron_pais = re.compile('<PLACES>')
 total_noticias = 0
 longitud_palabra = 0
 titulo = ""
+fecha = ""
+pais = ""
 
 flag = False
 for linea in sys.stdin:
@@ -20,6 +22,8 @@ for linea in sys.stdin:
         linea.strip()
         linea = linea.replace('</D>', ' ')
         pais = re.sub("<.*?>", "", linea).lower()
+        if pais == "":
+            pais = "None"
 
     if patron_fecha.match(linea):
         linea = linea.split('<DATE>')[1]
