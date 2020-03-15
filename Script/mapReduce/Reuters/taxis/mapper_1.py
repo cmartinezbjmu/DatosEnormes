@@ -10,30 +10,38 @@ l = None
 destino = None
 for linea in sys.stdin:
     linea.strip()
+    if '"' in linea: linea = linea.replace('"', '')
     try:
-        l = linea.split(',')
+        l = linea.split(',')        
     except IndexError as e:
         pass
 
     if l:
-        if 'vendorid' not in l[0].lower():
-            if len(l) == 18:
+        print(len(l))
+        print(l)
+        if (l[0].lower != 'vendorid') or (l[0].lower != 'pickup_datetime'):
+            if (len(l) == 18) or (len(l) == 17):
                 tipo_vehi = 'yellow'
                 destino = l[8]
-            if len(l) == 19:
+            if len(l) == 20 or len(l) == 19 or len(l) == 21:
                 tipo_vehi = 'green'
                 destino = l[6]
-            if len(l) == 6:
+            if (len(l) == 6) or (len(l) == 5):
                 tipo_vehi = 'fhv'
                 destino = l[4]
-            if len(l) == 7:
+            if len(l) == 7:                     
                 tipo_vehi = 'hfhv'
                 destino = l[5]
+                print(destino)
 
             try:
-                # capturar hora
+                # capturar hora                
                 fecha_hora = l[1].split()
                 fecha = fecha_hora[0].split('-')
+                if (fecha[0] != '2019') and (tipo_vehi == 'hfhv'): tipo_vehi = 'fhv'
+                if (fecha[0] == '2016') and (len(l) == 19):                    
+                    tipo_vehi = 'yellow'
+                    destino = '\n'
                 hora = fecha_hora[1].split(':')[0]
                 hora = int(hora)
                 # comparar hora dataset con franja horaria
@@ -41,8 +49,9 @@ for linea in sys.stdin:
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()
                     # entrega salida al reducer
-                    #print('{},{},{}'.format(tipo_vehi, dia_semana, destino))
-                    print '%s,%s,%s' % (tipo_vehi, dia_semana, destino)
+                    #print('{},{},{}'.format(tipo_vehi, dia_semana, destino))                    
+                    if destino != '\n': print '%s,%s,%s' % (tipo_vehi, dia_semana, destino)
+
 
             except IndexError as e:
                 pass
