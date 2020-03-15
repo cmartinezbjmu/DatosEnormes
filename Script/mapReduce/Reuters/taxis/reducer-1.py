@@ -45,5 +45,3 @@ keys = list(dic_principal.keys())
 for key, values in dic_principal.items():
     max_ubicacion = max(values, key=values.get)
     print '%s\t%s\t%s' % (key, max_ubicacion, values[max_ubicacion])
-
-
