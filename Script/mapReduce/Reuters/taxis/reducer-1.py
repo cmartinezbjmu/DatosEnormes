@@ -33,13 +33,6 @@ for entrada in sys.stdin:
         conteo_destinos[llave_destino] = 1
         dic_principal[llave_principal] = conteo_destinos
 
-    def get_key(val):
-        for key, value in dic_principal.items():
-            if val == value:
-                return key
-
-        return "key doesn't exist"
-
 max_ubicacion = None
 keys = list(dic_principal.keys())
 for key, values in dic_principal.items():

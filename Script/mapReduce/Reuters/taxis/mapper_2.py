@@ -4,7 +4,8 @@ import sys
 import datetime
 #from geopy.geocoders import Nominatim
 
-franja_hor = [0, 3]
+dia = 4
+mes = '02'
 tipo_vehi = ''
 l = None
 destino = None
@@ -20,67 +21,50 @@ for linea in sys.stdin:
         #print(len(l))
         #print(l)
         if (l[0].lower != 'vendorid') or (l[0].lower != 'pickup_datetime'):
-            if (len(l) == 18) or (len(l) == 17):
+            if (len(l) == 18): # yellow year 2019
                 tipo_vehi = 'yellow'
-                destino = l[8]
-            if len(l) == 20 or len(l) == 19 or len(l) == 21:
+                precio = l[len(l)-2]
+            if (len(l) == 17):
+                tipo_vehi = 'yellow'
+                precio = l[len(l)-1]
+            if len(l) == 20: # green year 2019
                 tipo_vehi = 'green'
-                destino = l[6]
-                
-            if (len(l) == 6) or (len(l) == 5):
-                tipo_vehi = 'fhv'
-                destino = l[4]
-            if len(l) == 3:
-                tipo_vehi = 'fhv'
-                destino = '265'
-            if len(l) == 7:                     
-                tipo_vehi = 'hfhv'
-                destino = l[5]
-                #print(destino)
+                precio = l[len(l)-4]
+            if  len(l) == 19 or len(l) == 21:
+                tipo_vehi = 'green'
+                precio = l[len(l)-3]
 
             try:
-                tipo = 0
                 # capturar hora
                 fecha_hora = l[1].split()
                 fecha = fecha_hora[0].split('-')
                 if ((fecha[0] == '2016') or (fecha[0] == '2015')) and (len(l) == 19):
-                    tipo = 1
                     tipo_vehi = 'yellow'
-                    lat = 10           
+                    precio = l[len(l)-3]
                 
                 if (fecha[0] == '2016') and (len(l) == 21):
-                    tipo = 1
                     tipo_vehi = 'green'
-                    lat = 8
+                    precio = l[len(l)-3]
                 
                 if (fecha[0] == '2015') and (len(l) == 21):
-                    tipo = 1
                     tipo_vehi = 'green'
-                    lat = 8
+                    precio = l[len(l)-3]
 
                 if ((fecha[0] == '2014') or (fecha[0] == '2013') or (fecha[0] == '2012') or (fecha[0] == '2011')  or (fecha[0] == '2010')  or (fecha[0] == '2009') ) and (len(l) == 18):
-                    tipo = 1
                     tipo_vehi = 'yellow'
-                    lat = 10
+                    precio = l[len(l)-1]
 
                 if ((fecha[0] == '2014') or (fecha[0] == '2013')) and (len(l) == 22):
-                    tipo = 1
                     tipo_vehi = 'green'
-                    lat = 8
-
-                if (fecha[0] != '2019') and (tipo_vehi == 'hfhv'): tipo_vehi = 'fhv'
-                if tipo == 1:  
-                    destino = '265'
-                            
-                hora = fecha_hora[1].split(':')[0]
-                hora = int(hora)
+                    precio = l[len(l)-3]
+                
                 # comparar hora dataset con franja horaria
-                if (franja_hor[0] <= hora) and (hora <= franja_hor[1]):
+                if (fecha[1] == mes):
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()
+                    if (dia_semana == dia):
                     # entrega salida al reducer
-                    #print('{},{},{}'.format(tipo_vehi, dia_semana, destino))                    
-                    if (destino != '\n') and (destino != '265'): print '%s,%s,%s' % (tipo_vehi, dia_semana, destino)
+                        print '%s,%s' % (tipo_vehi, precio.replace('\n', ''))
 
 
             except IndexError as e:
