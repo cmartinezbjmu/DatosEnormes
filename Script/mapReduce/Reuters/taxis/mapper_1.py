@@ -4,10 +4,23 @@ import sys
 import datetime
 #from geopy.geocoders import Nominatim
 
-franja_hor = [0, 3]
+hora_in = [0, 0]
+hora_fin = [2, 0]
 tipo_vehi = ''
 l = None
 destino = None
+
+def conversion_tiempo(hora):    
+    hora = int(hora[0]) * 60 + int(hora[1])
+    return hora
+
+hora_in = conversion_tiempo(hora_in)
+hora_fin = conversion_tiempo(hora_fin)
+
+def conversion_tiempo(hora):    
+    hora = int(hora[0]) * 60 + int(hora[1])
+    return hora
+
 for linea in sys.stdin:
     linea.strip()
     if '"' in linea: linea = linea.replace('"', '')
@@ -72,10 +85,11 @@ for linea in sys.stdin:
                 if tipo == 1:  
                     destino = '265'
                             
-                hora = fecha_hora[1].split(':')[0]
-                hora = int(hora)
+                hora = fecha_hora[1].split(':')                
+                hora = conversion_tiempo(hora)
+                                
                 # comparar hora dataset con franja horaria
-                if (franja_hor[0] <= hora) and (hora <= franja_hor[1]):
+                if (hora_in <= hora) and (hora < hora_fin):
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()
                     # entrega salida al reducer
