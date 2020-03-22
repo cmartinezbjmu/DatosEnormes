@@ -38,6 +38,9 @@ for entrada in sys.stdin:
 
 max_ubicacion = None
 keys = list(dic_principal.keys())
+salida = dict()
 for key, values in dic_principal.items():
     max_ubicacion = max(values, key=values.get)
-    print '%s\t%s\t%s' % (key, max_ubicacion, values[max_ubicacion])
+    salida[key] = '%s,%s' % (max_ubicacion,values[max_ubicacion])
+
+print salida

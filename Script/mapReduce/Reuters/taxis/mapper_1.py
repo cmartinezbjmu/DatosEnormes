@@ -49,7 +49,6 @@ for linea in sys.stdin:
             if len(l) == 7:                     
                 tipo_vehi = 'hfhv'
                 destino = l[5]
-                #print(destino)
 
             try:
                 tipo = 0
@@ -87,13 +86,15 @@ for linea in sys.stdin:
                             
                 hora = fecha_hora[1].split(':')                
                 hora = conversion_tiempo(hora)
-                                
+                
                 # comparar hora dataset con franja horaria
                 if (hora_in <= hora) and (hora < hora_fin):
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()
                     # entrega salida al reducer
-                    #print('{},{},{}'.format(tipo_vehi, dia_semana, destino))                    
+                    #print('{},{},{}'.format(tipo_vehi, dia_semana, destino))
+                    if '0' in destino:
+                        destino = '264'                    
                     if (destino != '\n') and (destino != '265'): print '%s,%s,%s' % (tipo_vehi, dia_semana, destino)
 
 

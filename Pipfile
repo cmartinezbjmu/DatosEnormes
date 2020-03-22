@@ -18,6 +18,9 @@ wordcloud = "*"
 matplotlib = "*"
 paramiko = "*"
 django-json-response = "*"
+plotly = "*"
+plotly-geo = "*"
+geopandas = "*"
 
 [requires]
 python_version = "3.8"
