@@ -16,6 +16,8 @@ nltk = "*"
 django-bootstrap4 = "*"
 wordcloud = "*"
 matplotlib = "*"
+paramiko = "*"
+django-json-response = "*"
 
 [requires]
 python_version = "3.8"
