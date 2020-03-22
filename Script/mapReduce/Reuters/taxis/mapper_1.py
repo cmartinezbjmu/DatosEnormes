@@ -66,7 +66,7 @@ for linea in sys.stdin:
                     tipo_vehi = 'green'
                     lat = 8
                 
-                if (fecha[0] == '2015') and (len(l) == 21):
+                if (fecha[0] == '2015') and ((len(l) == 21) or (len(l) == 23)):
                     tipo = 1
                     tipo_vehi = 'green'
                     lat = 8
