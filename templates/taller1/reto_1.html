@@ -1,0 +1,252 @@
+{% extends 'root.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+  <h2>RETO 1</h2>
+<table class="table table-bordered">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miercoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Sábado</th>
+          <th>Domingo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Yellow</td>
+          <td> 
+               {% if datos.yellow_0 %}
+                    {{ datos.yellow_0 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_1 %}
+                    {{ datos.yellow_1 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_2 %}
+                    {{ datos.yellow_2 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_3 %}
+                    {{ datos.yellow_3 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_4 %}
+                    {{ datos.yellow_4 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_5 %}
+                    {{ datos.yellow_5 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_6 %}
+                    {{ datos.yellow_6 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td>Green</td>
+          <td> 
+               {% if datos.green_0 %}
+                    {{ datos.green_0 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_1 %}
+                    {{ datos.green_1 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_2 %}
+                    {{ datos.green_2 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_3 %}
+                    {{ datos.green_3 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_4 %}
+                    {{ datos.green_4 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_5 %}
+                    {{ datos.green_5 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.green_6 %}
+                    {{ datos.green_6 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td>FHV</td>
+          <td> 
+               {% if datos.fhv_0 %}
+                    {{ datos.fhv_0 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_1 %}
+                    {{ datos.fhv_1 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_2 %}
+                    {{ datos.fhv_2 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_3 %}
+                    {{ datos.fhv_3 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_4 %}
+                    {{ datos.fhv_4 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_5 %}
+                    {{ datos.fhv_5 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.fhv_6 %}
+                    {{ datos.fhv_6 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td>HFHV</td>
+          <td> 
+               {% if datos.hfhv_0 %}
+                    {{ datos.hfhv_0 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_1 %}
+                    {{ datos.hfhv_1 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_2 %}
+                    {{ datos.hfhv_2 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_3 %}
+                    {{ datos.hfhv_3 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_4 %}
+                    {{ datos.hfhv_4 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_5 %}
+                    {{ datos.hfhv_5 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.hfhv_6 %}
+                    {{ datos.hfhv_6 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    {% if map_df %}
+        <div style="width:600;height:500">
+            {{ map_df|safe }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% bootstrap_javascript jquery='full' %}
