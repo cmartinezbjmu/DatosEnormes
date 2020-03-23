@@ -6,6 +6,7 @@ import datetime
 dia = int(sys.argv[1])
 mes = sys.argv[2]
 tipo_vehi = ''
+precio = ''
 l = None
 destino = None
 for linea in sys.stdin:
@@ -16,8 +17,7 @@ for linea in sys.stdin:
     except IndexError as e:
         pass
 
-    if l:
-        #print(len(l))
+    if l:        
         #print(l)
         if (l[0].lower != 'vendorid') or (l[0].lower != 'pickup_datetime'):
             if (len(l) == 18): # yellow year 2019
@@ -61,7 +61,7 @@ for linea in sys.stdin:
                 if (fecha[1] == mes):                    
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()                    
-                    if (dia_semana == dia):
+                    if (dia_semana == dia) and tipo_vehi:                        
                     # entrega salida al reducer
                         print '%s,%s' % (tipo_vehi, precio.replace('\n', ''))
 
