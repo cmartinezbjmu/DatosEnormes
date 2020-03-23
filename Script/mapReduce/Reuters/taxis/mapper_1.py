@@ -4,8 +4,8 @@ import sys
 import datetime
 #from geopy.geocoders import Nominatim
 
-hora_in = [0, 0]
-hora_fin = [2, 0]
+hora_in = [sys.argv[1], sys.argv[2]]
+hora_fin = [sys.argv[3], sys.argv[4]]
 tipo_vehi = ''
 l = None
 destino = None

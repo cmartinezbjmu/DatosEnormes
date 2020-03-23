@@ -2,10 +2,9 @@
 
 import sys
 import datetime
-#from geopy.geocoders import Nominatim
 
-dia = 4
-mes = '02'
+dia = int(sys.argv[1])
+mes = sys.argv[2]
 tipo_vehi = ''
 l = None
 destino = None
