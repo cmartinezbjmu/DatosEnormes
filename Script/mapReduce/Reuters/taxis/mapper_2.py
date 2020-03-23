@@ -45,7 +45,7 @@ for linea in sys.stdin:
                     tipo_vehi = 'green'
                     precio = l[len(l)-3]
                 
-                if (fecha[0] == '2015') and (len(l) == 21):
+                if (fecha[0] == '2015') and ((len(l) == 21) or (len(l) == 23)):
                     tipo_vehi = 'green'
                     precio = l[len(l)-3]
 
@@ -55,7 +55,7 @@ for linea in sys.stdin:
 
                 if ((fecha[0] == '2014') or (fecha[0] == '2013')) and (len(l) == 22):
                     tipo_vehi = 'green'
-                    precio = l[len(l)-3]
+                    precio = l[len(l)-5]
                 
                 # comparar hora dataset con franja horaria
                 if (fecha[1] == mes):
