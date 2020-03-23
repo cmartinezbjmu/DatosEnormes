@@ -47,10 +47,10 @@ for entrada in sys.stdin:
 
 if cantidad_yellow > 1:
     precio_prom_yellow = precio_acum_yellow / float(cantidad_yellow)
-    resultado['yellow'] = [precio_max_yellow, precio_min_yellow, precio_prom_yellow]
+    resultado['yellow'] = '%s,%s,%s' % (precio_max_yellow, precio_min_yellow, precio_prom_yellow)
 
 if cantidad_green > 1:
     precio_prom_green = precio_acum_green / float(cantidad_green)
-    resultado['green'] = [precio_max_green, precio_min_green, precio_prom_green]
+    resultado['green'] = '%s,%s,%s' % (precio_max_green, precio_min_green, precio_prom_green)
 
 print '%s' % (resultado)

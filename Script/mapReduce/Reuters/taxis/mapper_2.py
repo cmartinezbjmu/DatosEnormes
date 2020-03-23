@@ -53,14 +53,14 @@ for linea in sys.stdin:
                     tipo_vehi = 'yellow'
                     precio = l[len(l)-1]
 
-                if ((fecha[0] == '2014') or (fecha[0] == '2013')) and (len(l) == 22):
+                if ((fecha[0] == '2014') or (fecha[0] == '2013')) and (len(l) == 22):                    
                     tipo_vehi = 'green'
                     precio = l[len(l)-5]
                 
-                # comparar hora dataset con franja horaria
-                if (fecha[1] == mes):
+                
+                if (fecha[1] == mes):                    
                     dia_semana = datetime.datetime(
-                        int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()
+                        int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()                    
                     if (dia_semana == dia):
                     # entrega salida al reducer
                         print '%s,%s' % (tipo_vehi, precio.replace('\n', ''))
