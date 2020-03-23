@@ -3,12 +3,10 @@ import paramiko
 from json_response import JsonResponse
 import time
 import json
-import plotly as py
-import plotly.graph_objs as go
-import plotly.offline as opy
 import pandas as pd
-import matplotlib.pyplot as plt
-import geopandas as gpd
+import folium
+from folium.plugins import HeatMapWithTime
+from folium.plugins import HeatMap
 
 # Create your views here.
 
@@ -17,7 +15,8 @@ def conexionHadoop():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     #ssh.connect('172.24.99.72', username='bigdata03', password='big2020')
-    ssh.connect('172.24.99.93', username='bigdata03', password='bigdata03126108')
+    ssh.connect('172.24.99.93', username='bigdata03', password='big2020')
+    #bigdata03126108
 
     session = ssh.get_transport().open_session()
     # Forward local agent
@@ -39,7 +38,7 @@ def resultadoHadoop():
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     #ssh.connect('172.24.99.72', username='bigdata03', password='big2020')
     
-    ssh.connect('172.24.99.93', username='bigdata03', password='bigdata03126108')
+    ssh.connect('172.24.99.93', username='bigdata03', password='big2020')
     #hadoop_ejec = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_1.py -mapper 'python mapper_1.py' -file /home/bigdata03/taller1/reducer-1.py -reducer 'python reducer-1.py' -input miniTaxis -output result06 && hadoop fs -cat result06/part*"
     #stdin, stdout, stderr = ssh.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_1.py -mapper 'python mapper_1.py' -file /home/bigdata03/taller1/reducer.py -reducer 'python reducer.py' -input miniTaxis -output result06")
 
@@ -65,38 +64,56 @@ def resultadoHadoop():
     return outdata
 
 def decodificarLugar(idLugar):
-    f = open("Script/mapReduce/Reuters/taxis/taxi_zone_lookup.csv")	
+    f = open("Script/mapReduce/Reuters/taxis/taxi_zone.csv")	
     destino = None	
     for ciudad in f.readlines():	
         if (idLugar in ciudad):	
-            destino = ciudad.split(';')[1]	
+            destino = ciudad.split(',')[2]
             break
     return destino
 
+def decodificarLugar_df(idLugar):
+    f = open("Script/mapReduce/Reuters/taxis/taxi_zone.csv")	
+    destino = None	
+    for ciudad in f.readlines():	
+        if (idLugar in ciudad):	
+            latitud, longitud = ciudad.split(',')[6], ciudad.split(',')[7]
+            break
+    return latitud, longitud
+
+def generateBaseMap(default_location=[40.693943, -73.985880], default_zoom_start=11):
+    base_map = folium.Map(location=default_location, control_scale=True, zoom_start=default_zoom_start)
+    return base_map
 
 def tabla(request):
     datos = resultadoHadoop()
     datos = json.loads(datos)
-
+    datos_mapa = datos.copy()
     for llave, valor in datos.items():
         datos[llave] = '{} ({})'.format(decodificarLugar(valor.split(',')[0]).replace('\n', ''), valor.split(',')[1])
-    
-    data = dict (
-    type = 'choropleth',
-    locations = ['NV','CA','NY'],
-    locationmode='USA-states',
-    z=[10,20,30])
+        
+    diccionario = dict()
+    lat = []
+    log = []
+    amout = []
+    #print(datos_mapa)
+    for llave, valor in datos_mapa.items():
+        latitud, longitud = decodificarLugar_df(valor.split(',')[0])
+        lat.append(float(latitud))
+        log.append(float(longitud.replace('\n', '')))
+        amout.append(int(valor.split(',')[1]))
 
-    lyt = dict(geo=dict(scope='usa'))
-    map = go.Figure(data=[data], layout = lyt)
-    imagen = opy.plot(map, auto_open=False, output_type='div')
+    diccionario['latitud'] = lat
+    diccionario['longitud'] = log
+    diccionario['valor'] = amout
+    datos_df = pd.DataFrame(diccionario)
+    base_map = generateBaseMap()
+    HeatMap(data=datos_df[['latitud', 'longitud', 'valor']].groupby(['latitud', 'longitud']).sum().reset_index().values.tolist(), radius=8, max_zoom=10).add_to(base_map)
 
-    fp = "Script/mapReduce/Reuters/taxis/taxi_zones/taxi_zones.shp"
-    map_df = gpd.read_file(fp)
-    print(map_df.head())
+
     context = {
         'datos': datos,
-        #'imagen': map_df
+        'imagen': base_map._repr_html_()
     }
 
     return render(request, 'taller1/reto_1.html', context)

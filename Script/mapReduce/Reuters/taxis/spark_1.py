@@ -21,7 +21,7 @@ df = df.withColumn('hora', split_col.getItem(1))
 df.createOrReplaceTempView("taxis")
 sqlDF = spark.sql(query1)
 # Extrae las horas
-horas = sqlDF.rdd.flatMap(lambda row: row)
+horas = sqlDF.rdd.flatMap(lambda row: row).map(lambda lugar: lugar, 1)..reduceByKey(lambda a, b: a + b)
 horas.saveAsTextFile("hdfs:///user/bigdata03/taxis/result")
 #    .map(lambda row: str(row).split()[1])
 #    .map(lambda row: row.split(':')[0])\

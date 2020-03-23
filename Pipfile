@@ -21,6 +21,8 @@ django-json-response = "*"
 plotly = "*"
 plotly-geo = "*"
 geopandas = "*"
+descartes = "*"
+folium = "*"
 
 [requires]
 python_version = "3.8"
