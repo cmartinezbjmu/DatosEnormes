@@ -61,7 +61,7 @@ for linea in sys.stdin:
                 if (fecha[1] == mes):                    
                     dia_semana = datetime.datetime(
                         int(fecha[0]), int(fecha[1]), int(fecha[2])).weekday()                    
-                    if (dia_semana == dia) and tipo_vehi:                        
+                    if (dia_semana == dia) and tipo_vehi:
                     # entrega salida al reducer
                         print '%s,%s' % (tipo_vehi, precio.replace('\n', ''))
 
