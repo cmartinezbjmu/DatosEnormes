@@ -1,4 +1,5 @@
 {% extends 'root.html' %}
+{% load template_filters %}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -15,7 +16,7 @@
 
 {% block content %}
 <div class="container">
-  <h2>RETO 2</h2>
+  <h2>RETO 3</h2>
 <table class="table table-bordered">
       <thead>
         <tr>
@@ -24,76 +25,38 @@
           <th>Febrero</th>
           <th>Marzo</th>
           <th>Abril</th>
+          <th>Mayo</th>
+          <th>Junio</th>
+          <th>Julio</th>
+          <th>Agosto</th>
+          <th>Septiembre</th>
+          <th>Octubre</th>
+          <th>Noviembre</th>
+          <th>Diciembre</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Yellow</td>
-          <td> 
-               {% if datos.yellow_0 %}
-                    {{ datos.yellow_0 }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if datos.yellow_1 %}
-                    {{ datos.yellow_1 }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if datos.yellow_2 %}
-                    {{ datos.yellow_2 }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if datos.yellow_3 %}
-                    {{ datos.yellow_3 }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td>Green</td>
-          <td> 
-               {% if green_max %}
-                    {{ green_max }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if green_min %}
-                    {{ green_min }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if green_prom %}
-                    {{ green_prom }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-          <td> 
-               {% if green_cant %}
-                    {{ green_cant }}
-               {% else %}
-                    N/A
-               {% endif %}
-          </td>
-        </tr>
+          {% for lugar, valores in datos.items %}
+          <tr>
+               <td>{{ lugar }}</td>
+               {% if valores|get_item:1 %} <td>{{ valores|get_item:1 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:2 %} <td>{{ valores|get_item:2 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:3 %} <td>{{ valores|get_item:3 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:4 %} <td>{{ valores|get_item:4 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:5 %} <td>{{ valores|get_item:5 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:6 %} <td>{{ valores|get_item:6 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:7 %} <td>{{ valores|get_item:7 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:8 %} <td>{{ valores|get_item:8 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:9 %} <td>{{ valores|get_item:9 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:10 %} <td>{{ valores|get_item:10 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:11 %} <td>{{ valores|get_item:11 }}</td> {% else %} <td></td> {% endif %}
+               {% if valores|get_item:12 %} <td>{{ valores|get_item:12 }}</td> {% else %} <td></td> {% endif %}
+          </tr>
+          {% endfor %}
       </tbody>
     </table>
 
-    {% if imagen %}
+     {% if imagen %}
           <div style="width:600;height:500">
                {{ imagen|safe }}
           </div>

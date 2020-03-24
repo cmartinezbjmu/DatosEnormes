@@ -1,0 +1,37 @@
+{% extends 'root.html' %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="favicon.ico">
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+{% block content %}
+<h1 style="padding-top: 4rem; font-size: 2rem; font-weight: bold;" class="text-center mb-xl-5">Buscador de palabras</h1>
+    <div class="container mb-4">
+        <form id="conteo_form" method="POST">
+            <div class="row mt-3">
+                <div class="col-md-12 mx-auto">
+                    <div class="row">
+                        {% csrf_token %}
+                        <div>
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Consultar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <h4{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</h4>
+            {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+{% bootstrap_javascript jquery='full' %}
