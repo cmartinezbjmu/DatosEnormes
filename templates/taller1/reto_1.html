@@ -243,21 +243,9 @@
         </tr>
       </tbody>
     </table>
-
     {% if imagen %}
-        
-            
           {% autoescape off %}{{ imagen }}{% endautoescape %} 
-     
     {% endif %}
-
-
-<!--  
-          
-        <div>
-            <img src="data:image/png;base64,{{ data }}" alt="" height="500" ,width="400">
-        </div>
-     -->
 </div>
 {% endblock %}
 {% bootstrap_javascript jquery='full' %}

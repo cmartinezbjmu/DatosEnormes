@@ -1,0 +1,103 @@
+{% extends 'root.html' %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+  <h2>RETO 2</h2>
+<table class="table table-bordered">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Precio máximo</th>
+          <th>Precio mínimo</th>
+          <th>Precio promedio</th>
+          <th>No. de vehiculos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Yellow</td>
+          <td> 
+               {% if datos.yellow_0 %}
+                    {{ datos.yellow_0 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_1 %}
+                    {{ datos.yellow_1 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_2 %}
+                    {{ datos.yellow_2 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if datos.yellow_3 %}
+                    {{ datos.yellow_3 }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td>Green</td>
+          <td> 
+               {% if green_max %}
+                    {{ green_max }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if green_min %}
+                    {{ green_min }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if green_prom %}
+                    {{ green_prom }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+          <td> 
+               {% if green_cant %}
+                    {{ green_cant }}
+               {% else %}
+                    N/A
+               {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    {% if imagen %}
+          <div style="width:600;height:500">
+               {{ imagen|safe }}
+          </div>
+     {% endif %}
+</div>
+{% endblock %}
+{% bootstrap_javascript jquery='full' %}

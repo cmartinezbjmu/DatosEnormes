@@ -7,6 +7,8 @@ import pandas as pd
 import folium
 from folium.plugins import HeatMapWithTime
 from folium.plugins import HeatMap
+import plotly.graph_objects as go
+import plotly.offline as opy
 
 # Create your views here.
 
@@ -45,7 +47,7 @@ def resultadoHadoop():
     session = ssh.get_transport().open_session()
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
-    session.exec_command("hadoop fs -cat result22/part-00000")
+    session.exec_command("hadoop fs -cat result200/part-00000")
     #stdin, stdout, stderr = ssh.exec_command("hadoop fs -ls result13")
     sleeptime = 0.001
     outdata = ''
@@ -85,7 +87,7 @@ def generateBaseMap(default_location=[40.693943, -73.985880], default_zoom_start
     base_map = folium.Map(location=default_location, control_scale=True, zoom_start=default_zoom_start)
     return base_map
 
-def tabla(request):
+def reto1(request):
     datos = resultadoHadoop()
     datos = json.loads(datos)
     datos_mapa = datos.copy()
@@ -109,7 +111,7 @@ def tabla(request):
     datos_df = pd.DataFrame(diccionario)
     base_map = generateBaseMap()
     HeatMap(data=datos_df[['latitud', 'longitud', 'valor']].groupby(['latitud', 'longitud']).sum().reset_index().values.tolist(), radius=8, max_zoom=10).add_to(base_map)
-
+    base_map.add_child(folium.ClickForMarker(popup='valor'))
 
     context = {
         'datos': datos,
@@ -117,3 +119,57 @@ def tabla(request):
     }
 
     return render(request, 'taller1/reto_1.html', context)
+
+def reto2(request):
+    datos = resultadoHadoop()
+    datos = json.loads(datos)
+    datos_yellow = []
+    datos_green = []
+    keys = list(datos)
+
+    if 'green' in keys:
+        datos_green = datos['green'].split(',')
+    else:
+        datos_green = ['NA', 'NA', 'NA', 'NA']
+    if 'yellow' in keys:
+        datos_yellow = datos['yellow'].split(',')
+    else:
+        datos_yellow = ['NA', 'NA', 'NA', 'NA']
+    
+    # Grafica
+
+    precios = ['Precio max', 'Precio min', 'Precio prom']
+
+    fig = go.Figure()
+    if 'yellow' in keys:
+        fig.add_trace(go.Bar(
+            x=precios,
+            y=[float(datos_yellow[0]), float(datos_yellow[1]), round(float(datos_yellow[2]), 2)],
+            name='Yellow (' + datos_yellow[3] + ')',
+            marker_color='yellow'
+        ))
+    if 'green' in keys:
+        fig.add_trace(go.Bar(
+            x=precios,
+            y=[float(datos_green[0]), float(datos_green[1]), round(float(datos_green[2]), 2)],
+            name='Green',
+            marker_color='green',
+        ))
+
+    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+    fig.update_layout(title_text="Costos de los días lunes del mes enero (2009 - 2019)", barmode='group', xaxis_tickangle=0)
+    div = opy.plot(fig, auto_open=False, output_type='div')
+
+    context = {
+        'green_max': datos_green[0],
+        'green_min': datos_green[1],
+        'green_prom': datos_green[2],
+        'green_cant': datos_green[3],
+        'yellow_max': datos_yellow[0],
+        'yellow_min': datos_yellow[1],
+        'yellow_prom': datos_yellow[2],
+        'yellow_cant': datos_yellow[3],
+        'imagen': div
+    }
+
+    return render(request, 'taller1/reto_2.html', context)
