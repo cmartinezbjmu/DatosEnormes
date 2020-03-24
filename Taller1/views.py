@@ -3,6 +3,7 @@ from django.shortcuts import render
 import paramiko
 from json_response import JsonResponse
 import time
+from datetime import datetime
 import json
 import pandas as pd
 import folium
@@ -13,7 +14,15 @@ import plotly.offline as opy
 
 # Create your views here.
 
-def conexionHadoop():
+def conexionHadoop(reto, arg1, arg2):
+    if reto == 1:
+        mapper = 'mapper_1.py'
+        reducer = 'reducer-py'
+        
+        arg1 = arg1.split(':')
+        arg2 = arg2.split(':')
+    now = datetime.now()
+    timestamp = datetime.timestamp(now)
     sleeptime = 0.001
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -24,13 +33,14 @@ def conexionHadoop():
     session = ssh.get_transport().open_session()
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
-    session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_1.py -mapper 'python mapper_1.py' -input miniTaxis -output result13")
+    #var = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp)
+    session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp))
     while True:
         if session.exit_status_ready():
             break
         time.sleep(sleeptime)
     #stdin, stdout, stderr = ssh.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_1.py -mapper 'python mapper_1.py' -file /home/bigdata03/taller1/reducer.py -reducer 'python reducer.py' -input miniTaxis -output result06")
-    session.close()
+    #session.close()
     ssh.close()
     #for line in stdout:
     #    print(line.strip('\n'))
@@ -91,7 +101,15 @@ def generateBaseMap(default_location=[40.693943, -73.985880], default_zoom_start
 def reto1(request):
     form = buscadorReto1Form(request.POST or None)
     if form.is_valid():
-        datos = resultadoHadoop()
+        seleccion = form.cleaned_data['seleccion']
+        hora_ini = form.cleaned_data['horaInicio']
+        hora_fin = form.cleaned_data['horaFin']
+
+        if seleccion == '1':
+            conexionHadoop(1, hora_ini, hora_fin)
+            datos = resultadoHadoop()
+        else:
+            datos = resultadoHadoop()
         datos = json.loads(datos)
         datos_mapa = datos.copy()
         for llave, valor in datos.items():

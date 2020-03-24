@@ -4,11 +4,6 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="icon" href="favicon.ico">
-{# Cargamos la librería #}
-{% load bootstrap4 %}
-{# CSS Bootstrap #}
-{% bootstrap_css %}
-{% load static %}
 {% block content %}
 <h1 style="padding-top: 4rem; font-size: 2rem; font-weight: bold;" class="text-center mb-xl-5">Buscador de palabras</h1>
     <div class="container mb-4">
@@ -26,12 +21,4 @@
             </div>
         </form>
     </div>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <h4{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</h4>
-            {% endfor %}
-    </ul>
-    {% endif %}
 {% endblock %}
-{% bootstrap_javascript jquery='full' %}
