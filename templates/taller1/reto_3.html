@@ -20,39 +20,39 @@
       <thead>
         <tr>
           <th></th>
-          <th>Precio máximo</th>
-          <th>Precio mínimo</th>
-          <th>Precio promedio</th>
-          <th>No. de vehiculos</th>
+          <th>Enero</th>
+          <th>Febrero</th>
+          <th>Marzo</th>
+          <th>Abril</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Yellow</td>
           <td> 
-               {% if yellow_max %}
-                    {{ yellow_max }}
+               {% if datos.yellow_0 %}
+                    {{ datos.yellow_0 }}
                {% else %}
                     N/A
                {% endif %}
           </td>
           <td> 
-               {% if yellow_min %}
-                    {{ yellow_min }}
+               {% if datos.yellow_1 %}
+                    {{ datos.yellow_1 }}
                {% else %}
                     N/A
                {% endif %}
           </td>
           <td> 
-               {% if yellow_prom %}
-                    {{ yellow_prom }}
+               {% if datos.yellow_2 %}
+                    {{ datos.yellow_2 }}
                {% else %}
                     N/A
                {% endif %}
           </td>
           <td> 
-               {% if yellow_cant %}
-                    {{ yellow_cant }}
+               {% if datos.yellow_3 %}
+                    {{ datos.yellow_3 }}
                {% else %}
                     N/A
                {% endif %}

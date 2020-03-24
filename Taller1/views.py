@@ -129,15 +129,18 @@ def reto2(request):
 
     if 'green' in keys:
         datos_green = datos['green'].split(',')
+        green_prom = round(float(datos_green[2]), 2)
     else:
         datos_green = ['NA', 'NA', 'NA', 'NA']
+        green_prom = 'NA'
     if 'yellow' in keys:
         datos_yellow = datos['yellow'].split(',')
+        yellow_prom = round(float(datos_yellow[2]), 2)
     else:
         datos_yellow = ['NA', 'NA', 'NA', 'NA']
+        yellow_prom = 'NA'
     
     # Grafica
-
     precios = ['Precio max', 'Precio min', 'Precio prom']
 
     fig = go.Figure()
@@ -152,22 +155,22 @@ def reto2(request):
         fig.add_trace(go.Bar(
             x=precios,
             y=[float(datos_green[0]), float(datos_green[1]), round(float(datos_green[2]), 2)],
-            name='Green',
+            name='Green (' + datos_green[3] + ')',
             marker_color='green',
         ))
 
     # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-    fig.update_layout(title_text="Costos de los días lunes del mes enero (2009 - 2019)", barmode='group', xaxis_tickangle=0)
+    fig.update_layout(title_text="Costo de los días lunes del mes enero (2009 - 2019)", barmode='group', xaxis_tickangle=0)
     div = opy.plot(fig, auto_open=False, output_type='div')
 
     context = {
         'green_max': datos_green[0],
         'green_min': datos_green[1],
-        'green_prom': datos_green[2],
+        'green_prom': green_prom,
         'green_cant': datos_green[3],
         'yellow_max': datos_yellow[0],
         'yellow_min': datos_yellow[1],
-        'yellow_prom': datos_yellow[2],
+        'yellow_prom': yellow_prom,
         'yellow_cant': datos_yellow[3],
         'imagen': div
     }
