@@ -17,7 +17,7 @@ import plotly.offline as opy
 def conexionHadoop(reto, arg1, arg2):
     if reto == 1:
         mapper = 'mapper_1.py'
-        reducer = 'reducer-py'
+        reducer = 'reducer-1.py'
         
         arg1 = arg1.split(':')
         arg2 = arg2.split(':')
@@ -33,8 +33,9 @@ def conexionHadoop(reto, arg1, arg2):
     session = ssh.get_transport().open_session()
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
-    #var = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp)
-    session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp))
+    if reto == 1:
+        var = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp)
+        session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp))
     while True:
         if session.exit_status_ready():
             break
@@ -44,8 +45,9 @@ def conexionHadoop(reto, arg1, arg2):
     ssh.close()
     #for line in stdout:
     #    print(line.strip('\n'))
+    return ('result_'+str(reto)+'_'+str(timestamp))
     
-def resultadoHadoop():
+def resultadoHadoop(nombre_archivo):
     #conexionHadoop()
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -58,7 +60,15 @@ def resultadoHadoop():
     session = ssh.get_transport().open_session()
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
-    session.exec_command("hadoop fs -cat result22/part-00000")
+
+    if type(nombre_archivo) == type('s'):
+        session.exec_command("hadoop fs -cat "+nombre_archivo+"/part-00000")
+    if nombre_archivo == 2:
+        session.exec_command("hadoop fs -cat test02/part-00000")
+    if nombre_archivo == 3:
+        session.exec_command("hadoop fs -cat test03_7-9-2-3/part-00000")
+    if nombre_archivo == 1:
+        session.exec_command("hadoop fs -cat result22/part-00000")        
     #stdin, stdout, stderr = ssh.exec_command("hadoop fs -ls result13")
     sleeptime = 0.001
     outdata = ''
@@ -106,10 +116,11 @@ def reto1(request):
         hora_fin = form.cleaned_data['horaFin']
 
         if seleccion == '1':
-            conexionHadoop(1, hora_ini, hora_fin)
-            datos = resultadoHadoop()
+            nombre_archivo = conexionHadoop(1, hora_ini, hora_fin)
+            print(nombre_archivo)
+            datos = resultadoHadoop(nombre_archivo)
         else:
-            datos = resultadoHadoop()
+            datos = resultadoHadoop(1)
         datos = json.loads(datos)
         datos_mapa = datos.copy()
         for llave, valor in datos.items():
@@ -147,7 +158,7 @@ def reto1(request):
     return render(request, 'taller1/buscadores/reto_1_search.html', context)
 
 def reto2(request):
-    datos = resultadoHadoop()
+    datos = resultadoHadoop(2)
     datos = json.loads(datos)
     datos_yellow = []
     datos_green = []
@@ -204,7 +215,8 @@ def reto2(request):
     return render(request, 'taller1/reto_2.html', context)
 
 def reto3(request):
-    datos = resultadoHadoop()
+    datos = resultadoHadoop(3)
+    
     #datos = json.loads(datos)
     salida = dict()
     lugares = []
@@ -214,7 +226,7 @@ def reto3(request):
     datos = datos.split('\n')
     for lugar in datos:
         lugares.append(decodificarLugar(lugar.split(',')[0]))
-        valores.append(lugar.split(',', 1)[1])
+        valores.append(lugar.split(',', 1)[0])
 
     cant = len(lugares)
     s = 0
