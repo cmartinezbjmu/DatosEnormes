@@ -1,4 +1,4 @@
-from .forms import buscadorReto1Form
+from .forms import buscadorReto1Form, buscadorReto2Form, buscadorReto3Form
 from django.shortcuts import render
 import paramiko
 from json_response import JsonResponse
@@ -14,13 +14,8 @@ import plotly.offline as opy
 
 # Create your views here.
 
-def conexionHadoop(reto, arg1, arg2):
-    if reto == 1:
-        mapper = 'mapper_1.py'
-        reducer = 'reducer-1.py'
-        
-        arg1 = arg1.split(':')
-        arg2 = arg2.split(':')
+def conexionHadoop(reto, arg1, arg2, arg3=None, arg4=None):      
+    print('LLego conec')
     now = datetime.now()
     timestamp = datetime.timestamp(now)
     sleeptime = 0.001
@@ -34,8 +29,22 @@ def conexionHadoop(reto, arg1, arg2):
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
     if reto == 1:
-        var = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp)
-        session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/{0} -mapper 'python {0} {2} {3} {4} {5}' -file /home/bigdata03/taller1/{1} -reducer 'python {1}' -input miniTaxis -output result_{6}_{7}".format(mapper, reducer, arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp))
+        arg1 = arg1.split(':')
+        arg2 = arg2.split(':')
+        session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_1.py -mapper 'python mapper_1.py {0} {1} {2} {3}' -file /home/bigdata03/taller1/reducer-1.py -reducer 'python reducer-1.py' -input miniTaxis -output result_{4}_{5}".format(arg1[0], arg1[1], arg2[0], arg2[1], reto, timestamp))
+    if reto == 2:
+        arg1 = str(arg1)
+        arg2 = str(arg2)
+        session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_2.py -mapper 'python mapper_2.py {0} {1}' -file /home/bigdata03/taller1/reducer-2.py -reducer 'python reducer-2.py' -input miniTaxis -output result_{2}_{3}".format(arg1, arg2, reto, timestamp))
+    if reto == 3:
+        print('entro eje R3')
+        arg1 = arg1.split(':')
+        arg2 = arg2.split(':')
+        arg3 = str(arg3)
+        arg4 = str(arg4)
+        var = "hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_3.py -mapper 'python mapper_3.py {0} {1} {2} {3} {4}' -file /home/bigdata03/taller1/reducer-3.py -reducer 'python reducer-3.py {5}' -input miniTaxis -output result_{6}_{7}".format(arg1[0], arg1[1], arg2[0], arg2[1], arg3, arg4, reto, timestamp)
+        print(var)
+        session.exec_command("hadoop jar /usr/hdp/3.1.4.0-315/hadoop-mapreduce/hadoop-streaming.jar -file /home/bigdata03/taller1/mapper_3.py -mapper 'python mapper_3.py {0} {1} {2} {3} {4}' -file /home/bigdata03/taller1/reducer-3.py -reducer 'python reducer-3.py {5}' -input miniTaxis -output result_{6}_{7}".format(arg1[0], arg1[1], arg2[0], arg2[1], arg3, arg4, reto, timestamp))
     while True:
         if session.exit_status_ready():
             break
@@ -61,14 +70,7 @@ def resultadoHadoop(nombre_archivo):
     # Forward local agent
     paramiko.agent.AgentRequestHandler(session)
 
-    if type(nombre_archivo) == type('s'):
-        session.exec_command("hadoop fs -cat "+nombre_archivo+"/part-00000")
-    if nombre_archivo == 2:
-        session.exec_command("hadoop fs -cat test02/part-00000")
-    if nombre_archivo == 3:
-        session.exec_command("hadoop fs -cat test03_7-9-2-3/part-00000")
-    if nombre_archivo == 1:
-        session.exec_command("hadoop fs -cat result22/part-00000")        
+    session.exec_command("hadoop fs -cat "+nombre_archivo+"/part-00000")       
     #stdin, stdout, stderr = ssh.exec_command("hadoop fs -ls result13")
     sleeptime = 0.001
     outdata = ''
@@ -117,10 +119,12 @@ def reto1(request):
 
         if seleccion == '1':
             nombre_archivo = conexionHadoop(1, hora_ini, hora_fin)
-            print(nombre_archivo)
             datos = resultadoHadoop(nombre_archivo)
         else:
-            datos = resultadoHadoop(1)
+            hora_ini = '00:00'
+            hora_fin = '02:00'
+            nombre_archivo = 'result22'
+            datos = resultadoHadoop(nombre_archivo)
         datos = json.loads(datos)
         datos_mapa = datos.copy()
         for llave, valor in datos.items():
@@ -147,7 +151,9 @@ def reto1(request):
 
         context = {
             'datos': datos,
-            'imagen': base_map._repr_html_()
+            'imagen': base_map._repr_html_(),
+            'hora_ini': hora_ini,
+            'hora_fin': hora_fin,
         }
 
         return render(request, 'taller1/reto_1.html', context)
@@ -158,120 +164,169 @@ def reto1(request):
     return render(request, 'taller1/buscadores/reto_1_search.html', context)
 
 def reto2(request):
-    datos = resultadoHadoop(2)
-    datos = json.loads(datos)
-    datos_yellow = []
-    datos_green = []
-    keys = list(datos)
+    form = buscadorReto2Form(request.POST or None)
+    if form.is_valid():
 
-    if 'green' in keys:
-        datos_green = datos['green'].split(',')
-        green_prom = round(float(datos_green[2]), 2)
-    else:
-        datos_green = ['NA', 'NA', 'NA', 'NA']
-        green_prom = 'NA'
-    if 'yellow' in keys:
-        datos_yellow = datos['yellow'].split(',')
-        yellow_prom = round(float(datos_yellow[2]), 2)
-    else:
-        datos_yellow = ['NA', 'NA', 'NA', 'NA']
-        yellow_prom = 'NA'
+        seleccion = form.cleaned_data['seleccion']
+        dia = form.cleaned_data['dia']
+        mes = form.cleaned_data['mes']
+
+        if seleccion == '1':
+            nombre_archivo = conexionHadoop(2, dia, mes)
+            datos = resultadoHadoop(nombre_archivo)
+        else:
+            dia = '0'
+            mes = '01'
+            nombre_archivo = 'test02'
+            datos = resultadoHadoop(nombre_archivo)
+        
+        dias = {'0': 'Lunes', '1': 'Martes', '2': 'Miercoles', '3': 'Jueves', '4': 'Viernes', '5': 'Sábado', '6': 'Domingo'}
+        meses = {'01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril', '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto', '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'}
+        datos = json.loads(datos)
+        datos_yellow = []
+        datos_green = []
+        keys = list(datos)
+
+        if 'green' in keys:
+            datos_green = datos['green'].split(',')
+            green_prom = round(float(datos_green[2]), 2)
+        else:
+            datos_green = ['NA', 'NA', 'NA', 'NA']
+            green_prom = 'NA'
+        if 'yellow' in keys:
+            datos_yellow = datos['yellow'].split(',')
+            yellow_prom = round(float(datos_yellow[2]), 2)
+        else:
+            datos_yellow = ['NA', 'NA', 'NA', 'NA']
+            yellow_prom = 'NA'
+        
+        # Grafica
+        precios = ['Precio max', 'Precio min', 'Precio prom']
+        
+        dia_nom = dias[dia]
+        mes_nom = meses[mes]
+        fig = go.Figure()
+        if 'yellow' in keys:
+            fig.add_trace(go.Bar(
+                x=precios,
+                y=[float(datos_yellow[0]), float(datos_yellow[1]), round(float(datos_yellow[2]), 2)],
+                name='Yellow (' + datos_yellow[3] + ')',
+                marker_color='yellow'
+            ))
+        if 'green' in keys:
+            fig.add_trace(go.Bar(
+                x=precios,
+                y=[float(datos_green[0]), float(datos_green[1]), round(float(datos_green[2]), 2)],
+                name='Green (' + datos_green[3] + ')',
+                marker_color='green',
+            ))
+
+        # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+        fig.update_layout(title_text="Precio máximo, mínimo y promedio de los viajes en los días {} de {} entre (2009 - 2019)".format(dia_nom, mes_nom), barmode='group', xaxis_tickangle=0)
+        div = opy.plot(fig, auto_open=False, output_type='div')
+
+        context = {
+            'green_max': datos_green[0],
+            'green_min': datos_green[1],
+            'green_prom': green_prom,
+            'green_cant': datos_green[3],
+            'yellow_max': datos_yellow[0],
+            'yellow_min': datos_yellow[1],
+            'yellow_prom': yellow_prom,
+            'yellow_cant': datos_yellow[3],
+            'imagen': div
+        }
+
+        return render(request, 'taller1/reto_2.html', context)
     
-    # Grafica
-    precios = ['Precio max', 'Precio min', 'Precio prom']
-
-    fig = go.Figure()
-    if 'yellow' in keys:
-        fig.add_trace(go.Bar(
-            x=precios,
-            y=[float(datos_yellow[0]), float(datos_yellow[1]), round(float(datos_yellow[2]), 2)],
-            name='Yellow (' + datos_yellow[3] + ')',
-            marker_color='yellow'
-        ))
-    if 'green' in keys:
-        fig.add_trace(go.Bar(
-            x=precios,
-            y=[float(datos_green[0]), float(datos_green[1]), round(float(datos_green[2]), 2)],
-            name='Green (' + datos_green[3] + ')',
-            marker_color='green',
-        ))
-
-    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-    fig.update_layout(title_text="Costo de los días lunes del mes enero (2009 - 2019)", barmode='group', xaxis_tickangle=0)
-    div = opy.plot(fig, auto_open=False, output_type='div')
-
     context = {
-        'green_max': datos_green[0],
-        'green_min': datos_green[1],
-        'green_prom': green_prom,
-        'green_cant': datos_green[3],
-        'yellow_max': datos_yellow[0],
-        'yellow_min': datos_yellow[1],
-        'yellow_prom': yellow_prom,
-        'yellow_cant': datos_yellow[3],
-        'imagen': div
+        'form': form,        
     }
 
-    return render(request, 'taller1/reto_2.html', context)
+    return render(request, 'taller1/buscadores/reto_2_search.html', context)
 
 def reto3(request):
-    datos = resultadoHadoop(3)
-    
-    #datos = json.loads(datos)
-    salida = dict()
-    lugares = []
-    valores = []
-    datos = datos.strip()
-    datos = datos.replace(r'\t', '')
-    datos = datos.split('\n')
-    for lugar in datos:
-        lugares.append(decodificarLugar(lugar.split(',')[0]))
-        valores.append(lugar.split(',', 1)[0])
+    form = buscadorReto3Form(request.POST or None)
+    if form.is_valid():
+        seleccion = form.cleaned_data['seleccion']
+        hora_ini = form.cleaned_data['horaInicio']
+        hora_fin = form.cleaned_data['horaFin']
+        dia = form.cleaned_data['dia']
+        topN = form.cleaned_data['topN']
 
-    cant = len(lugares)
-    s = 0
-    for valor in valores:
-        salida[lugares[s]] = json.loads(valor)
-        s = s + 1
-        if s == cant:
-            break
-    salida = {'Lincoln Square East': {10: 5, 5: 80}, 'Lenox Hill East': {7: 9, 2: 150, 1: 50}}
-    
-    # Grafica
-    meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-    valor_in = [0,0,0,0,0,0,0,0,0,0,0,0]
-    fig = go.Figure()
+        if seleccion == '1':
+            nombre_archivo = conexionHadoop(3, hora_ini, hora_fin, dia, topN)
+            print(nombre_archivo)
+            datos = resultadoHadoop(nombre_archivo)
+        else:
+            # Preprocesados
+            hora_ini = '07:00'
+            hora_fin = '09:00'
+            topN = '3'
+            dia = '2'
+            nombre_archivo = 'test03_7-9-2-3'
+            datos = resultadoHadoop(nombre_archivo)
+        
+        salida = dict()
+        lugares = []
+        valores = []
+        datos = datos.strip()
+        datos = datos.replace(r'\t', '')
+        datos = datos.split('\n')
+        for lugar in datos:
+            lugares.append(decodificarLugar(lugar.split(',')[0]))
+            valores.append(lugar.split(',', 1)[0])
 
-    fig.add_trace(go.Bar(
-        x=meses,
-        y=valor_in,
-        name='',
-    ))
-    for lugar, valores in salida.items():
-        clave = []
-        valor = []
-        mes = []
-        for k, v in sorted(valores.items()):
-            valores[int(k)] = valores.pop(k)
-        for k, v in sorted(valores.items()):
-            clave.append(k)
-            valor.append(v)
-        for i in clave:
-            #print(meses[i-1])
-            mes.append(meses[i-1])
+        cant = len(lugares)
+        s = 0
+        for valor in valores:
+            salida[lugares[s]] = json.loads(valor)
+            s = s + 1
+            if s == cant:
+                break
+        salida = {'Lincoln Square East': {10: 5, 5: 80}, 'Lenox Hill East': {7: 9, 2: 150, 1: 50}}
+        
+        # Grafica
+        meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        valor_in = [0,0,0,0,0,0,0,0,0,0,0,0]
+        fig = go.Figure()
+
         fig.add_trace(go.Bar(
-            x=mes,
-            y=valor,
-            name=lugar,
+            x=meses,
+            y=valor_in,
+            name='',
         ))
+        for lugar, valores in salida.items():
+            clave = []
+            valor = []
+            mes = []
+            for k, v in sorted(valores.items()):
+                valores[int(k)] = valores.pop(k)
+            for k, v in sorted(valores.items()):
+                clave.append(k)
+                valor.append(v)
+            for i in clave:
+                #print(meses[i-1])
+                mes.append(meses[i-1])
+            fig.add_trace(go.Bar(
+                x=mes,
+                y=valor,
+                name=lugar,
+            ))
 
-    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-    fig.update_layout(title_text="Costo de los días lunes del mes enero (2009 - 2019)", barmode='group', xaxis_tickangle=0)
-    div = opy.plot(fig, auto_open=False, output_type='div')
+        # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+        fig.update_layout(title_text="Top {} de mayor demanda en el días {} durante la franja horaria {} {}".format(topN, dia, hora_ini, hora_fin), barmode='group', xaxis_tickangle=0)
+        div = opy.plot(fig, auto_open=False, output_type='div')
+
+        context = {
+            'datos': salida,
+            'imagen': div,
+        }
+
+        return render(request, 'taller1/reto_3.html', context)
 
     context = {
-        'datos': salida,
-        'imagen': div,
+        'form': form,        
     }
 
-    return render(request, 'taller1/reto_3.html', context)
+    return render(request, 'taller1/buscadores/reto_3_search.html', context)
