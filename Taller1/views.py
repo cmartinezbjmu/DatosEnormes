@@ -360,9 +360,7 @@ def retoA(request):
     # Here we modify the tickangle of the xaxis, resulting in rotated labels.
     fig.update_layout(title_text="Comparación de precios en horas pico y precio promedio en las diferentes zonas", barmode='group', xaxis_tickangle=0)
     div = opy.plot(fig, auto_open=False, output_type='div')
-
-
-
+    
     context = {
         'datos': datos,
         'imagen': div,
