@@ -330,3 +330,78 @@ def reto3(request):
     }
 
     return render(request, 'taller1/buscadores/reto_3_search.html', context)
+
+
+def retoA(request):
+    datos = dict()
+    lugares = ['Bronx', 'Brooklyn', 'EWR', 'Manhattan', 'Queens', 'Staten', 'Island', 'Unknown']
+
+    for i in range(1,8):
+        nombre_archivo = 'resultRa' + str(i)
+        datos[i] = resultadoHadoop(nombre_archivo).replace('\n', '').replace('\t', '').split(' ')
+        if len(datos[i]) > 2:
+            datos[i][1] = round(float(datos[i][1]), 2)
+            datos[i][2] = round(float(datos[i][2]), 2)
+    
+    # Grafica
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=['Precio pico', 'Precio promedio'],
+        y=[datos[2][1], datos[2][2]],
+        name='Brooklyn',
+    ))
+
+    fig.add_trace(go.Bar(
+        x=['Precio pico', 'Precio promedio'],
+        y=[datos[4][1], datos[4][2]],
+        name='Manhattan',
+    ))
+
+    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+    fig.update_layout(title_text="Comparación de precios en horas pico y precio promedio en las diferentes zonas", barmode='group', xaxis_tickangle=0)
+    div = opy.plot(fig, auto_open=False, output_type='div')
+
+
+
+    context = {
+        'datos': datos,
+        'imagen': div,
+    }
+    return render(request, 'taller1/reto_a.html', context)
+
+def retoB(request):
+    nombre_archivo = 'resultRb'
+    datos = resultadoHadoop(nombre_archivo)
+    datos = datos.replace('\n', '').replace('\t', '').split(' ')
+    datos = (datos[2].replace('[', '')+datos[3].replace(']', '')).split(',')    
+    datos[0] = float(datos[0])
+    datos[1] = float(datos[1])
+
+    labels = ['Rutas tipicas','Rutas diferentes']
+    values = [sum(datos),1-sum(datos)]
+
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+    div = opy.plot(fig, auto_open=False, output_type='div')
+
+    context = {
+        'imagen': div,
+    }
+    return render(request, 'taller1/reto_b.html', context)
+
+def retoC(request):
+    nombre_archivo = 'resultRc'
+    datos = resultadoHadoop(nombre_archivo)
+    datos = datos.replace('\n', '').replace('\t', '').split(' ')
+    datos[0] = float(datos[0])
+    datos[1] = float(datos[1])
+
+    labels = ['Intrazona','Interzona']
+    values = [datos[0],datos[1]]
+
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+    div = opy.plot(fig, auto_open=False, output_type='div')
+
+    context = {
+        'imagen': div,
+    }
+    return render(request, 'taller1/reto_c.html', context)

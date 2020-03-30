@@ -1,0 +1,33 @@
+{% extends 'root.html' %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+{# Cargamos la librería #}
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+  <h2>RETO B</h2>
+  <p>¿Los viajes se hacen siguiendo rutas típicas, o, eventualmente, entre los mismos origen y destino hay viajes con distancias recorridas significativamente diferentes?</p></br>
+     {% if imagen %}
+          <div style="width:600;height:500">
+               {{ imagen|safe }}
+          </div>
+     {% endif %}
+     <div style="text-align: right;">
+          <h4>Integrantes</h4>
+          <p style="margin-bottom: 0px;">d.ocampo</p>
+          <p style="margin-bottom: 0px;">j.cardenasc</p>
+          <p style="margin-bottom: 0px;">c.martinezb1</p>
+     </div>
+</div>
+{% endblock %}
+{% bootstrap_javascript jquery='full' %}
