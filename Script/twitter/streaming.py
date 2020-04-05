@@ -1,6 +1,7 @@
 import tweepy
+import json
 
-palabras_clave = ["Coronavirus"]
+palabras_clave = ["Coronavirus", "covid19"]
 ubicacion = [-79.2393655741,-4.23168726,-66.8799180948,12.7060548104]
 
 class TweetsListener(tweepy.StreamListener):
@@ -11,17 +12,14 @@ class TweetsListener(tweepy.StreamListener):
     def on_status(self, status):
         if hasattr(status, "retweeted_status"):  # Check if Retweet
             try:
-                print('RT')
-                print(status.retweeted_status.extended_tweet["full_text"])
+                print((json.dumps({'rt': 'RT ' + status.retweeted_status.extended_tweet["full_text"]}, ensure_ascii=False).encode('utf8')).decode())
             except AttributeError:
-                print(status.retweeted_status.text)
+                print((json.dumps({'rt_error': 'RT ' + status.retweeted_status.text}, ensure_ascii=False).encode('utf8')).decode())
         else:
             try:
-                print('Twitt extendido')
-                print(status.extended_tweet["full_text"])
+                print((json.dumps({'tweet_largo': status.extended_tweet["full_text"]}, ensure_ascii=False).encode('utf8')).decode())
             except AttributeError:
-                print('Twitt corto')
-                print(status.text)
+                print((json.dumps({'tweet_corto': status.text}, ensure_ascii=False).encode('utf8')).decode())
 
     def on_error(self, status_code):
         print("Error", status_code)
@@ -41,7 +39,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 stream = TweetsListener()
 streamingApi = tweepy.Stream(auth=api.auth, listener=stream, tweet_mode='extended')
 streamingApi.filter(
-    # follow=["151179935"],
+    #track=palabras_clave, follow=["1245725127590936578"]
     #track=["Coronavirus"],
     #locations=[-79.2393655741,-4.23168726,-66.8799180948,12.7060548104] # Ciudad de Mexico
     #place_country='CO'
