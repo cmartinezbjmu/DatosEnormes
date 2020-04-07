@@ -39,6 +39,30 @@ def retrieve_replied_tweet(id_tweet):
     
     return json.loads(resultado)
 
+def retrieve_all_replys(id_tweet, id_user):
+    replys = []
+    for tweet in tweepy.Cursor(api.search, q='to:'.format(id_user), since_id=id_tweet).items(2):
+        if tweet._json['in_reply_to_status_id'] == id_tweet:
+            resultado = json.dumps({'created_at': tweet._json['created_at'],
+                          'id': tweet._json['id'],
+                          'full_text': tweet._json['full_text'],
+                          'hashtags': tweet._json['entities']['hashtags'],
+                          'user_mentions': tweet._json['entities']['user_mentions'],
+                          'urls': tweet._json['entities']['urls'],
+                          'user': { 'id': tweet._json['user']['id'],
+                                    'name': tweet._json['user']['name'],
+                                    'screen_name': tweet._json['user']['screen_name'],
+                                    'followers_count': tweet._json['user']['followers_count']},
+                          'retweet_count': tweet._json['retweet_count'],
+                          'favorite_count': tweet._json['favorite_count'],
+                          'in_reply_to_status_id': tweet._json['in_reply_to_status_id'],
+                          'is_quote_status': tweet._json['is_quote_status'],
+                        }, indent=4, ensure_ascii=False)
+            replys.append(json.loads(resultado))
+    
+    return replys
+
+
 
 palabra_clave = [
     'covid',
@@ -100,7 +124,6 @@ for tweet in tweets:
         # Valida si es un reply
         if tweet._json['in_reply_to_status_id'] != None:
             json_result['status_replied'] = retrieve_replied_tweet(tweet._json['in_reply_to_status_id'])
-            print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
 
         # Valida si es una cita
         if tweet._json['is_quote_status'] == True:
@@ -118,17 +141,6 @@ for tweet in tweets:
                                                         'favorite_count': tweet._json['quoted_status']['favorite_count'],
                                                     }, indent=4, ensure_ascii=False))
 
+        json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'])
 
-
-
-
-        
-        #print(resultado.encode('utf8').decode())
-
-#print(prueba[0])
-
-
-
-
-
-#print((json.dumps({'tweet_corto': status.text}, ensure_ascii=False).encode('utf8')).decode())
+print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
