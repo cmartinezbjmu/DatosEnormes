@@ -9,6 +9,11 @@ consumer_secret = "2vIiKctsxxezL6kKGo4qtyFPDcY1viFz6M1a2bHLTwWrijVXE5"
 access_token = "151179935-HLh8FmhbS0D3892npnkfiM6UNc1hLZ0NRHKhZCzJ"
 access_token_secret = "tiKTQPpveXHZRsEm0ODUeCJGmlSBqqeUzO7F7cRYKrTp6"
 
+# consumer_key = "hwQLsT9LMp90MPSgYXf7Abvzw"
+# consumer_secret = "wSYKwJPPvaAvPD2KL8dGrkm8kJORCIPss5qVLMuLMAZxWGUcb8"
+# access_token = "52602353-a7v7fPQ90BvjVNBR1ZYg6ziiHCiyqfmzdcuS150em"
+# access_token_secret = "roy6xRVWbYF2K2BNog9Fi04lArpuNLmY8OIMJWkChrEmW"
+
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
@@ -40,12 +45,14 @@ def retrieve_replied_tweet(id_tweet):
     return json.loads(resultado)
 
 def retrieve_all_replys(id_tweet, id_user):
+    #print('llego')
     replys = []
-    for tweet in tweepy.Cursor(api.search, q='to:'.format(id_user), since_id=id_tweet).items(2):
+    for tweet in tweepy.Cursor(api.search, q='claudialopez filter:replies', result_type='recent').items(100):
+        #print(tweet._json['in_reply_to_status_id'])
         if tweet._json['in_reply_to_status_id'] == id_tweet:
             resultado = json.dumps({'created_at': tweet._json['created_at'],
                           'id': tweet._json['id'],
-                          'full_text': tweet._json['full_text'],
+                          'text': tweet._json['text'],
                           'hashtags': tweet._json['entities']['hashtags'],
                           'user_mentions': tweet._json['entities']['user_mentions'],
                           'urls': tweet._json['entities']['urls'],
@@ -98,7 +105,7 @@ palabra_clave = [
 ]
 
 # Busco los últimos 100 tweets
-tweets = tweepy.Cursor(api.user_timeline, id=cuentas['claudia_lopez'], tweet_mode='extended').items(100)
+tweets = tweepy.Cursor(api.user_timeline, id=cuentas['claudia_lopez'], tweet_mode='extended').items(10)
 resultado = dict()
 json_result = dict()
 
@@ -143,4 +150,4 @@ for tweet in tweets:
 
         json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'])
 
-print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
+        print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
