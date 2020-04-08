@@ -35,13 +35,14 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-
-stream = TweetsListener()
-streamingApi = tweepy.Stream(auth=api.auth, listener=stream, tweet_mode='extended')
-streamingApi.filter(
-    #track=palabras_clave, follow=["1245725127590936578"]
-    #track=["Coronavirus"],
-    #locations=[-79.2393655741,-4.23168726,-66.8799180948,12.7060548104] # Ciudad de Mexico
-    #place_country='CO'
-    languages=['es'], track=palabras_clave, locations=ubicacion
-)
+tweet = api.get_status('1247511806031073281', tweet_mode='extended')
+print(json.dumps(tweet._json, ensure_ascii=False).encode('utf8').decode())
+#stream = TweetsListener()
+#streamingApi = tweepy.Stream(auth=api.auth, listener=stream, tweet_mode='extended')
+#streamingApi.filter(
+#    #track=palabras_clave, follow=["1245725127590936578"]
+#    #track=["Coronavirus"],
+#    #locations=[-79.2393655741,-4.23168726,-66.8799180948,12.7060548104] # Ciudad de Mexico
+#    #place_country='CO'
+#    languages=['es'], track=palabras_clave, locations=ubicacion
+#)
