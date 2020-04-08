@@ -53,21 +53,19 @@ def retrieve_replied_tweet(id_tweet):
 
 
 
-def retrieve_initial_replys(screen_name):
+def retrieve_initial_tweets(screen_name):
     replys = []
-    for tweet in tweepy.Cursor(api.search, q='{} filter:replies'.format(screen_name), tweet_mode='extended').items(100):
-        if tweet._json['in_reply_to_status_id']:
+    for tweet in tweepy.Cursor(api.search, q='{}'.format(screen_name), lang="es", tweet_mode='extended').items(150):
+        if (tweet._json['in_reply_to_status_id']) or (tweet._json['is_quote_status'] == True):
             replys.append(tweet)
-           
+        #print(json.dumps(tweet._json, ensure_ascii=False).encode('utf8').decode())
     return replys
 
 
 def retrieve_all_replys(id_tweet, id_user, initial_replys):
     replys = []
-    for tweet in initial_replys:
-        #print(tweet._json['id'], tweet._json['in_reply_to_status_id'], id_tweet)
-        if tweet._json['in_reply_to_status_id'] == id_tweet:
-            #print('ENTRAAA')
+    for tweet in initial_replys:        
+        if tweet._json['in_reply_to_status_id'] == id_tweet:            
             resultado = json.dumps({'created_at': tweet._json['created_at'],
                           'id': tweet._json['id'],
                           'text': tweet._json['full_text'],
@@ -88,33 +86,29 @@ def retrieve_all_replys(id_tweet, id_user, initial_replys):
     return replys
 
 
-def retrieve_all_quotes(id_tweet, id_user):  
+def retrieve_all_quotes(id_tweet, id_user, initial_replys):  
     quotes = []
-    for tweet in tweepy.Cursor(api.search, q='claudialopez', result_type='popular').items(100):
-        #print(tweet._json['in_reply_to_status_id'])
+    for tweet in initial_replys:        
         if tweet._json['is_quote_status'] == True:
-            #print(json.dumps(tweet._json, indent=4, ensure_ascii=False).encode('utf8').decode())
             try:
-                print(tweet._json['quoted_status']['id'], id_tweet)
-                if tweet._json['quoted_status']['user']['id'] == id_user:
-                    print(tweet._json['id'])
-                #    print(tweet._json['id'])
-                #    resultado = json.dumps({'created_at': tweet._json['created_at'],
-                #                'id': tweet._json['id'],
-                #                'text': tweet._json['text'],
-                #                'hashtags': tweet._json['entities']['hashtags'],
-                #                'user_mentions': tweet._json['entities']['user_mentions'],
-                #                'urls': tweet._json['entities']['urls'],
-                #                'user': { 'id': tweet._json['user']['id'],
-                #                            'name': tweet._json['user']['name'],
-                #                            'screen_name': tweet._json['user']['screen_name'],
-                #                            'followers_count': tweet._json['user']['followers_count']},
-                #                'retweet_count': tweet._json['retweet_count'],
-                #                'favorite_count': tweet._json['favorite_count'],
-                #                'in_reply_to_status_id': tweet._json['in_reply_to_status_id'],
-                #                'is_quote_status': tweet._json['is_quote_status'],
-                #                }, indent=4, ensure_ascii=False)
-                #    replys.append(json.loads(resultado))
+                if tweet._json['quoted_status_id'] == id_tweet:
+                    resultado = json.dumps({'created_at': tweet._json['created_at'],
+                          'id': tweet._json['quoted_status_id'],
+                          'text': tweet._json['quoted_status']['full_text'],
+                          'hashtags': tweet._json['quoted_status']['entities']['hashtags'],
+                          'user_mentions': tweet._json['quoted_status']['entities']['user_mentions'],
+                          'urls': tweet._json['quoted_status']['entities']['urls'],
+                          'user': { 'id': tweet._json['quoted_status']['user']['id'],
+                                    'name': tweet._json['quoted_status']['user']['name'],
+                                    'screen_name': tweet._json['quoted_status']['user']['screen_name'],
+                                    'followers_count': tweet._json['quoted_status']['user']['followers_count']},
+                          'retweet_count': tweet._json['quoted_status']['retweet_count'],
+                          'favorite_count': tweet._json['quoted_status']['favorite_count'],
+                          'in_reply_to_status_id': tweet._json['quoted_status']['in_reply_to_status_id'],
+                          'is_quote_status': tweet._json['quoted_status']['is_quote_status'],
+                        }, indent=4, ensure_ascii=False)
+                    quotes.append(json.loads(resultado))
+
             except KeyError as e:
                 continue
     
@@ -158,26 +152,26 @@ start_date = datetime.datetime(2020, 4, 6, 00, 00, 00)
 end_date = datetime.datetime(2020, 4, 6, 23, 59, 00)
 # Busco los últimos 100 tweets
 tweets = tweepy.Cursor(api.user_timeline, id=cuentas['claudia_lopez']['id'], tweet_mode='extended', since=start_date, until=end_date).items(500)
-initial_replys = retrieve_initial_replys(cuentas['claudia_lopez']['screen_name'])
+initial_tweets = retrieve_initial_tweets(cuentas['claudia_lopez']['screen_name'])
 resultado = dict()
 json_result = dict()
 
 for tweet in tweets:    
     if any(palabra in tweet.full_text.lower() for palabra in palabra_clave):
         resultado = json.dumps({'created_at': tweet._json['created_at'],
-                          'id': tweet._json['id'],
-                          'full_text': tweet._json['full_text'],
-                          'hashtags': tweet._json['entities']['hashtags'],
-                          'user_mentions': tweet._json['entities']['user_mentions'],
-                          'urls': tweet._json['entities']['urls'],
-                          'user': { 'id': tweet._json['user']['id'],
+                            'id': tweet._json['id'],
+                            'full_text': tweet._json['full_text'],
+                            'hashtags': tweet._json['entities']['hashtags'],
+                            'user_mentions': tweet._json['entities']['user_mentions'],
+                            'urls': tweet._json['entities']['urls'],
+                            'user': { 'id': tweet._json['user']['id'],
                                     'name': tweet._json['user']['name'],
                                     'screen_name': tweet._json['user']['screen_name'],
                                     'followers_count': tweet._json['user']['followers_count']},
-                          'retweet_count': tweet._json['retweet_count'],
-                          'favorite_count': tweet._json['favorite_count'],
-                          'in_reply_to_status_id': tweet._json['in_reply_to_status_id'],
-                          'is_quote_status': tweet._json['is_quote_status'],
+                            'retweet_count': tweet._json['retweet_count'],
+                            'favorite_count': tweet._json['favorite_count'],
+                            'in_reply_to_status_id': tweet._json['in_reply_to_status_id'],
+                            'is_quote_status': tweet._json['is_quote_status'],
                         }, indent=4, ensure_ascii=False)
         
         json_result = (json.loads(resultado))
@@ -204,7 +198,7 @@ for tweet in tweets:
             except KeyError as e:
                 continue
 
-        json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'], initial_replys)
-        #json_result['quotes'] = retrieve_all_quotes(tweet._json['id'], tweet._json['user']['id'])
+        json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
+        json_result['quotes'] = retrieve_all_quotes(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
 
         print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
