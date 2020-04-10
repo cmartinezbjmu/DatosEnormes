@@ -24,6 +24,13 @@ cuentas = ['ivanduque', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
            'revistasemana', 'noticiascaracol', 'noticiasrcn', 'bluradioco',
            'lafm', 'mabellaranews']
 
+cuentas_arg = ['alferdez', 'horaciorlarreta', 'msalnacion',
+               'CFKArgentina', 'clarincom', 'LANACION', 'LongobardiM',
+               'Gatosylvestre', 'JonatanViale', 'SergioMassa', 'proargentina',
+               'mauriciomacri', 'FpVNacional', 'UBARectorado', 'mariuvidal',
+               'C5N', 'Kicillofok', 'cuervotinelli', 'PatoBullrich', 'marioraulnegri']
+
+
 def retrieve_replied_tweet(id_tweet):
     resultado = None
     try:

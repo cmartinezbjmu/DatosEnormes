@@ -14,6 +14,10 @@ import re
 import json
 import random
 import os
+from pymongo import MongoClient, errors
+from random import randint
+from bson.objectid import ObjectId
+
 cwd = os.getcwd()
 
 # Librería para nube de temas
@@ -29,7 +33,7 @@ from navbar import Navbar
 
 
 #### Crear nube de temas del home
-read='/home/davidsaw/uniandes-mongo/Grupo03/COL_tweets/find_query.json'
+read= cwd + '/assets/find_query.json'
 
 data = []
 with open(read) as f:
@@ -50,9 +54,78 @@ wordcloud = WordCloud(background_color="white",width=4096, height=2160).generate
 wordcloud.recolor(color_func = yellow_color_func)
 wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 
+### Extrae tweet aleatorio
+def get_random_tweet():
+    try:
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client.server_info()
+        db = client.Grupo03
+        collection_dataset = db.ARG_dataset
+        query = dict()
+        query["id_reply_or_quote"] = {
+            u"$exists": True
+        }
+        query["emocion"] = {
+            u"$exists": False
+        }
+        query["tendencia"] = {
+            u"$exists": False
+        }
+        projection = dict()
+        projection["_id"] = 1.0
+        projection["user"] = 1.0
+        projection["tweet"] = 1.0
+        projection["reply_or_quote"] = 1.0
+        cursor = collection_dataset.find(query, projection = projection)
+        total_sin_etiquetar = cursor.count()
+        print(total_sin_etiquetar)
+        total_documents = collection_dataset.estimated_document_count()
+        r = random.randint(0,total_documents)
+        randomElement = collection_dataset.find(query, projection = projection).limit(1).skip(r)
+        # print(randomElement)
+        for i in randomElement:
+            _id = i['_id']
+            user = i['user']
+            tweet = i['tweet']            
+            reply_or_quote = i['reply_or_quote']
+        
+        return _id, user, tweet, reply_or_quote
 
-### Base de calificacion
-calificacion=pd.read_csv('/home/davidsaw/uniandes-bigdata/Taller2/export_dataframe.csv')
+
+    except errors.ServerSelectionTimeoutError as err:        
+        print(err)
+
+    finally:
+        client.close()
+
+
+
+### Extrae tweet aleatorio
+def update_tweet_dataset(id_document, emocion, tendencia):
+    try:
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client.server_info()
+        db = client.Grupo03
+        collection_dataset = db.ARG_dataset
+        query = {}
+        query['_id'] = ObjectId(id_document)
+        update = {
+                    "$set": { 
+                        "emocion": emocion,
+                        "tendencia": tendencia},
+                }
+        #print(collection_dataset.update_one(query, update))
+ 
+    except errors.ServerSelectionTimeoutError as err:        
+        print(err)
+
+    finally:
+        client.close()
+
+
+
+calificacion=pd.read_csv('../../../export_dataframe.csv')
+#calificacion = pd.DataFrame.from_dict(tweet)
 
 
 
@@ -133,40 +206,94 @@ def display_explanation(pathname):
     [dash.dependencies.Output('model-cuenta', 'children'),
     dash.dependencies.Output('model-respuesta', 'children'),
     dash.dependencies.Output('model-emocion-ct', 'value'),
-    dash.dependencies.Output('model-tendencia-ct', 'value'),],
-    [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
+    dash.dependencies.Output('model-tendencia-ct', 'value')],
+    
+    [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
+
+    [dash.dependencies.State('model-emocion-ct', 'value'),
+    dash.dependencies.State('model-tendencia-ct', 'value')]
+
     )
-def update_tweet(n_clicks):
-    if n_clicks>=0:
-        tweet=calificacion.at[n_clicks,'tweet']
-        respuesta=calificacion.at[n_clicks,'reply_and_quote']
+
+
+def update_tweet(n_clicks, emocion, tendencia):
+    #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    try:
+        if n_clicks > 0:
+            _id, user, tweet, reply_or_quote = get_random_tweet()
+            tweet_render = tweet
+            respuesta = reply_or_quote
+            if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
+                update_tweet_dataset(_id, emocion, tendencia)
+                return tweet_render, respuesta, '', ''
+
+    except dash.exceptions.InvalidCallbackReturnValue as e:
+        pass
+     
+    
+
+@app.callback(
+    [dash.dependencies.Output('model-boton-ct', 'disabled')],
+
+    [dash.dependencies.Input('model-emocion-ct', 'value'),
+    dash.dependencies.Input('model-tendencia-ct', 'value')]
+    )
+
+
+def update_tweet(emocion, tendencia):
+    if ((emocion == '') or (tendencia == '')):
+        disable = True,
     else:
-        tweet=calificacion.at[0,'tweet']
-        respuesta=calificacion.at[0,'reply_and_quote']
-    return tweet , respuesta,'',''
+        disable = False,
+    
+    return disable
+    
+    
 
 ### Mostrar tweets para calificar tweet semántica
 
 @app.callback(
     [dash.dependencies.Output('model-tweet', 'children'),
-    dash.dependencies.Output('model-emocion-t', 'value'),
-    ],
-    [dash.dependencies.Input('model-boton-t', 'n_clicks')]
+    dash.dependencies.Output('model-emocion-t', 'value')],
+    
+    [dash.dependencies.Input('model-boton-t', 'n_clicks')],
+
+    [dash.dependencies.State('model-emocion-t', 'value')]
+
     )
-def update_tweet(n_clicks):
-    if n_clicks>=0:
-        tweet=calificacion.at[n_clicks,'tweet']
+
+
+def update_tweet(n_clicks, emocion):
+    #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    try:
+        if n_clicks > 0:
+            _id, user, tweet, reply_or_quote = get_random_tweet()
+            tweet_render = tweet
+            respuesta = reply_or_quote
+            if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
+                update_tweet_dataset(_id, emocion, '')
+                return tweet_render, ''
+
+    except dash.exceptions.InvalidCallbackReturnValue as e:
+        pass
+     
+    
+
+@app.callback(
+    [dash.dependencies.Output('model-boton-t', 'disabled')],
+
+    [dash.dependencies.Input('model-emocion-t', 'value')]
+    )
+
+
+def update_tweet(emocion):
+    if (emocion == ''):
+        disable = True,
     else:
-        tweet=calificacion.at[0,'tweet']
-    return tweet ,''
-
-
-
-
-
-
-
+        disable = False,
+    
+    return disable
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", port=8050, debug=False)

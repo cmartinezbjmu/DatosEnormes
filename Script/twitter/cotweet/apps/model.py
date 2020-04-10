@@ -7,6 +7,7 @@ import dash_table
 import re
 import psycopg2
 from app import app
+from index import get_random_tweet
 
 
 emociones=[["Neutro",0],
@@ -23,6 +24,7 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
+_id, user, tweet, reply_or_quote = get_random_tweet()
 
 app = dash.Dash(__name__)
 
@@ -39,16 +41,17 @@ app.explanation = '''
                     mas tweets. ¡GRACIAS POR TU APOYO!
                     '''
 
+
 app.layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
             html.H4('Tweet'),
             html.P(id='model-cuenta',
-                   children=""),
+                   children=tweet),
             html.H4('Respuesta del tweet'),
             html.H6('Tweet para clasificar'),
             html.P(id='model-respuesta',
-                   children=""),
+                   children=reply_or_quote),
             html.Div([
                 dcc.Dropdown(
                     id='model-emocion-ct',
@@ -63,7 +66,7 @@ app.layout = html.Div([
                     placeholder="¿Qué posición tiene la respuesta?",
                 )
             ]),
-            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct')
+            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct', disabled=True, n_clicks=0)
         ]),
          dcc.Tab(label='Tweet', children=[
             html.H4('Tweet'),
@@ -76,7 +79,7 @@ app.layout = html.Div([
                     placeholder="¿Qué sientes con el tweet?",
                 )
             ]),
-            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-t')
+            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-t', n_clicks=0)
         ]),
 	])
 ])
