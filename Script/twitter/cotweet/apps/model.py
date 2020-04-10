@@ -9,14 +9,75 @@ import psycopg2
 from app import app
 
 
+emociones=[["Neutro",0],
+           ["Optimista",1],
+           ["Triste",2],
+           ["Enojo",3],
+           ["Sorprendido",4],
+           ["Orgulloso",5]]
+
+
+tendencia=[
+    ["Apoyo",0],
+    ["Contradicción",1],
+    ["Matoneo",2] 
+]
+
+
 app = dash.Dash(__name__)
 
-app.titulo = "CREDIT CARD EVOLUTION IN COLOMBIA"
+app.titulo = "Entrenamiento del modelo"
 
-app.explanation = " The growth of the credit card coverage in Colombia has maintained a constant behavior exceeding 15 million issued cards. \
-    The behavior of the canceled cards has been growing during the last year but even with this behavior we can \
-    see that the default interest are controlled in lower ranges  "
+app.explanation = '''
+                    En la siguiente aplicación podrás darnos tus opiniones y ayudar a entrenar el modelo de inteligencia artificial
+                    con el cual se puede predecir la percepción de las personas respecto a los tweets más sonados en estos momentos.
+                    En la primera pestaña de la página (TWEET - RESPUESTA) encuentras los tweets que personas influyentes de
+                    Colombia y Argentina escriben y las respuestas que tienen de sus seguidores en tweeter.
+                    En la segunda (TWEET) encontrarás los tweets de las personas influyentes de cada país, para así,
+                    poder dar tu opinión acerca de la percepción emocional que tienes respecto a lo que se escribe.
+                    Selecciona en los menús desplegables tu percepción acerca de los tweets y dale click al botón para obtener
+                    mas tweets. ¡GRACIAS POR TU APOYO!
+
+                    '''
 
 app.layout = html.Div([
-            
-		])
+    dcc.Tabs([
+        dcc.Tab(label='Tweet - Respuesta', children=[
+            html.H4('Tweet'),
+            html.P(id='model-cuenta',
+                   children="tweet1"),
+            html.H4('Respuesta del tweet'),
+            html.H6('Tweet para clasificar'),
+            html.P(id='model-respuesta',
+                   children="tweet2"),
+            html.Div([
+                dcc.Dropdown(
+                    id='model-emocion-ct',
+                    options=[{'label': emociones[i][0], 'value': emociones[i][1]} for i in range(len(emociones))],
+                    placeholder="¿Qué sientes con el tweet?",
+                )
+            ]),
+            html.Div([
+                dcc.Dropdown(
+                    id='model-tendencia-ct',
+                    options=[{'label': tendencia[i][0], 'value': tendencia[i][1]} for i in range(len(tendencia))],
+                    placeholder="¿Qué posición tiene la respuesta?",
+                )
+            ]),
+            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct')
+        ]),
+         dcc.Tab(label='Tweet', children=[
+            html.H4('Tweet'),
+            html.P(id='model-tweet',
+                   children="tweet1"),
+            html.Div([
+                dcc.Dropdown(
+                    id='model-emocion-t',
+                    options=[{'label': emociones[i][0], 'value': emociones[i][1]} for i in range(len(emociones))],
+                    placeholder="¿Qué sientes con el tweet?",
+                )
+            ]),
+            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-t')
+        ]),
+	])
+])

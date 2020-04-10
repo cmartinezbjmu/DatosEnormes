@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 def Navbar():
    navbar = dbc.NavbarSimple(className="encabezado",
       children=[
-         dbc.NavItem(dbc.NavLink("Evolution", href="/apps/evolution"))
+         dbc.NavItem(dbc.NavLink("Entrenamiento", href="/apps/model"))
       ],
       brand="Home",
       brand_href="/",

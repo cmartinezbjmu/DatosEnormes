@@ -13,7 +13,8 @@ import plotly.express as px
 import re
 import json
 import random
-
+import os
+cwd = os.getcwd()
 
 # Librería para nube de temas
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -47,9 +48,11 @@ def yellow_color_func(word, font_size, position, orientation, random_state=None,
         
 wordcloud = WordCloud(background_color="white",width=4096, height=2160).generate(" ".join(temas))
 wordcloud.recolor(color_func = yellow_color_func)
-wordcloud.to_file("/home/davidsaw/uniandes-bigdata/Taller2/cotweet/master/assets/images/home-nube.png")
+wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 
 
+### Base de calificacion
+calificacion=pd.read_csv('/home/davidsaw/uniandes-bigdata/Taller2/export_dataframe.csv')
 
 
 
@@ -95,7 +98,7 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/':
         return homepage.app.layout
-    if pathname == '/apps/modelo':
+    if pathname == '/apps/model':
         return model.app.layout
  
 
@@ -106,7 +109,7 @@ def display_page(pathname):
 def display_title(pathname):
     if pathname == '/':
         return homepage.app.titulo
-    if pathname == '/apps/modelo':
+    if pathname == '/apps/model':
         return model.app.titulo
 
 ### Explicación de las páginas
@@ -116,8 +119,53 @@ def display_title(pathname):
 def display_explanation(pathname):
     if pathname == '/':
         return homepage.app.explanation
-    if pathname == '/apps/evolution':
+    if pathname == '/apps/model':
         return model.app.explanation
+
+########################################################
+########Funciones de las paǵinas########################
+########################################################
+
+
+### Mostrar tweets para calificar cuenta - respuesta
+
+@app.callback(
+    [dash.dependencies.Output('model-cuenta', 'children'),
+    dash.dependencies.Output('model-respuesta', 'children'),
+    dash.dependencies.Output('model-emocion-ct', 'value'),
+    dash.dependencies.Output('model-tendencia-ct', 'value'),],
+    [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
+    )
+def update_tweet(n_clicks):
+    if n_clicks>=0:
+        tweet=calificacion.at[n_clicks,'tweet']
+        respuesta=calificacion.at[n_clicks,'reply_and_quote']
+    else:
+        tweet=calificacion.at[0,'tweet']
+        respuesta=calificacion.at[0,'reply_and_quote']
+    return tweet , respuesta,'',''
+
+### Mostrar tweets para calificar tweet semántica
+
+@app.callback(
+    [dash.dependencies.Output('model-tweet', 'children'),
+    dash.dependencies.Output('model-emocion-t', 'value'),
+    ],
+    [dash.dependencies.Input('model-boton-t', 'n_clicks')]
+    )
+def update_tweet(n_clicks):
+    if n_clicks>=0:
+        tweet=calificacion.at[n_clicks,'tweet']
+    else:
+        tweet=calificacion.at[0,'tweet']
+    return tweet ,''
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
