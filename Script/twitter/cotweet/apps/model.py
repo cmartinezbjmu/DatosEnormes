@@ -37,7 +37,6 @@ app.explanation = '''
                     poder dar tu opinión acerca de la percepción emocional que tienes respecto a lo que se escribe.
                     Selecciona en los menús desplegables tu percepción acerca de los tweets y dale click al botón para obtener
                     mas tweets. ¡GRACIAS POR TU APOYO!
-
                     '''
 
 app.layout = html.Div([

@@ -25,6 +25,9 @@ descartes = "*"
 folium = "*"
 pymongo = "*"
 tweepy = "*"
+dash = "*"
+dash-bootstrap-components = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"
