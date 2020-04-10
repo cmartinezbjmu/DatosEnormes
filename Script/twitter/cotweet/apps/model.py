@@ -11,12 +11,12 @@ from app import app
 
 app = dash.Dash(__name__)
 
-app.titulo = "CREDIT CARD EVOLUTION IN COLOMBIA"
+app.titulo = "ETIQUETADO DE DATOS"
 
 app.explanation = " The growth of the credit card coverage in Colombia has maintained a constant behavior exceeding 15 million issued cards. \
     The behavior of the canceled cards has been growing during the last year but even with this behavior we can \
     see that the default interest are controlled in lower ranges  "
 
 app.layout = html.Div([
-            
+            html.P
 		])

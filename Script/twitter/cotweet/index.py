@@ -28,7 +28,7 @@ from navbar import Navbar
 
 
 #### Crear nube de temas del home
-read='/home/davidsaw/uniandes-mongo/Grupo03/COL_tweets/find_query.json'
+read='/Users/cristianmartinez/Desktop/tmp/find_query.json'
 
 data = []
 with open(read) as f:
@@ -47,7 +47,7 @@ def yellow_color_func(word, font_size, position, orientation, random_state=None,
         
 wordcloud = WordCloud(background_color="white",width=4096, height=2160).generate(" ".join(temas))
 wordcloud.recolor(color_func = yellow_color_func)
-wordcloud.to_file("/home/davidsaw/uniandes-bigdata/Taller2/cotweet/master/assets/images/home-nube.png")
+wordcloud.to_file("/Users/cristianmartinez/Documents/django/DatosEnormes/Script/twitter/cotweet/assets/images/home-nube.png")
 
 
 
