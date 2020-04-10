@@ -45,11 +45,11 @@ app.layout = html.Div([
         dcc.Tab(label='Tweet - Respuesta', children=[
             html.H4('Tweet'),
             html.P(id='model-cuenta',
-                   children="tweet1"),
+                   children=""),
             html.H4('Respuesta del tweet'),
             html.H6('Tweet para clasificar'),
             html.P(id='model-respuesta',
-                   children="tweet2"),
+                   children=""),
             html.Div([
                 dcc.Dropdown(
                     id='model-emocion-ct',
@@ -69,7 +69,7 @@ app.layout = html.Div([
          dcc.Tab(label='Tweet', children=[
             html.H4('Tweet'),
             html.P(id='model-tweet',
-                   children="tweet1"),
+                   children=""),
             html.Div([
                 dcc.Dropdown(
                     id='model-emocion-t',
