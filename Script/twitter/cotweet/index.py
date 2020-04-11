@@ -67,10 +67,10 @@ def get_random_tweet():
             u"$exists": True
         }
         query["emocion"] = {
-            u"$exists": False
+            u"$ne": u""
         }
         query["tendencia"] = {
-            u"$exists": False
+            u"$ne": u""
         }
         projection = dict()
         projection["_id"] = 1.0
@@ -85,6 +85,7 @@ def get_random_tweet():
         randomElement = collection_dataset.find(query, projection = projection).limit(1).skip(r)
         # print(randomElement)
         for i in randomElement:
+            print(i['_id'])
             _id = i['_id']
             user = i['user']
             tweet = i['tweet']            
