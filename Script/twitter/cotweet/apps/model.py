@@ -30,10 +30,10 @@ while True:
     try:
         _id, user, tweet, reply_or_quote = get_random_tweet()
         _id = str(ObjectId(_id))
-        print(_id)
-        break
     except TypeError as e:
         continue
+    finally:
+        if _id: break
 
 app = dash.Dash(__name__)
 

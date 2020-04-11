@@ -12,7 +12,6 @@ from sqlalchemy import create_engine
 import plotly.express as px
 import re
 import json
-import random
 import os
 from pymongo import MongoClient, errors
 from random import randint
@@ -34,7 +33,7 @@ from navbar import Navbar
 
 
 #### Crear nube de temas del home
-read = 'assets/find_query.json'
+read = cwd + '/assets/find_query.json'
 
 data = []
 with open(read) as f:
@@ -49,7 +48,7 @@ for i in range(len(data)):
 
 def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
-    return "hsl(0, 0%%, %d%%)" % random.randint(0, 10)
+    return "hsl(0, 0%%, %d%%)" % randint(0, 10)
         
 wordcloud = WordCloud(background_color="white",width=4096, height=2160).generate(" ".join(temas))
 wordcloud.recolor(color_func = yellow_color_func)
@@ -73,19 +72,17 @@ def get_random_tweet():
         projection["user"] = 1.0
         projection["tweet"] = 1.0
         projection["reply_or_quote"] = 1.0
-        cursor = collection_dataset.find(query, projection = projection)
-        total_sin_etiquetar = cursor.count()
-        #print(total_sin_etiquetar)
+        cursor = collection_dataset.find(query, projection=projection)
+        total_sin_etiquetar = collection_dataset.count_documents(query)
+        print(total_sin_etiquetar)
         total_documents = collection_dataset.estimated_document_count()
-        r = random.randint(0,total_documents)
-        randomElement = collection_dataset.find(query, projection = projection).limit(1).skip(r)
-        # print(randomElement)
-        for i in randomElement:
-            print(i['_id'])
-            _id = i['_id']
-            user = i['user']
-            tweet = i['tweet']            
-            reply_or_quote = i['reply_or_quote']
+        print(total_documents)
+        r = randint(0,total_documents)
+        randomElement = collection_dataset.find(query, projection=projection).limit(-1).skip(r).next()
+        _id = randomElement['_id']
+        user = randomElement['user']
+        tweet = randomElement['tweet']
+        reply_or_quote = randomElement['reply_or_quote']
         
         return _id, user, tweet, reply_or_quote
 
@@ -95,7 +92,6 @@ def get_random_tweet():
 
     finally:
         client.close()
-
 
 
 ### Extrae tweet aleatorio
