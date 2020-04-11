@@ -58,7 +58,7 @@ wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 ### Extrae tweet aleatorio
 def get_random_tweet():
     try:
-        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=True, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
         collection_dataset = db.ARG_dataset
@@ -104,7 +104,7 @@ def get_random_tweet():
 ### Extrae tweet aleatorio
 def update_tweet_dataset(id_document, emocion, tendencia):
     try:
-        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=True, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
         collection_dataset = db.ARG_dataset
@@ -221,22 +221,21 @@ def display_explanation(pathname):
 
 
 def update_tweet(n_clicks, emocion, tendencia,id_anterior):
-    #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
         if n_clicks > 0:
             while True:
                 _id, user, tweet, reply_or_quote = get_random_tweet()
-                tweet_render = tweet
-                respuesta = reply_or_quote
                 if _id:
+                    tweet_render = tweet
+                    respuesta = reply_or_quote                
                     break
-                
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
                 while True:
-                    resultado_update = update_tweet_dataset(id_anterior, emocion, tendencia)
+                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia)
                     if resultado_update:
                         break
-            return tweet_render, respuesta, '', '', _id
+                print(str(ObjectId(_id)))
+            return tweet_render, respuesta, '', '', [str(ObjectId(_id))]
     
     except dash.exceptions.InvalidCallbackReturnValue as e:
         print('Error callback')
@@ -256,7 +255,6 @@ def update_tweet(emocion, tendencia):
         disable = True,
     else:
         disable = False,
-    
     return disable
     
     
