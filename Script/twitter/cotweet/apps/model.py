@@ -50,6 +50,9 @@ app.explanation = '''
 
 
 app.layout = html.Div([
+    html.Datalist(id='model-idtweet',
+                    children= [_id]
+                    ),
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
             html.H4('Tweet de ' + user),

@@ -207,17 +207,19 @@ def display_explanation(pathname):
     [dash.dependencies.Output('model-cuenta', 'children'),
     dash.dependencies.Output('model-respuesta', 'children'),
     dash.dependencies.Output('model-emocion-ct', 'value'),
-    dash.dependencies.Output('model-tendencia-ct', 'value')],
+    dash.dependencies.Output('model-tendencia-ct', 'value'),
+    dash.dependencies.Output('model-idtweet', 'children')],
     
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
 
     [dash.dependencies.State('model-emocion-ct', 'value'),
-    dash.dependencies.State('model-tendencia-ct', 'value')]
+    dash.dependencies.State('model-tendencia-ct', 'value'),
+    dash.dependencies.State('model-idtweet', 'children')]
 
     )
 
 
-def update_tweet(n_clicks, emocion, tendencia):
+def update_tweet(n_clicks, emocion, tendencia,id_anterior):
     #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
         if n_clicks > 0:
@@ -232,8 +234,8 @@ def update_tweet(n_clicks, emocion, tendencia):
             tweet_render = tweet
             respuesta = reply_or_quote
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
-                update_tweet_dataset(_id, emocion, tendencia)
-                return tweet_render, respuesta, '', ''
+                update_tweet_dataset(id_anterior, emocion, tendencia)
+                return tweet_render, respuesta, '', '',_id
 
     except dash.exceptions.InvalidCallbackReturnValue as e:
         pass
