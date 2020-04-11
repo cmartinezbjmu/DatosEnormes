@@ -66,12 +66,8 @@ def get_random_tweet():
         query["id_reply_or_quote"] = {
             u"$exists": True
         }
-        query["emocion"] = {
-            u"$ne": u""
-        }
-        query["tendencia"] = {
-            u"$ne": u""
-        }
+        query["emocion"] = u""
+        query["tendencia"] = u""
         projection = dict()
         projection["_id"] = 1.0
         projection["user"] = 1.0
