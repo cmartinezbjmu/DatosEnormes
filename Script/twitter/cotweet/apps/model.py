@@ -9,6 +9,7 @@ import psycopg2
 from app import app
 from index import get_random_tweet
 from time import sleep
+from bson.objectid import ObjectId
 
 
 emociones=[["Neutro",0],
@@ -25,8 +26,14 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
-
-_id, user, tweet, reply_or_quote = get_random_tweet()
+while True:
+    try:
+        _id, user, tweet, reply_or_quote = get_random_tweet()
+        _id = str(ObjectId(_id))
+        print(_id)
+        break
+    except TypeError as e:
+        continue
 
 app = dash.Dash(__name__)
 
@@ -46,7 +53,7 @@ app.explanation = '''
 
 app.layout = html.Div([
     html.Datalist(id='model-idtweet',
-                    children= [_id]
+                    children=[_id]
                     ),
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[

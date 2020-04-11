@@ -116,7 +116,7 @@ def update_tweet_dataset(id_document, emocion, tendencia):
                         "emocion": emocion,
                         "tendencia": tendencia},
                 }
-        #print(collection_dataset.update_one(query, update))
+        return collection_dataset.update_one(query, update)
  
     except errors.ServerSelectionTimeoutError as err:        
         print(err)
@@ -224,15 +224,22 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
     #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
         if n_clicks > 0:
-            _id, user, tweet, reply_or_quote = get_random_tweet()
-            tweet_render = tweet
-            respuesta = reply_or_quote
+            while True:
+                _id, user, tweet, reply_or_quote = get_random_tweet()
+                tweet_render = tweet
+                respuesta = reply_or_quote
+                if _id:
+                    break
+                
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
-                update_tweet_dataset(id_anterior, emocion, tendencia)
-                return tweet_render, respuesta, '', '',_id
-
+                while True:
+                    resultado_update = update_tweet_dataset(id_anterior, emocion, tendencia)
+                    if resultado_update:
+                        break
+            return tweet_render, respuesta, '', '', _id
+    
     except dash.exceptions.InvalidCallbackReturnValue as e:
-        pass
+        print('Error callback')
      
     
 
