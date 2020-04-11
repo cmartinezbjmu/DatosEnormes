@@ -209,7 +209,8 @@ def display_explanation(pathname):
     dash.dependencies.Output('model-respuesta', 'children'),
     dash.dependencies.Output('model-emocion-ct', 'value'),
     dash.dependencies.Output('model-tendencia-ct', 'value'),
-    dash.dependencies.Output('model-idtweet', 'children')],
+    dash.dependencies.Output('model-idtweet', 'children'),
+    dash.dependencies.Output('model-user', 'children')],
     
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
 
@@ -235,12 +236,13 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
                     if resultado_update:
                         break
                 print(str(ObjectId(_id)))
-            return tweet_render, respuesta, '', '', [str(ObjectId(_id))]
+            return tweet_render, respuesta, '', '', [str(ObjectId(_id))],'Tweet de '+ user
     
     except dash.exceptions.InvalidCallbackReturnValue as e:
         print('Error callback')
      
     
+## Función para deshabilitar botón de carga de tweets
 
 @app.callback(
     [dash.dependencies.Output('model-boton-ct', 'disabled')],
@@ -270,8 +272,6 @@ def update_tweet(emocion, tendencia):
     [dash.dependencies.State('model-emocion-t', 'value')]
 
     )
-
-
 def update_tweet(n_clicks, emocion):
     #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
@@ -286,15 +286,13 @@ def update_tweet(n_clicks, emocion):
     except dash.exceptions.InvalidCallbackReturnValue as e:
         pass
      
-    
+## Función deshabilitar botón de carga tweet semántica
 
 @app.callback(
     [dash.dependencies.Output('model-boton-t', 'disabled')],
 
     [dash.dependencies.Input('model-emocion-t', 'value')]
     )
-
-
 def update_tweet(emocion):
     if (emocion == ''):
         disable = True,
@@ -302,6 +300,16 @@ def update_tweet(emocion):
         disable = False,
     
     return disable
+
+## Función para actualizar el gráfico de torta de tweets calificados
+
+@app.callback(
+    dash.dependencies.Output('model-pie', 'figure'),
+    [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
+    )
+def update_tweet(n_clicks):
+    fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[n_clicks,10000-n_clicks])])
+    return fig
 
 
 if __name__ == '__main__':

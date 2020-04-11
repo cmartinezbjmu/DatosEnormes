@@ -21,7 +21,9 @@ app.layout = html.Div(
         html.H2('Temas relacionados con el Covid-19'),
         html.P('Nube de palabras con los Hashtags que se trinaron durante la toma de los datos'),
         html.Iframe(src="https://twitframe.com/show?url=https://twitter.com/ValentinaO3009/status/1247718893109628928",
-                        style={'width':'100%'} 
+                        style={'width':'100%',
+                               'height': 'auto'
+                               } 
                     ),
         html.Img(src="/assets/images/home-nube.png",className='fullsize')
     ]

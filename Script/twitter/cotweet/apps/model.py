@@ -57,11 +57,11 @@ app.layout = html.Div([
                     ),
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
-            html.H4('Tweet de ' + user),
+            html.H4('Tweet de ' + user,id='model-user'),
             html.P(id='model-cuenta',
                    children=tweet),
             html.H4('Respuesta del tweet'),
-            html.H6('Tweet para clasificar'),
+            html.H5('Tweet para clasificar'),
             html.P(id='model-respuesta',
                    children=reply_or_quote),
             html.Div([
@@ -93,5 +93,11 @@ app.layout = html.Div([
             ]),
             html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-t', n_clicks=0)
         ]),
-	])
+	]),
+    
+    html.Div([
+        dcc.Graph(
+            id='model-pie'
+        )
+    ])
 ])
