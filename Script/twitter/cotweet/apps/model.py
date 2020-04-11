@@ -8,6 +8,7 @@ import re
 import psycopg2
 from app import app
 from index import get_random_tweet
+from time import sleep
 
 
 emociones=[["Neutro",0],
@@ -23,8 +24,14 @@ tendencia=[
     ["Contradicción",1],
     ["Matoneo",2] 
 ]
+while 1:
+    try:
+        _id, user, tweet, reply_or_quote = get_random_tweet()
+        break
+    except TypeError as e:
+        sleep(5)
+        continue
 
-_id, user, tweet, reply_or_quote = get_random_tweet()
 
 app = dash.Dash(__name__)
 

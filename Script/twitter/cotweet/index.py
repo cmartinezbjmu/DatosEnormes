@@ -17,6 +17,7 @@ import os
 from pymongo import MongoClient, errors
 from random import randint
 from bson.objectid import ObjectId
+from time import sleep
 
 cwd = os.getcwd()
 
@@ -220,7 +221,14 @@ def update_tweet(n_clicks, emocion, tendencia):
     #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
         if n_clicks > 0:
-            _id, user, tweet, reply_or_quote = get_random_tweet()
+            while 1:
+                try:
+                    _id, user, tweet, reply_or_quote = get_random_tweet()
+                    break
+                except TypeError as e:
+                    sleep(5)
+                    continue
+
             tweet_render = tweet
             respuesta = reply_or_quote
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
