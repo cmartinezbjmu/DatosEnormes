@@ -24,14 +24,9 @@ tendencia=[
     ["Contradicción",1],
     ["Matoneo",2] 
 ]
-while 1:
-    try:
-        _id, user, tweet, reply_or_quote = get_random_tweet()
-        break
-    except TypeError as e:
-        sleep(5)
-        continue
 
+
+_id, user, tweet, reply_or_quote = get_random_tweet()
 
 app = dash.Dash(__name__)
 

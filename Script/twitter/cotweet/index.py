@@ -58,7 +58,7 @@ wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 ### Extrae tweet aleatorio
 def get_random_tweet():
     try:
-        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=True, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
         collection_dataset = db.ARG_dataset
@@ -104,12 +104,13 @@ def get_random_tweet():
 ### Extrae tweet aleatorio
 def update_tweet_dataset(id_document, emocion, tendencia):
     try:
-        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=True, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
         collection_dataset = db.ARG_dataset
         query = {}
         query['_id'] = ObjectId(id_document)
+        print(id_document)
         update = {
                     "$set": { 
                         "emocion": emocion,
@@ -223,14 +224,7 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
     #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     try:
         if n_clicks > 0:
-            while 1:
-                try:
-                    _id, user, tweet, reply_or_quote = get_random_tweet()
-                    break
-                except TypeError as e:
-                    sleep(5)
-                    continue
-
+            _id, user, tweet, reply_or_quote = get_random_tweet()
             tweet_render = tweet
             respuesta = reply_or_quote
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
@@ -306,4 +300,4 @@ def update_tweet(emocion):
 
 
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0", port=8000, debug=False)
+    app.run_server(host="0.0.0.0", port=8000, debug=True)
