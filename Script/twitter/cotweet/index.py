@@ -34,7 +34,7 @@ from navbar import Navbar
 
 
 #### Crear nube de temas del home
-read= cwd + '/assets/find_query.json'
+read = 'assets/find_query.json'
 
 data = []
 with open(read) as f:
@@ -79,7 +79,7 @@ def get_random_tweet():
         projection["reply_or_quote"] = 1.0
         cursor = collection_dataset.find(query, projection = projection)
         total_sin_etiquetar = cursor.count()
-        print(total_sin_etiquetar)
+        #print(total_sin_etiquetar)
         total_documents = collection_dataset.estimated_document_count()
         r = random.randint(0,total_documents)
         randomElement = collection_dataset.find(query, projection = projection).limit(1).skip(r)
@@ -125,7 +125,7 @@ def update_tweet_dataset(id_document, emocion, tendencia):
 
 
 
-calificacion=pd.read_csv('../../../export_dataframe.csv')
+#calificacion=pd.read_csv('../../../export_dataframe.csv')
 #calificacion = pd.DataFrame.from_dict(tweet)
 
 
