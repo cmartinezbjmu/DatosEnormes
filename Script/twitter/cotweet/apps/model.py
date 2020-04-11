@@ -52,7 +52,7 @@ app.explanation = '''
 app.layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
-            html.H4('Tweet'),
+            html.H4('Tweet de ' + user),
             html.P(id='model-cuenta',
                    children=tweet),
             html.H4('Respuesta del tweet'),
