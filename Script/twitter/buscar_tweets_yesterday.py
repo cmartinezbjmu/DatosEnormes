@@ -62,10 +62,14 @@ def retrieve_replied_tweet(id_tweet):
 
 def retrieve_initial_tweets(screen_name):
     replys = []
-    for tweet in tweepy.Cursor(api.search, q='{}'.format(screen_name), lang="es", tweet_mode='extended').items(10):
-        if (tweet._json['in_reply_to_status_id']) or (tweet._json['is_quote_status'] == True):
-            replys.append(tweet)
-        #print(json.dumps(tweet._json, ensure_ascii=False).encode('utf8').decode())
+    yesterday = datetime.date.today() - datetime.timedelta(1)
+    for tweet in tweepy.Cursor(api.search, q='{}'.format(screen_name), lang="es", tweet_mode='extended').items(5000):
+        tweet_date = datetime.datetime.strptime(tweet._json['created_at'], '%a %b %d %H:%M:%S %z %Y')
+            # Filtro por tweets del dia anterior
+        if tweet_date.date() == yesterday:
+            if (tweet._json['in_reply_to_status_id']) or (tweet._json['is_quote_status'] == True):
+                replys.append(tweet)
+            #print(json.dumps(tweet._json, ensure_ascii=False).encode('utf8').decode())
     return replys
 
 
@@ -156,9 +160,11 @@ palabra_clave = [
     'salud ',
 ]
 
+yesterday = datetime.date.today() - datetime.timedelta(1)
+
 # Busco los últimos 100 tweets
-for i in cuentas:
-    tweets = tweepy.Cursor(api.user_timeline, screen_name=i, tweet_mode='extended').items(10)
+for i in cuentas_arg:
+    tweets = tweepy.Cursor(api.user_timeline, screen_name=i, tweet_mode='extended').items(30)
     initial_tweets = retrieve_initial_tweets(i)
     resultado = dict()
     json_result = dict()
@@ -169,12 +175,11 @@ for i in cuentas:
                             # connect=True parameter of MongoClient seems
                             # to be useless here
         db = client.Grupo03
-        collection = db.COL_tweets
+        collection = db.ARG_tweets
 
         for tweet in tweets:    
             #if any(palabra in tweet.full_text.lower() for palabra in palabra_clave): Tue Apr 07 13:09:26 +0000 2020
             tweet_date = datetime.datetime.strptime(tweet._json['created_at'], '%a %b %d %H:%M:%S %z %Y')
-            yesterday = datetime.date.today() - datetime.timedelta(1)
             # Filtro por tweets del dia anterior
             if tweet_date.date() == yesterday:
                 resultado = json.dumps({'created_at': tweet._json['created_at'],
