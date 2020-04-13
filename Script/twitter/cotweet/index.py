@@ -74,9 +74,7 @@ def get_random_tweet():
         projection["reply_or_quote"] = 1.0
         cursor = collection_dataset.find(query, projection=projection)
         total_sin_etiquetar = collection_dataset.count_documents(query)
-        print(total_sin_etiquetar)
         total_documents = collection_dataset.estimated_document_count()
-        print(total_documents)
         r = randint(0,total_documents)
         randomElement = collection_dataset.find(query, projection=projection).limit(-1).skip(r).next()
         _id = randomElement['_id']
@@ -94,7 +92,7 @@ def get_random_tweet():
         client.close()
 
 
-### Extrae tweet aleatorio
+### Actualiza emoción y tendencia del tweet
 def update_tweet_dataset(id_document, emocion, tendencia):
     try:
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
@@ -118,9 +116,41 @@ def update_tweet_dataset(id_document, emocion, tendencia):
         client.close()
 
 
+### Total etiquetados
+def get_tweet_count():
+    try:
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client.server_info()
+        db = client.Grupo03
+        collection_dataset = db.ARG_dataset
+        query = dict()
+        query["id_reply_or_quote"] = {
+            u"$exists": True
+        }
+        query["emocion"] = u""
+        query["tendencia"] = u""
+        projection = dict()
+        projection["_id"] = 1.0
+        projection["user"] = 1.0
+        projection["tweet"] = 1.0
+        projection["reply_or_quote"] = 1.0
+        cursor = collection_dataset.find(query, projection=projection)
+        total_sin_etiquetar = collection_dataset.count_documents(query)
+        total_documents = collection_dataset.estimated_document_count()
+        
+        return total_sin_etiquetar,total_documents
 
-#calificacion=pd.read_csv('../../../export_dataframe.csv')
-#calificacion = pd.DataFrame.from_dict(tweet)
+    except errors.ServerSelectionTimeoutError as err:        
+        print(err)
+
+    finally:
+        client.close()
+
+
+
+
+
+
 
 
 
@@ -301,7 +331,8 @@ def update_tweet(emocion):
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
     )
 def update_tweet(n_clicks):
-    fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[n_clicks,10000-n_clicks])])
+    total_sin, total_tweets = get_tweet_count()
+    fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[total_tweets - total_sin, total_sin])])
     return fig
 
 
