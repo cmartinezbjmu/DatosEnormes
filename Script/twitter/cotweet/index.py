@@ -93,7 +93,7 @@ def get_random_tweet():
 
 
 ### Actualiza emoción y tendencia del tweet
-def update_tweet_dataset(id_document, emocion, tendencia):
+def update_tweet_dataset(id_document, emocion, tendencia, coherencia):
     try:
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
@@ -105,7 +105,9 @@ def update_tweet_dataset(id_document, emocion, tendencia):
         update = {
                     "$set": { 
                         "emocion": emocion,
-                        "tendencia": tendencia},
+                        "tendencia": tendencia,
+                        "coherencia": coherencia},
+                        
                 }
         return collection_dataset.update_one(query, update)
  
@@ -239,18 +241,20 @@ def display_explanation(pathname):
     dash.dependencies.Output('model-emocion-ct', 'value'),
     dash.dependencies.Output('model-tendencia-ct', 'value'),
     dash.dependencies.Output('model-idtweet', 'children'),
-    dash.dependencies.Output('model-user', 'children')],
+    dash.dependencies.Output('model-user', 'children'),
+    dash.dependencies.Output('model-coherencia-ct', 'value')],
     
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
 
     [dash.dependencies.State('model-emocion-ct', 'value'),
     dash.dependencies.State('model-tendencia-ct', 'value'),
+    dash.dependencies.State('model-coherencia-ct', 'value'),
     dash.dependencies.State('model-idtweet', 'children')]
 
     )
 
 
-def update_tweet(n_clicks, emocion, tendencia,id_anterior):
+def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
     try:
         if n_clicks > 0:
             while True:
@@ -265,7 +269,7 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
                     if resultado_update:
                         break
                 print(str(ObjectId(_id)))
-            return tweet_render, respuesta, '', '', [str(ObjectId(_id))],'Tweet de '+ user
+            return tweet_render, respuesta, '', '', [str(ObjectId(_id))],'Tweet de '+ user, ''
     
     except dash.exceptions.InvalidCallbackReturnValue as e:
         print('Error callback')
@@ -277,12 +281,13 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
     [dash.dependencies.Output('model-boton-ct', 'disabled')],
 
     [dash.dependencies.Input('model-emocion-ct', 'value'),
-    dash.dependencies.Input('model-tendencia-ct', 'value')]
+    dash.dependencies.Input('model-tendencia-ct', 'value'),
+    dash.dependencies.Input('model-coherencia-ct', 'value')]
     )
 
 
-def update_tweet(emocion, tendencia):
-    if ((emocion == '') or (tendencia == '')):
+def update_tweet(emocion, tendencia, coherencia):
+    if ((emocion == '') or (tendencia == '') or (coherencia == '')):
         disable = True,
     else:
         disable = False,

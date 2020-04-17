@@ -26,6 +26,11 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
+coherencia=[
+    ["Si",0],
+    ["No",1]
+]
+
 while True:
     _id, user, tweet, reply_or_quote = get_random_tweet()
     if _id: 
@@ -72,6 +77,13 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='model-tendencia-ct',
                     options=[{'label': tendencia[i][0], 'value': tendencia[i][1]} for i in range(len(tendencia))],
+                    placeholder="¿Qué posición tiene la respuesta?",
+                )
+            ]),
+            html.Div([
+                dcc.Dropdown(
+                    id='model-coherencia-ct',
+                    options=[{'label': coherencia[i][0], 'value': coherencia[i][1]} for i in range(len(coherencia))],
                     placeholder="¿Qué posición tiene la respuesta?",
                 )
             ]),
