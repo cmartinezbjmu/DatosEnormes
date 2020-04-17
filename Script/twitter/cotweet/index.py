@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model#, sample
+from apps import homepage, model #, sample
 # Barra izquierda
 from navbar import Navbar
 
@@ -265,7 +265,7 @@ def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
                     break
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
                 while True:
-                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia)
+                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia, coherencia)
                     if resultado_update:
                         break
                 print(str(ObjectId(_id)))

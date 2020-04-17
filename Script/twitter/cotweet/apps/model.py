@@ -84,7 +84,7 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id='model-coherencia-ct',
                     options=[{'label': coherencia[i][0], 'value': coherencia[i][1]} for i in range(len(coherencia))],
-                    placeholder="¿Qué posición tiene la respuesta?",
+                    placeholder="¿Es coherente la respuesta?",
                 )
             ]),
             html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct', disabled=True, n_clicks=0)
