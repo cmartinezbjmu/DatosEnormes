@@ -26,15 +26,20 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
+<<<<<<< HEAD
 _id = None
+=======
+coherencia=[
+    ["Si",0],
+    ["No",1]
+]
+
+>>>>>>> b6617ec857f05b6a5c686fd57e6bf7b1bf882dc5
 while True:
-    try:
-        _id, user, tweet, reply_or_quote = get_random_tweet()
+    _id, user, tweet, reply_or_quote = get_random_tweet()
+    if _id: 
         _id = str(ObjectId(_id))
-    except TypeError as e:
-        continue
-    finally:
-        if _id: break
+        break
 
 app = dash.Dash(__name__)
 
@@ -77,6 +82,13 @@ app.layout = html.Div([
                     id='model-tendencia-ct',
                     options=[{'label': tendencia[i][0], 'value': tendencia[i][1]} for i in range(len(tendencia))],
                     placeholder="¿Qué posición tiene la respuesta?",
+                )
+            ]),
+            html.Div([
+                dcc.Dropdown(
+                    id='model-coherencia-ct',
+                    options=[{'label': coherencia[i][0], 'value': coherencia[i][1]} for i in range(len(coherencia))],
+                    placeholder="¿Es coherente la respuesta?",
                 )
             ]),
             html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct', disabled=True, n_clicks=0)

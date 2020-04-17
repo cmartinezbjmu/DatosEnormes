@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model
+from apps import homepage, model #, sample
 # Barra izquierda
 from navbar import Navbar
 
@@ -74,9 +74,7 @@ def get_random_tweet():
         projection["reply_or_quote"] = 1.0
         cursor = collection_dataset.find(query, projection=projection)
         total_sin_etiquetar = collection_dataset.count_documents(query)
-        print(total_sin_etiquetar)
         total_documents = collection_dataset.estimated_document_count()
-        print(total_documents)
         r = randint(0,total_documents)
         randomElement = collection_dataset.find(query, projection=projection).limit(-1).skip(r).next()
         _id = randomElement['_id']
@@ -94,8 +92,8 @@ def get_random_tweet():
         client.close()
 
 
-### Extrae tweet aleatorio
-def update_tweet_dataset(id_document, emocion, tendencia):
+### Actualiza emoción y tendencia del tweet
+def update_tweet_dataset(id_document, emocion, tendencia, coherencia):
     try:
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
@@ -107,7 +105,9 @@ def update_tweet_dataset(id_document, emocion, tendencia):
         update = {
                     "$set": { 
                         "emocion": emocion,
-                        "tendencia": tendencia},
+                        "tendencia": tendencia,
+                        "coherencia": coherencia},
+                        
                 }
         return collection_dataset.update_one(query, update)
  
@@ -118,9 +118,41 @@ def update_tweet_dataset(id_document, emocion, tendencia):
         client.close()
 
 
+### Total etiquetados
+def get_tweet_count():
+    try:
+        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+        client.server_info()
+        db = client.Grupo03
+        collection_dataset = db.ARG_dataset
+        query = dict()
+        query["id_reply_or_quote"] = {
+            u"$exists": True
+        }
+        query["emocion"] = u""
+        query["tendencia"] = u""
+        projection = dict()
+        projection["_id"] = 1.0
+        projection["user"] = 1.0
+        projection["tweet"] = 1.0
+        projection["reply_or_quote"] = 1.0
+        cursor = collection_dataset.find(query, projection=projection)
+        total_sin_etiquetar = collection_dataset.count_documents(query)
+        total_documents = collection_dataset.estimated_document_count()
+        
+        return total_sin_etiquetar,total_documents
 
-#calificacion=pd.read_csv('../../../export_dataframe.csv')
-#calificacion = pd.DataFrame.from_dict(tweet)
+    except errors.ServerSelectionTimeoutError as err:        
+        print(err)
+
+    finally:
+        client.close()
+
+
+
+
+
+
 
 
 
@@ -168,6 +200,8 @@ def display_page(pathname):
         return homepage.app.layout
     if pathname == '/apps/model':
         return model.app.layout
+    if pathname == '/apps/sample':
+        return sample.app.layout
  
 
 ### Título de las páginas
@@ -179,6 +213,8 @@ def display_title(pathname):
         return homepage.app.titulo
     if pathname == '/apps/model':
         return model.app.titulo
+    if pathname == '/apps/sample':
+        return sample.app.titulo
 
 ### Explicación de las páginas
 
@@ -189,6 +225,8 @@ def display_explanation(pathname):
         return homepage.app.explanation
     if pathname == '/apps/model':
         return model.app.explanation
+    if pathname == '/apps/sample':
+        return sample.app.explanation
 
 ########################################################
 ########Funciones de las paǵinas########################
@@ -203,18 +241,20 @@ def display_explanation(pathname):
     dash.dependencies.Output('model-emocion-ct', 'value'),
     dash.dependencies.Output('model-tendencia-ct', 'value'),
     dash.dependencies.Output('model-idtweet', 'children'),
-    dash.dependencies.Output('model-user', 'children')],
+    dash.dependencies.Output('model-user', 'children'),
+    dash.dependencies.Output('model-coherencia-ct', 'value')],
     
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
 
     [dash.dependencies.State('model-emocion-ct', 'value'),
     dash.dependencies.State('model-tendencia-ct', 'value'),
+    dash.dependencies.State('model-coherencia-ct', 'value'),
     dash.dependencies.State('model-idtweet', 'children')]
 
     )
 
 
-def update_tweet(n_clicks, emocion, tendencia,id_anterior):
+def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
     try:
         if n_clicks > 0:
             while True:
@@ -225,11 +265,11 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
                     break
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
                 while True:
-                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia)
+                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia, coherencia)
                     if resultado_update:
                         break
                 print(str(ObjectId(_id)))
-            return tweet_render, respuesta, '', '', [str(ObjectId(_id))],'Tweet de '+ user
+            return tweet_render, respuesta, '', '', [str(ObjectId(_id))],'Tweet de '+ user, ''
     
     except dash.exceptions.InvalidCallbackReturnValue as e:
         print('Error callback')
@@ -241,12 +281,13 @@ def update_tweet(n_clicks, emocion, tendencia,id_anterior):
     [dash.dependencies.Output('model-boton-ct', 'disabled')],
 
     [dash.dependencies.Input('model-emocion-ct', 'value'),
-    dash.dependencies.Input('model-tendencia-ct', 'value')]
+    dash.dependencies.Input('model-tendencia-ct', 'value'),
+    dash.dependencies.Input('model-coherencia-ct', 'value')]
     )
 
 
-def update_tweet(emocion, tendencia):
-    if ((emocion == '') or (tendencia == '')):
+def update_tweet(emocion, tendencia, coherencia):
+    if ((emocion == '') or (tendencia == '') or (coherencia == '')):
         disable = True,
     else:
         disable = False,
@@ -301,7 +342,8 @@ def update_tweet(emocion):
     [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
     )
 def update_tweet(n_clicks):
-    fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[n_clicks,10000-n_clicks])])
+    total_sin, total_tweets = get_tweet_count()
+    fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[total_tweets - total_sin, total_sin])])
     return fig
 
 
