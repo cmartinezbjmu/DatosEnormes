@@ -26,6 +26,7 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
+_id = None
 while True:
     try:
         _id, user, tweet, reply_or_quote = get_random_tweet()
