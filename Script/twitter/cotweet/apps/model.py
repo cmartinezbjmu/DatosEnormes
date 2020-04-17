@@ -26,15 +26,11 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
-<<<<<<< HEAD
-_id = None
-=======
 coherencia=[
     ["Si",0],
     ["No",1]
 ]
 
->>>>>>> b6617ec857f05b6a5c686fd57e6bf7b1bf882dc5
 while True:
     _id, user, tweet, reply_or_quote = get_random_tweet()
     if _id: 
