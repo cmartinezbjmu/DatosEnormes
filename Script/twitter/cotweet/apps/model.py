@@ -26,11 +26,11 @@ tendencia=[
     ["Matoneo",2] 
 ]
 
-
 coherencia=[
     ["Si",0],
     ["No",1]
 ]
+
 
 
 _id = None
