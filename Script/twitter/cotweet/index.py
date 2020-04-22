@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model #, sample
+from apps import homepage, model, sample
 # Barra izquierda
 from navbar import Navbar
 

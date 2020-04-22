@@ -7,7 +7,7 @@ import dash_table
 import re
 import psycopg2
 from app import app
-from index import get_random_tweet
+# from index import get_random_tweet
 from time import sleep
 from bson.objectid import ObjectId
 
