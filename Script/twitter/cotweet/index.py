@@ -17,6 +17,7 @@ from pymongo import MongoClient, errors
 from random import randint
 from bson.objectid import ObjectId
 from time import sleep
+from PIL import Image
 
 cwd = os.getcwd()
 
@@ -33,25 +34,109 @@ from navbar import Navbar
 
 
 #### Crear nube de temas del home
-read = cwd + '/assets/find_query.json'
 
+# Relizar consultas a la base de datos
+
+from pymongo import MongoClient
+import pandas as pd
+import random
+
+client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+database = client["Grupo03"]
+collection = database["COL_tweets"]
+collection_dataset = database["COL_dataset"]
+
+# Extraemos hashtags de los influenciadores
+query = {}
+query["hashtags"] = {
+    u"$gt": {
+        u"$size": 0.0
+    }
+}
+
+
+projection = {}
+projection["hashtags"] = 1.0
+
+cursor = collection.find(query, projection = projection)
 data = []
-with open(read) as f:
-    for line in f:
-        data.append(json.loads(line))
+try:
+    for doc in cursor:
+        for i in range(len(doc['hashtags'])):
+            data.append(doc['hashtags'][i]['text'].lower())
+finally:
+    client.close()
 
-temas=[]        
-for i in range(len(data)):
-    ht=data[i]['hashtags']
-    for i in range(len(ht)):
-        temas.append(ht[i]['text'])
+# Extraemos hashtags de los comentarios
+query = {}
+query["replys.id"] = {
+    u"$exists": True
+}
+query["replys.hashtags"] = {
+    u"$ne": u""
+}
+
+projection = {}
+projection["replys.hashtags"] = 1.0
+
+cursor = collection.find(query, projection = projection)
+#data = []
+try:
+    for doc in cursor:
+        for i in range(len(doc['replys'])):
+            if len(doc['replys'][i]['hashtags']) > 0:
+                for j in range(len(doc['replys'][i]['hashtags'])):
+                    data.append(doc['replys'][i]['hashtags'][j]['text'].lower())
+finally:
+    client.close()
+
+# Extraemos hashtags de las citas
+query = {}
+query["quotes.id"] = {
+    u"$exists": True
+}
+query["quotes.hashtags"] = {
+    u"$ne": u""
+}
+
+projection = {}
+projection["quotes.hashtags"] = 1.0
+
+cursor = collection.find(query, projection = projection)
+#data = []
+try:
+    for doc in cursor:
+        for i in range(len(doc['quotes'])):
+            if len(doc['quotes'][i]['hashtags']) > 0:
+                for j in range(len(doc['quotes'][i]['hashtags'])):
+                    data.append(doc['quotes'][i]['hashtags'][j]['text'].lower())
+finally:
+    client.close()
+
+
+
+# read = cwd + '/assets/find_query.json'
+
+# data = []
+# with open(read) as f:
+#     for line in f:
+#         data.append(json.loads(line))
+
+# temas=[]        
+# for i in range(len(data)):
+#     ht=data[i]['hashtags']
+#     for i in range(len(ht)):
+#         temas.append(ht[i]['text'])
+
 
 def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
     return "hsl(0, 0%%, %d%%)" % randint(0, 10)
-        
-wordcloud = WordCloud(background_color="white",width=4096, height=2160).generate(" ".join(temas))
-wordcloud.recolor(color_func = yellow_color_func)
+
+maskArray = np.array(Image.open(cwd+"/assets/images/cloud_21.png"))     
+wordcloud = WordCloud(background_color="white", collocations=False, max_words = 200, mask = maskArray)
+#wordcloud.recolor(color_func = yellow_color_func)
+wordcloud.generate(" ".join(data))
 wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 
 ### Extrae tweet aleatorio

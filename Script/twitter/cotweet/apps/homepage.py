@@ -25,6 +25,6 @@ app.layout = html.Div(
                                'height': 'auto'
                                } 
                     ),
-        html.Img(src="/assets/images/home-nube.png",className='fullsize')
+        html.Img(src="/assets/images/home-nube.png")
     ]
     )
