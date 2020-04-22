@@ -11,9 +11,9 @@ app = dash.Dash(__name__)
 app.titulo = "Taller 2"
 
 app.explanation = ''' Análisis de la coyuntura del Covid-19 y la percepción de las
-		     personas que interactuan con la red social tweeter en Colombia
+		     personas que interactuan con la red social Twitter en Colombia
 		     y Argentina. La aplicación establece los principales temas, influenciadores
-		     e información relevante y cómo la usuarios de la red perciben la información
+		     e información relevante y cómo los usuarios de la red social perciben la información
 		     a traves de algoritmos de Inteligencia Artifical y herramientas de Big Data  '''
 
 app.layout = html.Div(
@@ -25,6 +25,6 @@ app.layout = html.Div(
                                'height': 'auto'
                                } 
                     ),
-        html.Img(src="/assets/images/home-nube.png",className='fullsize')
+        html.Img(src="/assets/images/home-nube.png")
     ]
     )
