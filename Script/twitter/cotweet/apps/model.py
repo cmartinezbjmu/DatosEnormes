@@ -36,10 +36,14 @@ coherencia=[
 _id = None
 
 while True:
-    _id, user, tweet, reply_or_quote = get_random_tweet()
-    if _id: 
-        _id = str(ObjectId(_id))
-        break
+    try:
+        _id, user, tweet, reply_or_quote = get_random_tweet()
+    except TypeError as e:
+        print(e)
+    finally:
+        if _id: 
+            _id = str(ObjectId(_id))
+            break
 
 app = dash.Dash(__name__)
 

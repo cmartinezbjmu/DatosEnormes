@@ -60,7 +60,7 @@ def get_random_tweet():
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
-        collection_dataset = db.ARG_dataset
+        collection_dataset = db.COL_dataset
         query = dict()
         query["id_reply_or_quote"] = {
             u"$exists": True
@@ -98,7 +98,7 @@ def update_tweet_dataset(id_document, emocion, tendencia, coherencia):
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
-        collection_dataset = db.ARG_dataset
+        collection_dataset = db.COL_dataset
         query = {}
         query['_id'] = ObjectId(id_document)
         print(id_document)
@@ -124,7 +124,7 @@ def get_tweet_count():
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
-        collection_dataset = db.ARG_dataset
+        collection_dataset = db.COL_dataset
         query = dict()
         query["id_reply_or_quote"] = {
             u"$exists": True
@@ -170,11 +170,11 @@ app.layout = html.Div([
                     html.Img(src="/assets/images/co-tweet-banner.png",style={'width': '100%'}),
                     html.H2(id='titulo'),
                     html.P(id='explanation'),           
-                    html.H5('Juan Camilo Cardenas'),
+                    html.H6('Juan Camilo Cardenas'),
                     html.H6('j.cardenasc@uniandes.edu.co'),
-                    html.H5('Cristian Martinez'),
+                    html.H6('Cristian Martinez'),
                     html.H6('c.martinezb1@uniandes.edu.co'),
-                    html.H5('David Ocampo'),
+                    html.H6('David Ocampo'),
                     html.H6('d.ocampo@uniandes.edu.co'),
                 ],
                 className="div_izq_home",
@@ -255,14 +255,19 @@ def display_explanation(pathname):
 
 
 def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
+    _id = None
     try:
         if n_clicks > 0:
             while True:
-                _id, user, tweet, reply_or_quote = get_random_tweet()
-                if _id:
-                    tweet_render = tweet
-                    respuesta = reply_or_quote                
-                    break
+                try:
+                    _id, user, tweet, reply_or_quote = get_random_tweet()
+                except TypeError as e:
+                    print(e)
+                finally:
+                    if _id:
+                        tweet_render = tweet
+                        respuesta = reply_or_quote
+                        break
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
                 while True:
                     resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia, coherencia)
@@ -348,4 +353,4 @@ def update_tweet(n_clicks):
 
 
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0", port=8000, debug=True)
+    app.run_server(host="0.0.0.0", port=8000, debug=False)
