@@ -133,8 +133,8 @@ def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
     return "hsl(0, 0%%, %d%%)" % randint(0, 10)
 
-maskArray = np.array(Image.open(cwd+"/assets/images/cloud_21.png"))     
-wordcloud = WordCloud(background_color="white", collocations=False, max_words = 200, mask = maskArray)
+maskArray = np.array(Image.open(cwd+"/assets/images/cloud_1.png"))     
+wordcloud = WordCloud(background_color="white", collocations=False, max_words = 500, mask=maskArray)
 #wordcloud.recolor(color_func = yellow_color_func)
 wordcloud.generate(" ".join(data))
 wordcloud.to_file(cwd+"/assets/images/home-nube.png")
