@@ -7,7 +7,7 @@ import dash_table
 import re
 import psycopg2
 from app import app
-from index import get_random_tweet
+from index import get_random_tweet, get_tweet_count
 from time import sleep
 from bson.objectid import ObjectId
 
@@ -116,5 +116,30 @@ app.layout = html.Div([
         dcc.Graph(
             id='model-pie'
         )
-    ])
+    ]),
+    html.H1("Tamaño muestral para etiquetar"),
+    html.P('''
+           El tamaño muestral se determina por la probabilidad de inclusión
+           de la variable en cuestión, que para el objetivo del análisis
+           es la probabilidad de obtener alguna de las emociones posibles'''),
+    html.H3("Sentimientos de predicción"),
+    html.Ul([html.Li(x[0]) for x in emociones]),
+    html.P('''
+           Por lo tanto la probabilidad de inclusión de cada emoción es de 
+           1/6, así, como es un muestreo en una prueba piloto se asume que 
+           las variables objetivo siguen una distribución binomial, entonces, 
+           es posible utilizar la fórmula para calcular el tamaño muestral óptimo
+           para la calibración del modelo
+           '''),
+    html.Img(src='/assets/images/muestra.png'),
+    html.P('''
+            np : tamaño de la muestra piloto; 
+            p: proporción patrón o norma de la población; 
+            e: error esperado; 
+            t: estadístico de distribución t
+           '''),
+    html.H3("Muestra esperada:"+str((1/6)*(1-(1/6))*int(get_tweet_count()[1])))
+    
+    
+
 ])
