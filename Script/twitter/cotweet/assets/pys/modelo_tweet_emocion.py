@@ -44,8 +44,19 @@ def main():
     collection = database["COL_tweets"]
     collection_dataset = database["COL_dataset"]
 
+    query = {}
+    query["emocion"] = {
+        u"$ne": u""
+    }
+    query["$and"] = [
+        {
+            u"emocion": {
+                u"$exists": True
+            }
+        }
+    ]
     ## Pasar de mongo a pandas
-    data = pd.DataFrame(list(collection_dataset.find()))
+    data = pd.DataFrame(list(collection_dataset.find(query)))
 
     ## Definir las columnas de interés
     col = ['reply_or_quote', 'emocion']
