@@ -87,11 +87,11 @@ def main():
     cwd = os.getcwd()
         
     from joblib import dump, load
-    dump(clf, cwd + '/assets/pys/modelo_sentimientos.joblib') 
+    dump(clf, cwd + '/assets/pys/modelo_sentimientos_col.joblib') 
     
     
     import pickle
-    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_sentimientos.pkl","wb"))
+    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_sentimientos_col.pkl","wb"))
     
 
 
