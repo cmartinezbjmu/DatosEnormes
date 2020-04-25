@@ -63,7 +63,7 @@ app.explanation = '''
 
 app.layout = html.Div([
     html.Datalist(id='model-idtweet',
-                    #children=[_id]
+                    children=[_id]
                     ),
     html.Div([
         dcc.RadioItems(id='model-seleccion',
@@ -72,20 +72,19 @@ app.layout = html.Div([
                         {'label': 'Argentina', 'value': 'ARG'}
                         
                     ],
-                    #value = 'COL',
+                    value = 'COL',
                     labelStyle={'display': 'inline-block'}
         )
     ]),
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
-            #html.H4('Tweet de ' + user,id='model-user'),
-            html.H4('Tweet de ', id='model-user'),
-            html.P(id='model-cuenta'),
-                   #children=tweet),
+            html.H4('Tweet de ' + user,id='model-user'),
+            html.P(id='model-cuenta',
+                   children=tweet),
             html.H4('Respuesta del tweet'),
             html.H5('Tweet para clasificar'),
-            html.P(id='model-respuesta'),
-                   #children=reply_or_quote),
+            html.P(id='model-respuesta',
+                   children=reply_or_quote),
             html.Div([
                 dcc.Dropdown(
                     id='model-emocion-ct',
