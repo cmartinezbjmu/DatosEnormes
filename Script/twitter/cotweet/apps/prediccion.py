@@ -37,6 +37,8 @@ app.layout = html.Div([
         dcc.Graph(id='prediccion-pie'
                   )
     ]),
+    html.Button('Calibrar modelo', id='prediccion-correr-modelo'),
+    html.H5(id='prediccion-exito-modelo'),
     html.H4('Clasificador de tweets'),
     html.P(id='prediccion-tweet'),
     html.H5(id='prediccion-emocion'),

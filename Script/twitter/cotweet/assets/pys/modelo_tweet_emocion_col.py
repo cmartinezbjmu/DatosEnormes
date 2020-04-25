@@ -18,6 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import cross_val_score
+from imblearn.datasets import make_imbalance
 import sys
 import os
 
@@ -43,7 +44,7 @@ def main():
     database = client["Grupo03"]
     collection = database["COL_tweets"]
     collection_dataset = database["COL_dataset"]
-
+    
     query = {}
     query["emocion"] = {
         u"$ne": u""
@@ -57,7 +58,7 @@ def main():
     ]
     ## Pasar de mongo a pandas
     data = pd.DataFrame(list(collection_dataset.find(query)))
-
+    
     ## Definir las columnas de interés
     col = ['reply_or_quote', 'emocion']
     df = data[col]
@@ -67,28 +68,31 @@ def main():
     df = df[pd.notnull(df['tweet'])]
     df['emocion'] = df['emocion'].astype('int')
     df['tweet']=df['tweet'].apply(lambda x: quitar_cuentas(x))
-
-
-
+    
+    
+    #Balancear respuesta
+    muestra=df.emocion.value_counts().min()
+    X,y=make_imbalance(df,df.emocion,
+                   sampling_strategy={0: muestra, 1: muestra, 2: muestra,3: muestra,4: muestra,5: muestra},
+                   random_state=0)
+    
     ## Train y test para el modelo
-    X_train, X_test, y_train, y_test = train_test_split(df['tweet'], df['emocion'], random_state = 0)
+    X_train, X_test, y_train, y_test = train_test_split(X['tweet'], X['emocion'], random_state = 0)
     count_vect = CountVectorizer()
     X_train_counts = count_vect.fit_transform(X_train)
     tfidf_transformer = TfidfTransformer()
     X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
-
+    
     clf=correr_modelo('NB', X_train_tfidf, y_train)
     cwd = os.getcwd()
-
-    from sklearn.externals import joblib
+        
     from joblib import dump, load
     dump(clf, cwd + '/assets/pys/modelo_sentimientos.joblib') 
-
-
-
+    
+    
     import pickle
     pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_sentimientos.pkl","wb"))
-
+    
 
 
 

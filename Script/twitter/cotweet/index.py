@@ -491,6 +491,17 @@ def update_graph_live(pais):
     fig = px.pie(res, values='reply_or_quote', names='prediccion')
     return fig
 
+## Correr el modelo de nuevo
+@app.callback(
+    dash.dependencies.Output('prediccion-exito-modelo', 'children'),
+    [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks')])
+def displayPage(n_clicks):
+    if n_clicks:
+        main_col()
+        exito='El modelo ha sido calibrado - Recargar página por favor'
+    return exito
+
+
 
 
 if __name__ == '__main__':
