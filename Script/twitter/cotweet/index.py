@@ -18,8 +18,11 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
-from assets.pys.modelo_tweet_emocion import main
-
+from assets.pys.modelo_tweet_emocion_col import main as main_col
+from assets.pys.modelo_tweet_emocion_col import quitar_cuentas
+from sklearn.feature_extraction.text import CountVectorizer
+from joblib import dump, load
+import pickle
 
 cwd = os.getcwd()
 
@@ -43,7 +46,6 @@ from pymongo import MongoClient
 import pandas as pd
 import random
 
-main()
 
 client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
 database = client["Grupo03"]
@@ -118,21 +120,25 @@ finally:
     client.close()
 
 
+## Cargar modelo de preficción de colombia
+clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
+loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
 
-# read = cwd + '/assets/find_query.json'
+emociones=[["Neutro",0],
+           ["Optimista",1],
+           ["Triste",2],
+           ["Enojo",3],
+           ["Sorprendido",4],
+           ["Orgulloso",5]]
 
-# data = []
-# with open(read) as f:
-#     for line in f:
-#         data.append(json.loads(line))
-
-# temas=[]        
-# for i in range(len(data)):
-#     ht=data[i]['hashtags']
-#     for i in range(len(ht)):
-#         temas.append(ht[i]['text'])
-
-
+## Poner el label de la emoción seg+un el número
+def label_emocion(number):
+    emocion=''
+    for i in range(len(emociones)):
+        if emociones[i][1]==number:
+            emocion=emociones[i][0]
+    return emocion
+    
 def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
     return "hsl(0, 0%%, %d%%)" % randint(0, 10)
@@ -238,6 +244,14 @@ def get_tweet_count():
         client.close()
 
 
+def obtener_base(Pais):
+    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+    database = client["Grupo03"]
+    collection_dataset = database[Pais + "_dataset"]
+    data = pd.DataFrame(list(collection_dataset.find()))
+    # col = ['reply_or_quote', 'emocion']
+    # data=data[col]
+    return data    
 
 
 
@@ -448,5 +462,47 @@ def update_tweet(n_clicks):
     return fig
 
 
+###################################
+#### Página de predicción #########
+###################################
+
+# Intervalo para mostrar tweets cada 5 segundos
+@app.callback(
+    [dash.dependencies.Output('prediccion-tweet', 'children'),
+     dash.dependencies.Output('prediccion-emocion', 'children')],
+    [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
+def update_tweet_live(n):
+    tweet=get_random_tweet()[3]
+    emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
+    emocion=label_emocion(emocion_num)
+    return tweet, emocion
+
+# Intervalo para mostrar el porcentae de emociones frente a los tweets
+@app.callback(
+    dash.dependencies.Output('prediccion-pie', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='C':
+        data=obtener_base('COL')
+    # elif pais=='A':
+    #     data=obtener_base('ARG')
+    data['prediccion']=data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
+    res = data.groupby('prediccion').reply_or_quote.count().reset_index()
+    fig = px.pie(res, values='reply_or_quote', names='prediccion')
+    return fig
+
+## Correr el modelo de nuevo
+@app.callback(
+    dash.dependencies.Output('prediccion-exito-modelo', 'children'),
+    [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks')])
+def displayPage(n_clicks):
+    if n_clicks:
+        main_col()
+        exito='El modelo ha sido calibrado - Recargar página por favor'
+    return exito
+
+
+
+
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0", port=8000, debug=False)
+    app.run_server(host="0.0.0.0", port=8000, debug=True)
