@@ -466,18 +466,18 @@ def update_tweet(n_clicks):
 #### Página de predicción #########
 ###################################
 
-## Intervalo para mostrar tweets cada 5 segundos
-# @app.callback(
-#     [dash.dependencies.Output('prediccion-tweet', 'children'),
-#      dash.dependencies.Output('prediccion-emocion', 'children')],
-#     [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
-# def update_tweet_live(n):
-#     tweet=get_random_tweet()[3]
-#     emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
-#     emocion=label_emocion(emocion_num)
-#     return tweet, emocion
+# Intervalo para mostrar tweets cada 5 segundos
+@app.callback(
+    [dash.dependencies.Output('prediccion-tweet', 'children'),
+     dash.dependencies.Output('prediccion-emocion', 'children')],
+    [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
+def update_tweet_live(n):
+    tweet=get_random_tweet()[3]
+    emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
+    emocion=label_emocion(emocion_num)
+    return tweet, emocion
 
-
+# Intervalo para mostrar el porcentae de emociones frente a los tweets
 @app.callback(
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
