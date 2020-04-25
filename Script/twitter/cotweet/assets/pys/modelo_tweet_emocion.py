@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 22 21:52:12 2020
+
+@author: davidsaw
+"""
+
+from pymongo import MongoClient, errors
+import pandas as pd
+#from io import StringIO
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import cross_val_score
+import sys
+
+
+modelo=sys.argv[0]
+
+def quitar_cuentas(a):
+    texto=" ".join(filter(lambda x:x[0]!='@', a.split()))
+    return texto
+
+
+#Conexión con las bd de mongo
+client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+database = client["Grupo03"]
+collection = database["COL_tweets"]
+collection_dataset = database["COL_dataset"]
+
+## Pasar de mongo a pandas
+data = pd.DataFrame(list(collection_dataset.find()))
+
+## Definir las columnas de interés
+col = ['reply_or_quote', 'emocion']
+df = data[col]
+df = df[df['emocion']!='']
+df.columns=['tweet', 'emocion']
+df = df[pd.notnull(df['emocion'])]
+df = df[pd.notnull(df['tweet'])]
+df['emocion'] = df['emocion'].astype('int')
+df['tweet']=df['tweet'].apply(lambda x: quitar_cuentas(x))
+
+
+
+## Train y test para el modelo
+X_train, X_test, y_train, y_test = train_test_split(df['tweet'], df['emocion'], random_state = 0)
+count_vect = CountVectorizer()
+X_train_counts = count_vect.fit_transform(X_train)
+tfidf_transformer = TfidfTransformer()
+X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+
+
+## Función de correr el modelo
+def correr_modelo(val):
+    if val=='NB':
+        clf = MultinomialNB().fit(X_train_tfidf, y_train)
+    elif val=='RF':
+        clf = RandomForestClassifier(n_estimators=200, max_depth=3, random_state=0).fit(X_train_tfidf, y_train)
+    elif val=='LR':
+        clf = LogisticRegression(random_state=0).fit(X_train_tfidf, y_train)
+    elif val=='SV':
+        clf = LinearSVC()().fit(X_train_tfidf, y_train)
+    return clf
+
+clf=correr_modelo('NB')
+
+
+from sklearn.externals import joblib
+from joblib import dump, load
+dump(clf, '/home/davidsaw/uniandes-bigdata/DatosEnormes/Script/twitter/cotweet/assets/pys/modelo_sentimientos.joblib') 
+
+# cwd = os.getcwd()
+
+import pickle
+pickle.dump(count_vect.vocabulary_,open("/home/davidsaw/uniandes-bigdata/DatosEnormes/Script/twitter/cotweet/assets/pys/vocabulario_sentimientos.pkl","wb"))
+
+
+
+
+
+
+
+
+

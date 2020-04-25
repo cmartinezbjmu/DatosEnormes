@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, temas
+from apps import homepage, model, temas , prediccion
 # Barra izquierda
 from navbar import Navbar
 
@@ -287,6 +287,8 @@ def display_page(pathname):
         return model.app.layout
     if pathname == '/apps/temas':
         return temas.app.layout
+    if pathname == '/apps/prediccion':
+        return prediccion.app.layout
  
 
 ### Título de las páginas
@@ -300,6 +302,9 @@ def display_title(pathname):
         return model.app.titulo
     if pathname == '/apps/temas':
         return temas.app.titulo
+    if pathname == '/apps/prediccion':
+        return prediccion.app.titulo
+
 
 ### Explicación de las páginas
 
@@ -312,6 +317,8 @@ def display_explanation(pathname):
         return model.app.explanation
     if pathname == '/apps/temas':
         return temas.app.explanation
+    if pathname == '/apps/prediccion':
+        return prediccion.app.explanation
 
 ########################################################
 ########Funciones de las paǵinas########################
