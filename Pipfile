@@ -28,6 +28,7 @@ tweepy = "*"
 dash = "*"
 dash-bootstrap-components = "*"
 sqlalchemy = "*"
+scikit-learn = "*"
 
 [requires]
 python_version = "3.8"

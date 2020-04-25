@@ -18,6 +18,8 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
+from assets.pys.modelo_tweet_emocion import main
+
 
 cwd = os.getcwd()
 
@@ -28,7 +30,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, temas
+from apps import homepage, model, temas , prediccion
 # Barra izquierda
 from navbar import Navbar
 
@@ -40,6 +42,8 @@ from navbar import Navbar
 from pymongo import MongoClient
 import pandas as pd
 import random
+
+main()
 
 client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
 database = client["Grupo03"]
@@ -287,6 +291,8 @@ def display_page(pathname):
         return model.app.layout
     if pathname == '/apps/temas':
         return temas.app.layout
+    if pathname == '/apps/prediccion':
+        return prediccion.app.layout
  
 
 ### Título de las páginas
@@ -300,6 +306,9 @@ def display_title(pathname):
         return model.app.titulo
     if pathname == '/apps/temas':
         return temas.app.titulo
+    if pathname == '/apps/prediccion':
+        return prediccion.app.titulo
+
 
 ### Explicación de las páginas
 
@@ -312,6 +321,8 @@ def display_explanation(pathname):
         return model.app.explanation
     if pathname == '/apps/temas':
         return temas.app.explanation
+    if pathname == '/apps/prediccion':
+        return prediccion.app.explanation
 
 ########################################################
 ########Funciones de las paǵinas########################
