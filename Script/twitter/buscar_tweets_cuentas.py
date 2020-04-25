@@ -21,9 +21,10 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-cuentas = ['ivanduque', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
+cuentas = ['ivanduque', 'claudialopez', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
            'revistasemana', 'noticiascaracol', 'noticiasrcn', 'bluradioco',
-           'lafm', 'mabellaranews', 'claudialopez']
+           'lafm', 'mabellaranews', 'petrogustavo', 'eltiempo', 'gustavobolivar', 
+           'jerobledo', 'heliodoptero', 'fdbedout', 'alvarouribevel', 'cedemocratico']
 
 cuentas_arg = ['alferdez', 'horaciorlarreta', 'msalnacion',
                'CFKArgentina', 'clarincom', 'LANACION', 'LongobardiM',

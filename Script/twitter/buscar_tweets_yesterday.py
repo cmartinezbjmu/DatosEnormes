@@ -6,23 +6,29 @@ from pymongo import MongoClient, errors
 
 palabras_clave = ["Coronavirus", "covid19"]
 
-#consumer_key = "FGqkOJU3o3Rh15alV5Ql4obUX"
-#consumer_secret = "2vIiKctsxxezL6kKGo4qtyFPDcY1viFz6M1a2bHLTwWrijVXE5"
-#access_token = "151179935-HLh8FmhbS0D3892npnkfiM6UNc1hLZ0NRHKhZCzJ"
-#access_token_secret = "tiKTQPpveXHZRsEm0ODUeCJGmlSBqqeUzO7F7cRYKrTp6"
+consumer_key = "46m2jsm1TnP9vgRFYcTQzyR1R"
+consumer_secret = "Vk6w3xf1D1PIdkpSPpmYxfoovUtqp65VVMAZSt8XF8kwpLASdt"
+access_token = "1243367012572827648-EG9oAl55HEBzzYNUf7j7Jzbh0XoJFn"
+access_token_secret = "qyuLP1V3iHENsOVMlmNX4eo5drVbEgzEVHGvgaYjSiQ7T"
 
-consumer_key = "hwQLsT9LMp90MPSgYXf7Abvzw"
-consumer_secret = "wSYKwJPPvaAvPD2KL8dGrkm8kJORCIPss5qVLMuLMAZxWGUcb8"
-access_token = "52602353-a7v7fPQ90BvjVNBR1ZYg6ziiHCiyqfmzdcuS150em"
-access_token_secret = "roy6xRVWbYF2K2BNog9Fi04lArpuNLmY8OIMJWkChrEmW"
+# consumer_key = "FGqkOJU3o3Rh15alV5Ql4obUX"
+# consumer_secret = "2vIiKctsxxezL6kKGo4qtyFPDcY1viFz6M1a2bHLTwWrijVXE5"
+# access_token = "151179935-HLh8FmhbS0D3892npnkfiM6UNc1hLZ0NRHKhZCzJ"
+# access_token_secret = "tiKTQPpveXHZRsEm0ODUeCJGmlSBqqeUzO7F7cRYKrTp6"
+
+# consumer_key = "hwQLsT9LMp90MPSgYXf7Abvzw"
+# consumer_secret = "wSYKwJPPvaAvPD2KL8dGrkm8kJORCIPss5qVLMuLMAZxWGUcb8"
+# access_token = "52602353-a7v7fPQ90BvjVNBR1ZYg6ziiHCiyqfmzdcuS150em"
+# access_token_secret = "roy6xRVWbYF2K2BNog9Fi04lArpuNLmY8OIMJWkChrEmW"
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-cuentas = ['ivanduque', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
+cuentas = ['ivanduque', 'claudialopez', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
            'revistasemana', 'noticiascaracol', 'noticiasrcn', 'bluradioco',
-           'lafm', 'mabellaranews']
+           'lafm', 'mabellaranews', 'petrogustavo', 'eltiempo', 'gustavobolivar', 
+           'jerobledo', 'heliodoptero', 'fdbedout', 'alvarouribevel', 'cedemocratico']
 
 cuentas_arg = ['alferdez', 'horaciorlarreta', 'msalnacion',
                'CFKArgentina', 'clarincom', 'LANACION', 'LongobardiM',
@@ -163,7 +169,7 @@ palabra_clave = [
 yesterday = datetime.date.today() - datetime.timedelta(1)
 
 # Busco los últimos 100 tweets
-for i in cuentas_arg:
+for i in cuentas:
     tweets = tweepy.Cursor(api.user_timeline, screen_name=i, tweet_mode='extended').items(30)
     initial_tweets = retrieve_initial_tweets(i)
     resultado = dict()
@@ -175,7 +181,7 @@ for i in cuentas_arg:
                             # connect=True parameter of MongoClient seems
                             # to be useless here
         db = client.Grupo03
-        collection = db.ARG_tweets
+        collection = db.COL_tweets
 
         for tweet in tweets:    
             #if any(palabra in tweet.full_text.lower() for palabra in palabra_clave): Tue Apr 07 13:09:26 +0000 2020
@@ -224,6 +230,8 @@ for i in cuentas_arg:
                 json_result['quotes'] = retrieve_all_quotes(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
                 #print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
                 post_id = collection.insert_one(json_result).inserted_id
+                print('Termino: ' + i)
+
 
     except errors.ServerSelectionTimeoutError as err:
         # do whatever you need
