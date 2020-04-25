@@ -18,6 +18,8 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
+from assets.pys.modelo_tweet_emocion import main
+
 
 cwd = os.getcwd()
 
@@ -40,6 +42,8 @@ from navbar import Navbar
 from pymongo import MongoClient
 import pandas as pd
 import random
+
+main()
 
 client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
 database = client["Grupo03"]
