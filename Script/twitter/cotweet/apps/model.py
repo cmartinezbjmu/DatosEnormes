@@ -37,7 +37,7 @@ _id = None
 
 while True:
     try:
-        _id, user, tweet, reply_or_quote = get_random_tweet()
+        _id, user, tweet, reply_or_quote = get_random_tweet('COL')
     except TypeError as e:
         print(e)
     finally:
@@ -63,17 +63,29 @@ app.explanation = '''
 
 app.layout = html.Div([
     html.Datalist(id='model-idtweet',
-                    children=[_id]
+                    #children=[_id]
                     ),
+    html.Div([
+        dcc.RadioItems(id='model-seleccion',
+                options=[
+                        {'label': 'Colombia', 'value': 'COL'},
+                        {'label': 'Argentina', 'value': 'ARG'}
+                        
+                    ],
+                    #value = 'COL',
+                    labelStyle={'display': 'inline-block'}
+        )
+    ]),
     dcc.Tabs([
         dcc.Tab(label='Tweet - Respuesta', children=[
-            html.H4('Tweet de ' + user,id='model-user'),
-            html.P(id='model-cuenta',
-                   children=tweet),
+            #html.H4('Tweet de ' + user,id='model-user'),
+            html.H4('Tweet de ', id='model-user'),
+            html.P(id='model-cuenta'),
+                   #children=tweet),
             html.H4('Respuesta del tweet'),
             html.H5('Tweet para clasificar'),
-            html.P(id='model-respuesta',
-                   children=reply_or_quote),
+            html.P(id='model-respuesta'),
+                   #children=reply_or_quote),
             html.Div([
                 dcc.Dropdown(
                     id='model-emocion-ct',
@@ -97,19 +109,7 @@ app.layout = html.Div([
             ]),
             html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-ct', disabled=True, n_clicks=0)
         ]),
-         dcc.Tab(label='Tweet', children=[
-            html.H4('Tweet'),
-            html.P(id='model-tweet',
-                   children=""),
-            html.Div([
-                dcc.Dropdown(
-                    id='model-emocion-t',
-                    options=[{'label': emociones[i][0], 'value': emociones[i][1]} for i in range(len(emociones))],
-                    placeholder="¿Qué sientes con el tweet?",
-                )
-            ]),
-            html.Button('Entrenar modelo - Siguiente tweet', id='model-boton-t', n_clicks=0)
-        ]),
+         
 	]),
     
     html.Div([
@@ -138,7 +138,7 @@ app.layout = html.Div([
             e: error esperado; 
             t: estadístico de distribución t
            '''),
-    html.H3("Muestra esperada:"+str((1/6)*(1-(1/6))*int(get_tweet_count()[1])))
+    html.H3(id = 'mode-muestra')
     
     
 

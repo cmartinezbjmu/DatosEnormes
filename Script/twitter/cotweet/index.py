@@ -150,50 +150,53 @@ wordcloud.generate(" ".join(data))
 wordcloud.to_file(cwd+"/assets/images/home-nube.png")
 
 ### Extrae tweet aleatorio
-def get_random_tweet():
-    try:
-        client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
-        client.server_info()
-        db = client.Grupo03
-        collection_dataset = db.COL_dataset
-        query = dict()
-        query["id_reply_or_quote"] = {
-            u"$exists": True
-        }
-        query["emocion"] = u""
-        query["tendencia"] = u""
-        projection = dict()
-        projection["_id"] = 1.0
-        projection["user"] = 1.0
-        projection["tweet"] = 1.0
-        projection["reply_or_quote"] = 1.0
-        cursor = collection_dataset.find(query, projection=projection)
-        total_sin_etiquetar = collection_dataset.count_documents(query)
-        total_documents = collection_dataset.estimated_document_count()
-        r = randint(0,total_documents)
-        randomElement = collection_dataset.find(query, projection=projection).limit(-1).skip(r).next()
-        _id = randomElement['_id']
-        user = randomElement['user']
-        tweet = randomElement['tweet']
-        reply_or_quote = randomElement['reply_or_quote']
-        
-        return _id, user, tweet, reply_or_quote
+def get_random_tweet(pais):
+    _id = None
+    while True:
+        try:
+            client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
+            client.server_info()
+            db = client.Grupo03
+            collection_dataset = database[pais + "_dataset"]
+            query = dict()
+            query["id_reply_or_quote"] = {
+                u"$exists": True
+            }
+            query["emocion"] = u""
+            query["tendencia"] = u""
+            projection = dict()
+            projection["_id"] = 1.0
+            projection["user"] = 1.0
+            projection["tweet"] = 1.0
+            projection["reply_or_quote"] = 1.0
+            cursor = collection_dataset.find(query, projection=projection)
+            total_sin_etiquetar = collection_dataset.count_documents(query)
+            total_documents = collection_dataset.estimated_document_count()
+            r = randint(0,total_documents)
+            randomElement = collection_dataset.find(query, projection=projection).limit(-1).skip(r).next()
+            _id = randomElement['_id']
+            user = randomElement['user']
+            tweet = randomElement['tweet']
+            reply_or_quote = randomElement['reply_or_quote']
 
+        except errors.ServerSelectionTimeoutError as err:        
+            print(err)
+            continue
 
-    except errors.ServerSelectionTimeoutError as err:        
-        print(err)
-
-    finally:
-        client.close()
+        finally:
+            if _id:                
+                client.close()
+                break
+    return _id, user, tweet, reply_or_quote
 
 
 ### Actualiza emoción y tendencia del tweet
-def update_tweet_dataset(id_document, emocion, tendencia, coherencia):
+def update_tweet_dataset(id_document, emocion, tendencia, coherencia, pais):
     try:
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
-        collection_dataset = db.COL_dataset
+        collection_dataset = database[pais + "_dataset"]
         query = {}
         query['_id'] = ObjectId(id_document)
         print(id_document)
@@ -214,12 +217,12 @@ def update_tweet_dataset(id_document, emocion, tendencia, coherencia):
 
 
 ### Total etiquetados
-def get_tweet_count():
+def get_tweet_count(pais):
     try:
         client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False, serverSelectionTimeoutMS=10, connectTimeoutMS=20000)
         client.server_info()
         db = client.Grupo03
-        collection_dataset = db.COL_dataset
+        collection_dataset = database[pais + "_dataset"]
         query = dict()
         query["id_reply_or_quote"] = {
             u"$exists": True
@@ -354,7 +357,8 @@ def display_explanation(pathname):
     dash.dependencies.Output('model-user', 'children'),
     dash.dependencies.Output('model-coherencia-ct', 'value')],
     
-    [dash.dependencies.Input('model-boton-ct', 'n_clicks')],
+    [dash.dependencies.Input('model-boton-ct', 'n_clicks'),
+    dash.dependencies.Input('model-seleccion', 'value')],
 
     [dash.dependencies.State('model-emocion-ct', 'value'),
     dash.dependencies.State('model-tendencia-ct', 'value'),
@@ -364,13 +368,13 @@ def display_explanation(pathname):
     )
 
 
-def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
+def update_tweet(n_clicks, pais, emocion, tendencia, coherencia, id_anterior):
     _id = None
     try:
         if n_clicks > 0:
             while True:
                 try:
-                    _id, user, tweet, reply_or_quote = get_random_tweet()
+                    _id, user, tweet, reply_or_quote = get_random_tweet(pais)
                 except TypeError as e:
                     print(e)
                 finally:
@@ -380,7 +384,7 @@ def update_tweet(n_clicks, emocion, tendencia, coherencia, id_anterior):
                         break
             if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
                 while True:
-                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia, coherencia)
+                    resultado_update = update_tweet_dataset(id_anterior[0], emocion, tendencia, coherencia, pais)
                     if resultado_update:
                         break
                 print(str(ObjectId(_id)))
@@ -408,59 +412,27 @@ def update_tweet(emocion, tendencia, coherencia):
         disable = False,
     return disable
     
-    
 
-### Mostrar tweets para calificar tweet semántica
-
-@app.callback(
-    [dash.dependencies.Output('model-tweet', 'children'),
-    dash.dependencies.Output('model-emocion-t', 'value')],
-    
-    [dash.dependencies.Input('model-boton-t', 'n_clicks')],
-
-    [dash.dependencies.State('model-emocion-t', 'value')]
-
-    )
-def update_tweet(n_clicks, emocion):
-    #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    try:
-        if n_clicks > 0:
-            _id, user, tweet, reply_or_quote = get_random_tweet()
-            tweet_render = tweet
-            respuesta = reply_or_quote
-            if (len(str(emocion)) > 0) and (len(str(tendencia)) > 0):
-                update_tweet_dataset(_id, emocion, '')
-                return tweet_render, ''
-
-    except dash.exceptions.InvalidCallbackReturnValue as e:
-        pass
-     
-## Función deshabilitar botón de carga tweet semántica
-
-@app.callback(
-    [dash.dependencies.Output('model-boton-t', 'disabled')],
-
-    [dash.dependencies.Input('model-emocion-t', 'value')]
-    )
-def update_tweet(emocion):
-    if (emocion == ''):
-        disable = True,
-    else:
-        disable = False,
-    
-    return disable
 
 ## Función para actualizar el gráfico de torta de tweets calificados
 
 @app.callback(
     dash.dependencies.Output('model-pie', 'figure'),
-    [dash.dependencies.Input('model-boton-ct', 'n_clicks')]
+    [dash.dependencies.Input('model-boton-ct', 'n_clicks'),
+    dash.dependencies.Input('model-seleccion', 'value')]
     )
-def update_tweet(n_clicks):
-    total_sin, total_tweets = get_tweet_count()
+def update_tweet(n_clicks, pais):
+    total_sin, total_tweets = get_tweet_count(pais)
     fig = go.Figure(data=[go.Pie(labels=['Clasificado','Sin Clasificar'], values=[total_tweets - total_sin, total_sin])])
     return fig
 
+@app.callback(
+    dash.dependencies.Output('model-muestra', 'children'),
+    [dash.dependencies.Input('model-seleccion', 'value')]
+    )
+def update_tweet(pais):
+    salida = "Muestra esperada:"+str((1/6)*(1-(1/6))*int(get_tweet_count(pais)[1]))
+    return salida
 
 ###################################
 #### Página de predicción #########
@@ -470,9 +442,10 @@ def update_tweet(n_clicks):
 @app.callback(
     [dash.dependencies.Output('prediccion-tweet', 'children'),
      dash.dependencies.Output('prediccion-emocion', 'children')],
-    [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
-def update_tweet_live(n):
-    tweet=get_random_tweet()[3]
+    [dash.dependencies.Input('prediccion-interval', 'n_intervals'),
+    dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_tweet_live(n, pais):
+    tweet=get_random_tweet(pais)[3]
     emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
     emocion=label_emocion(emocion_num)
     return tweet, emocion
@@ -482,10 +455,7 @@ def update_tweet_live(n):
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_graph_live(pais):
-    if pais=='C':
-        data=obtener_base('COL')
-    # elif pais=='A':
-    #     data=obtener_base('ARG')
+    data = obtener_base(pais)
     data['prediccion']=data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
     fig = px.pie(res, values='reply_or_quote', names='prediccion')

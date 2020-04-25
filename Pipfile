@@ -29,6 +29,7 @@ dash = "*"
 dash-bootstrap-components = "*"
 sqlalchemy = "*"
 scikit-learn = "*"
+imblearn = "*"
 
 [requires]
 python_version = "3.8"
