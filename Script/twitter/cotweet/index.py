@@ -182,6 +182,9 @@ def get_random_tweet(pais):
         except errors.ServerSelectionTimeoutError as err:        
             print(err)
             continue
+        
+        except StopIteration as e:
+            print(e)
 
         finally:
             if _id:                
@@ -248,13 +251,24 @@ def get_tweet_count(pais):
 
 
 def obtener_base(Pais):
-    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
-    database = client["Grupo03"]
-    collection_dataset = database[Pais + "_dataset"]
-    data = pd.DataFrame(list(collection_dataset.find()))
-    # col = ['reply_or_quote', 'emocion']
-    # data=data[col]
-    return data    
+    data = None
+    while True:
+        try:
+            client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+            database = client["Grupo03"]
+            collection_dataset = database[Pais + "_dataset"]
+            data = pd.DataFrame(list(collection_dataset.find()))
+            # col = ['reply_or_quote', 'emocion']
+            # data=data[col]
+        except errors.ServerSelectionTimeoutError as err:
+            print(err)
+        finally:
+            if data.empty():
+                continue
+            else: break
+    
+    return data
+        
 
 
 
@@ -450,13 +464,13 @@ def update_tweet_live(n, pais):
     emocion=label_emocion(emocion_num)
     return tweet, emocion
 
-# Intervalo para mostrar el porcentae de emociones frente a los tweets
+# Pie para mostrar el porcentae de emociones frente a los tweets
 @app.callback(
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_graph_live(pais):
     data = obtener_base(pais)
-    data['prediccion']=data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
+    data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
     fig = px.pie(res, values='reply_or_quote', names='prediccion')
     return fig
@@ -469,7 +483,7 @@ def displayPage(n_clicks):
     if n_clicks:
         main_col()
         exito='El modelo ha sido calibrado - Recargar página por favor'
-    return exito
+        return exito
 
 
 
