@@ -4,7 +4,8 @@ def Navbar():
       children=[
          dbc.NavItem(dbc.NavLink("Entrenamiento", href="/apps/model")),
 	      dbc.NavItem(dbc.NavLink("Temas", href="/apps/temas")),
-         dbc.NavItem(dbc.NavLink("Modelos", href="/apps/prediccion"))
+         dbc.NavItem(dbc.NavLink("Modelos", href="/apps/prediccion")),
+         dbc.NavItem(dbc.NavLink("Top temas", href="/apps/top_temas"))
       ],
       brand="Home",
       brand_href="/",

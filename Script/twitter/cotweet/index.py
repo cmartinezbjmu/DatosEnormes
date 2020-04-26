@@ -22,6 +22,7 @@ from assets.pys.modelo_tweet_emocion_col import main as main_col
 from assets.pys.modelo_tweet_emocion_col import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
+from assets.pys.modelo_top_temas import top_temas_funcion
 import pickle
 
 cwd = os.getcwd()
@@ -33,7 +34,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, temas , prediccion
+from apps import homepage, model, temas , prediccion, top_temas
 # Barra izquierda
 from navbar import Navbar
 
@@ -324,7 +325,8 @@ def display_page(pathname):
         return temas.app.layout
     if pathname == '/apps/prediccion':
         return prediccion.app.layout
- 
+    if pathname == '/apps/top_temas':
+        return top_temas.app.layout
 
 ### Título de las páginas
 
@@ -339,7 +341,8 @@ def display_title(pathname):
         return temas.app.titulo
     if pathname == '/apps/prediccion':
         return prediccion.app.titulo
-
+    if pathname == '/apps/top_temas':
+        return top_temas.app.titulo
 
 ### Explicación de las páginas
 
@@ -354,7 +357,8 @@ def display_explanation(pathname):
         return temas.app.explanation
     if pathname == '/apps/prediccion':
         return prediccion.app.explanation
-
+    if pathname == '/apps/top_temas':
+        return top_temas.app.explanation
 ########################################################
 ########Funciones de las paǵinas########################
 ########################################################
@@ -485,6 +489,13 @@ def displayPage(n_clicks):
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
 
+# Pie para mostrar grafica de top temas
+@app.callback(
+    dash.dependencies.Output('top-temas-pie', 'figure'),
+    [dash.dependencies.Input('top-temas-seleccion', 'value')])
+def update_top_temas(pais):
+    fig = top_temas_funcion()
+    return fig
 
 
 
