@@ -6,12 +6,19 @@ import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
+import plotly.express as px
 
-def query():
-    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
-    database = client["Grupo03"]
-    collection = database["COL_dataset"]
-
+def query(pais):
+    while True:
+        try:
+            client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+            database = client["Grupo03"]
+            collection = database[pais + "_dataset"]
+        except errors.ServerSelectionTimeoutError as err:        
+            print(err)
+        finally:
+            if collection:
+                break
     query = {}
     projection = {}
     projection["reply_or_quote"] = 1.0
@@ -74,8 +81,8 @@ def display_topics(model, feature_names, no_top_words):
                         for i in topic.argsort()[:-no_top_words - 1:-1]]
     return pd.DataFrame(topic_dict)
 
-def top_temas_funcion():
-    df = query()
+def top_temas_funcion(pais):
+    df = query(pais)
     df['clean_tweet'] = df.text.apply(clean_tweet)
 
     from sklearn.feature_extraction.text import CountVectorizer

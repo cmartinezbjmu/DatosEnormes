@@ -494,7 +494,7 @@ def displayPage(n_clicks):
     dash.dependencies.Output('top-temas-pie', 'figure'),
     [dash.dependencies.Input('top-temas-seleccion', 'value')])
 def update_top_temas(pais):
-    fig = top_temas_funcion()
+    fig = top_temas_funcion(pais)
     return fig
 
 

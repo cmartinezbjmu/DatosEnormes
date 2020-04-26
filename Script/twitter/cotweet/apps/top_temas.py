@@ -24,11 +24,11 @@ app.layout = html.Div([
     html.Div([
         dcc.RadioItems(id='top-temas-seleccion',
                 options=[
-                        {'label': 'Colombia', 'value': 'C'},
-                        {'label': 'Argentina', 'value': 'A'},
+                        {'label': 'Colombia', 'value': 'COL'},
+                        {'label': 'Argentina', 'value': 'ARG'},
                         {'label': 'Mixto', 'value': 'CA'}
                     ],
-                    value='C',
+                    value='COL',
                     labelStyle={'display': 'inline-block'}
         )
     ]),
