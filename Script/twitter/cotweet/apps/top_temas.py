@@ -13,7 +13,7 @@ from bson.objectid import ObjectId
 
 app = dash.Dash(__name__)
 
-app.titulo = "Top Temas"
+app.titulo = "Top temas y hashtags"
 
 app.explanation = '''
 
@@ -32,6 +32,10 @@ app.layout = html.Div([
                     labelStyle={'display': 'inline-block'}
         )
     ]),
+    html.Div([
+        dcc.Graph(id='evol-hashtags-pie'
+                  )
+    ]), 
     html.Div([
         dcc.Graph(id='top-temas-pie'
                   )

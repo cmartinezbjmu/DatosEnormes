@@ -23,6 +23,7 @@ from assets.pys.modelo_tweet_emocion_col import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
 from assets.pys.modelo_top_temas import top_temas_funcion
+from assets.pys.evol_hashtags import evol_hastags_main
 import pickle
 
 cwd = os.getcwd()
@@ -497,7 +498,13 @@ def update_top_temas(pais):
     fig = top_temas_funcion()
     return fig
 
-
+# Pie para mostrar grafica de evolucion de hashtags
+@app.callback(
+    dash.dependencies.Output('evol-hashtags-pie', 'figure'),
+    [dash.dependencies.Input('top-temas-seleccion', 'value')])
+def update_top_temas(pais):
+    fig = evol_hastags_main()
+    return fig
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
