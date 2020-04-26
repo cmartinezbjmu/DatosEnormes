@@ -503,7 +503,7 @@ def update_top_temas(pais):
     dash.dependencies.Output('evol-hashtags-pie', 'figure'),
     [dash.dependencies.Input('top-temas-seleccion', 'value')])
 def update_top_temas(pais):
-    fig = evol_hastags_main()
+    fig = evol_hastags_main(pais)
     return fig
 
 if __name__ == '__main__':
