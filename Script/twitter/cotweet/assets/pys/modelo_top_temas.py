@@ -6,25 +6,62 @@ import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
+import plotly.express as px
 
-def query():
-    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
-    database = client["Grupo03"]
-    collection = database["COL_dataset"]
+def query(pais):
+    if pais != 'CA':
+        while True:
+            try:
+                client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+                database = client["Grupo03"]
+                collection = database[pais + "_dataset"]
+            except errors.ServerSelectionTimeoutError as err:        
+                print(err)
+            finally:
+                if collection:
+                    break
+        query = {}
+        projection = {}
+        projection["reply_or_quote"] = 1.0
 
-    query = {}
-    projection = {}
-    projection["reply_or_quote"] = 1.0
+        data = []
+        cursor = collection.find(query, projection = projection)
+        try:
+            for doc in cursor:
+                data.append([doc['_id'], doc['reply_or_quote']])
+        finally:
+            client.close()
+        df = pd.DataFrame(data,columns=['_id', 'text'])
+        return df
+    else:
+        while True:
+            try:
+                client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+                database = client["Grupo03"]
+                collection_col = database["COL_dataset"]
+                collection_arg = database["ARG_dataset"]
+            except errors.ServerSelectionTimeoutError as err:        
+                print(err)
+            finally:
+                if collection_col and collection_arg:
+                    break
+        query = {}
+        projection = {}
+        projection["reply_or_quote"] = 1.0
 
-    data = []
-    cursor = collection.find(query, projection = projection)
-    try:
-        for doc in cursor:
-            data.append([doc['_id'], doc['reply_or_quote']])
-    finally:
-        client.close()
-    df = pd.DataFrame(data,columns=['_id', 'text'])
-    return df
+        data = []
+        cursor_col = collection_col.find(query, projection = projection)
+        cursor_arg = collection_arg.find(query, projection = projection)
+        try:
+            for doc in cursor_col:
+                data.append([doc['_id'], doc['reply_or_quote']])
+            for doc in cursor_arg:
+                data.append([doc['_id'], doc['reply_or_quote']])    
+        finally:
+            client.close()
+        df = pd.DataFrame(data,columns=['_id', 'text'])
+        return df
+
 
 def remove_links(tweet):
     '''Takes a string and removes web links from it'''
@@ -74,8 +111,8 @@ def display_topics(model, feature_names, no_top_words):
                         for i in topic.argsort()[:-no_top_words - 1:-1]]
     return pd.DataFrame(topic_dict)
 
-def top_temas_funcion():
-    df = query()
+def top_temas_funcion(pais):
+    df = query(pais)
     df['clean_tweet'] = df.text.apply(clean_tweet)
 
     from sklearn.feature_extraction.text import CountVectorizer
@@ -92,7 +129,7 @@ def top_temas_funcion():
 
     from sklearn.decomposition import LatentDirichletAllocation
 
-    number_of_topics = 5
+    number_of_topics = 10
 
     model = LatentDirichletAllocation(n_components=number_of_topics, random_state=0)
     model.fit(tf)
@@ -104,7 +141,7 @@ def top_temas_funcion():
     valores = []
     pesos = []
     temas = []
-    for i in range(5):
+    for i in range(no_top_words):
         valores+= (df_topics['Topic {} words'.format(str(i))].values.tolist()) 
         pesos+= (df_topics['Topic {} weights'.format(str(i))].values.tolist()) 
         for j in range(len(df_topics['Topic {} weights'.format(str(i))].values.tolist())):
