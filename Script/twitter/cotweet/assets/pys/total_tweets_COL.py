@@ -51,17 +51,17 @@ def cuenta_total():
 
     mapper = cuenta_tweets()
     result = database.COL_tweets.map_reduce(mapper, reduce, "cant_COL")
-    collection = database["cant_COl"]
+    collection = database["cant_COL"]
     total_tweets = collection.find().count()
 
     mapper = cuenta_replys()
     result = database.COL_tweets.map_reduce(mapper, reduce, "cant_COL")
-    collection = database["cant_COl"]
+    collection = database["cant_COL"]
     total_replys = collection.find().count()
 
     mapper = cuenta_quotes()
     result = database.COL_tweets.map_reduce(mapper, reduce, "cant_COL")
-    collection = database["cant_COl"]
+    collection = database["cant_COL"]
     total_quotes = collection.find().count()
 
     return total_tweets, total_replys, total_quotes, total_tweets + total_replys + total_quotes
