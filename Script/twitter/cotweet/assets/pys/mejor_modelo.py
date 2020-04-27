@@ -54,7 +54,7 @@ def main(pais,modelo):
     ## Extraer factores binarios para modelo
     tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', encoding='latin-1', ngram_range=(1, 2))
     features = tfidf.fit_transform(df.tweet).toarray()
-    labels = df.emocion
+    labels = df[modelo]
     features.shape
 
    

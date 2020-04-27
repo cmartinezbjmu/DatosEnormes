@@ -26,6 +26,7 @@ from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
 from assets.pys.vista_coherencia import plot_coherencia
+from assets.pys.recolectar_tweets import main as recolectar_tweets
 import pickle
 import random
 
@@ -44,7 +45,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, prediccion, top_temas, influencers
+from apps import homepage, model, prediccion, top_temas, influencers, panel
 # Barra izquierda
 from navbar import Navbar
 
@@ -192,6 +193,18 @@ def label_tendencia(number):
             tendencia = tendencias[i][0]
     return tendencia
     
+coherencia=[
+    ["Si",0],
+    ["No",1]
+]
+
+
+def label_coherencia(number):
+    coherente = ''
+    for i in range(len(coherencia)):
+        if coherencia[i][1] == number:
+            coherente = coherencia[i][0]
+    return coherente
 
 def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
@@ -380,6 +393,8 @@ def display_page(pathname):
         return prediccion.app.layout
     if pathname == '/apps/top_temas':
         return top_temas.app.layout
+    if pathname == '/apps/panel':
+        return panel.app.layout
 
 ### Título de las páginas
 
@@ -396,6 +411,8 @@ def display_title(pathname):
         return prediccion.app.titulo    
     if pathname == '/apps/top_temas':
         return top_temas.app.titulo
+    if pathname == '/apps/panel':
+        return panel.app.titulo
 
 ### Explicación de las páginas
 
@@ -412,6 +429,8 @@ def display_explanation(pathname):
         return prediccion.app.explanation    
     if pathname == '/apps/top_temas':
         return top_temas.app.explanation
+    if pathname == '/apps/panel':
+        return panel.app.explanation
 ########################################################
 ########Funciones de las paǵinas########################
 ########################################################
@@ -603,40 +622,149 @@ def displayPage(pais):
 
 
 # ########## Modelo tendencia ################
-# # Pie para mostrar el porcentaje de emociones frente a los tweets
-# @app.callback(
-#     dash.dependencies.Output('prediccion-pie-t', 'figure'),
-#     [dash.dependencies.Input('prediccion-seleccion', 'value')])
-# def update_graph_live(pais):
-#     data = obtener_base(pais)
-#     data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_col.predict(loaded_vec_t_col.transform([quitar_cuentas(x)]))[0])))
-#     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
-#     fig = px.pie(res, values='reply_or_quote', names='prediccion')
-#     return fig
+# Pie para mostrar el porcentaje de emociones frente a los tweets
+@app.callback(
+    dash.dependencies.Output('prediccion-pie-t', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_col.predict(loaded_vec_t_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_arg.predict(loaded_vec_t_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_mix.predict(loaded_vec_t_mix.transform([quitar_cuentas(x)]))[0])))
+    res = data.groupby('prediccion').reply_or_quote.count().reset_index()
+    fig = px.pie(res, values='reply_or_quote', names='prediccion')
+    return fig
 
-# ## Correr el modelo de nuevo
-# @app.callback(
-#     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
-#     [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
-#      dash.dependencies.Input('prediccion-drop', 'value'),
-#      dash.dependencies.Input('prediccion-seleccion', 'value')])
-# def displayPage(n_clicks,drop,pais):
-#     if n_clicks:
-#         if pais=='COL':
-#             main_col(drop)
-#         exito='El modelo ha sido calibrado - Recargar página por favor'
-#         return exito
+# Pintar matriz de confusión
+@app.callback(
+    dash.dependencies.Output('prediccion-matriz-t', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_col.predict(loaded_vec_t_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_arg.predict(loaded_vec_t_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_mix.predict(loaded_vec_t_mix.transform([quitar_cuentas(x)]))[0])))
+    data['tendencia'] = data['tendencia'].apply(lambda x: label_tendencia(x))
+    data=data[data["tendencia"]!='']
+    res = data.groupby(['prediccion','tendencia']).count().reset_index()
+    res = res[['prediccion','tendencia','id']]
+    res.columns=['prediccion','tendencia','clasificación']
+    fig = go.Figure(data=go.Heatmap(z=res['clasificación'],x=res['tendencia'],y=res['prediccion'],colorscale='Viridis'))
+    return fig
+
+
+
+## Correr el modelo de nuevo
+@app.callback(
+    dash.dependencies.Output('prediccion-exito-modelo-t', 'children'),
+    [dash.dependencies.Input('prediccion-correr-modelo-t', 'n_clicks'),
+     dash.dependencies.Input('prediccion-drop-t', 'value'),
+     dash.dependencies.Input('prediccion-balance-t', 'value'),
+     dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(n_clicks,drop,balance,pais):
+    if n_clicks:
+        entrenar_modelo(drop,pais,'tendencia',balance)
+        exito='El modelo ha sido calibrado - Recargar página por favor'
+        return exito
     
     
-# # Box plot del mejor modelo
-# @app.callback(
-#     dash.dependencies.Output('prediccion-modelos', 'figure'),
-#     [dash.dependencies.Input('prediccion-seleccion', 'value')])
-# def displayPage(pais):
-#     data_precision= mejor_modelo(pais,'emocion')
-#     fig = px.box(data_precision, x="model_name", y="accuracy")
-#     return fig
+# Box plot del mejor modelo
+@app.callback(
+    dash.dependencies.Output('prediccion-modelos-t', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(pais):
+    data_precision= mejor_modelo(pais,'tendencia')
+    fig = px.box(data_precision, x="model_name", y="accuracy")
+    return fig
+
+############## Modelo coherencia #################################
+# Pie para mostrar el porcentaje de emociones frente a los tweets
+@app.callback(
+    dash.dependencies.Output('prediccion-pie-c', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_col.predict(loaded_vec_c_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_arg.predict(loaded_vec_c_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_mix.predict(loaded_vec_c_mix.transform([quitar_cuentas(x)]))[0])))
+    res = data.groupby('prediccion').reply_or_quote.count().reset_index()
+    fig = px.pie(res, values='reply_or_quote', names='prediccion')
+    return fig
+
+# Pintar matriz de confusión
+@app.callback(
+    dash.dependencies.Output('prediccion-matriz-c', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_col.predict(loaded_vec_c_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_arg.predict(loaded_vec_c_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_coherencia(int(clf_c_mix.predict(loaded_vec_c_mix.transform([quitar_cuentas(x)]))[0])))
+    data['coherencia'] = data['coherencia'].apply(lambda x: label_coherencia(x))
+    data=data[data["coherencia"]!='']
+    res = data.groupby(['prediccion','coherencia']).count().reset_index()
+    res = res[['prediccion','coherencia','id']]
+    res.columns=['prediccion','coherencia','clasificación']
+    fig = go.Figure(data=go.Heatmap(z=res['clasificación'],x=res['coherencia'],y=res['prediccion'],colorscale='Viridis'))
+    return fig
+
+
+
+## Correr el modelo de nuevo
+@app.callback(
+    dash.dependencies.Output('prediccion-exito-modelo-c', 'children'),
+    [dash.dependencies.Input('prediccion-correr-modelo-c', 'n_clicks'),
+     dash.dependencies.Input('prediccion-drop-c', 'value'),
+     dash.dependencies.Input('prediccion-balance-c', 'value'),
+     dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(n_clicks,drop,balance,pais):
+    if n_clicks:
+        entrenar_modelo(drop,pais,'coherencia',balance)
+        exito='El modelo ha sido calibrado - Recargar página por favor'
+        return exito
     
+    
+# Box plot del mejor modelo
+@app.callback(
+    dash.dependencies.Output('prediccion-modelos-c', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(pais):
+    data_precision= mejor_modelo(pais,'coherencia')
+    fig = px.box(data_precision, x="model_name", y="accuracy")
+    return fig
+   
 
 ##################################
 #### Página Top temas ############
@@ -701,6 +829,33 @@ def update_emociones(pais):
 def update_coherencia(pais):
     fig1, fig2 = plot_coherencia(pais)
     return fig1, fig2
+
+##################################
+#### Página Panel de control######
+##################################
+
+## Correr el modelo de nuevo desde el panel
+@app.callback(
+    dash.dependencies.Output('panel-exito', 'children'),
+    [dash.dependencies.Input('panel-correr-modelo', 'n_clicks'),
+     dash.dependencies.Input('panel-recolectar', 'n_clicks'),
+     dash.dependencies.Input('panel-modelos', 'value'),
+     dash.dependencies.Input('panel-balanceo', 'value'),
+     dash.dependencies.Input('panel-seleccion', 'value'),
+     dash.dependencies.Input('panel-tipo-modelo', 'value')])
+def displayPage(n_clicks,n_recolectar,drop,balance,pais,tipo_modelo):
+    if n_clicks:
+        entrenar_modelo(drop,pais,tipo_modelo,balance)
+        exito='Recargar página por favor'
+        return exito
+    if n_recolectar:
+        recolectar_tweets(pais)
+        exito='Recargar página por favor'
+        return exito
+
+
+
+
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
