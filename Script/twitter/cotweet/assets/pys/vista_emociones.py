@@ -148,6 +148,43 @@ def query_minsalud(pais):
         df = pd.DataFrame(data,columns=['fecha', 'user', 'tweet'])
         return df
 
+    else:
+        while True:
+            try:
+                client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+                database = client["Grupo03"]
+                collection_col = database["COL_minsalud"]
+                collection_arg = database["ARG_minsalud"]
+            except errors.ServerSelectionTimeoutError as err:        
+                print(err)
+            finally:
+                if collection_col and collection_arg:
+                    break
+
+        query = {}
+        projection = {}
+        projection["user"] = 1.0
+        projection["reply_or_quote"] = 1.0
+        projection["created_at"] = 1.0
+
+        cursor_col = collection_col.find(query, projection = projection)
+        cursor_arg = collection_arg.find(query, projection = projection)
+        data = []
+        #fecha = datetime.datetime.strptime('2020-04-01', '%Y-%m-%d') "Fri Apr 10 04:09:23 +0000 2020"
+        try:
+            for doc in cursor_col:
+                tweet_date = str(doc['created_at']).split('T')
+                tweet_date = tweet_date[0]         
+                data.append([tweet_date, doc['user'], doc['reply_or_quote']])
+
+            for doc in cursor_arg:
+                tweet_date = str(doc['created_at']).split('T')
+                tweet_date = tweet_date[0]         
+                data.append([tweet_date, doc['user'], doc['reply_or_quote']])
+        finally:
+            client.close()
+        df = pd.DataFrame(data,columns=['fecha', 'user', 'tweet'])
+        return df
 
 def plot_emociones(pais):
     clf, loaded_vec = load_model(pais)

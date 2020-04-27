@@ -63,7 +63,8 @@ app.layout = html.Div([
             html.Div([
                 dcc.Graph(id='emociones-user')
             ]),
-            html.H5('Análisis de polaridad de como se sienten los twitteros respecto al avance del virus respecto a los tweets del Ministerio de Salud'),
+            html.H5('Análisis de polaridad'),
+            html.P('Evolución de sentmientos respecto a los informes del Ministerio de Salud sobre la pandemia'),
             html.Div([
                 dcc.Graph(id='emociones-minsalud')
             ]),            
