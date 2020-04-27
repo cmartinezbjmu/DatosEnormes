@@ -41,14 +41,18 @@ app.layout = html.Div([
                         labelStyle={'display': 'inline-block'}
                     )
                 ]),
+                html.H4('Evolución de los hashtags más comentados en el último més'),
                 html.Div([
                     dcc.Graph(id='evol-hashtags-pie')
                 ]), 
+                html.H4('Top 10 de los temas más comentados en el texto de los tweets'),
                 html.Div([
                     dcc.Graph(id='top-temas-pie')
                 ]), 
             ]),
             dcc.Tab(label='Medios de comunicación', value='temas_medios', children=[
+                html.H4('Temas relacionados con medios de comunicación'),
+                html.P('Observamos la relación de los temas elegidos y que son comentados por medios de comunicación'),
                 html.Div([
                     dcc.RadioItems(id='medios-seleccion',
                         options=[

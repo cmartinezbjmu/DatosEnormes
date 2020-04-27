@@ -78,7 +78,7 @@ app.layout =  html.Div(
                         ),
                         html.Button("Calibrar modelo", id="panel-correr-modelo"),
                         html.P(
-                            "Pare obtener más tweets para el estudio hace click en el botón",
+                            "Pare obtener más tweets para el estudio haga click en el botón",
                             className="control_label",
                         ),
 
@@ -105,7 +105,7 @@ app.layout =  html.Div(
                                     className="mini_container",
                                 ),
                                 html.Div(
-                                    [html.H6(id="panel-cuentas"), html.P("No. de Usuarios")],
+                                    [html.H6(id="panel-cuentas"), html.P("Tweets de Influencers")],
                                     className="mini_container",
                                 ),
                                 html.Div(
@@ -122,8 +122,7 @@ app.layout =  html.Div(
                             className="row container-display",
                         ),
                         html.Div(
-                            [dcc.Graph(id="panel-count_graph")],
-                            id="panel-countGraphContainer",
+                            [dcc.Graph(id="panel-graph")],
                             className="pretty_container",
                         ),
                     ],

@@ -46,6 +46,7 @@ app.layout = html.Div([
     ####################################
     
     dcc.Tab(label='Sentimientos', children=[
+        html.H4('Distribución de sentimientos de los usuarios en sus comentarios o citas'),
         html.Div([
             dcc.Graph(id='prediccion-pie'
                     )
@@ -97,6 +98,7 @@ app.layout = html.Div([
     
     
     dcc.Tab(label='Tendencia', children=[
+        html.H4('Distribución de tendencia de los usuarios en sus comentarios o citas'),
         html.Div([
             dcc.Graph(id='prediccion-pie-t'
                     )
@@ -145,6 +147,7 @@ app.layout = html.Div([
     ####################################
     
     dcc.Tab(label='Coherencia', children=[
+        html.H4('Distribución de coherencia de los usuarios en sus comentarios o citas'),
         html.Div([
             dcc.Graph(id='prediccion-pie-c'
                     )
