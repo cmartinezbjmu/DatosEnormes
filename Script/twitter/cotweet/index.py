@@ -21,7 +21,7 @@ from PIL import Image
 from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
-from assets.pys.modelo_top_temas import top_temas_funcion
+from assets.pys.modelo_top_temas import top_temas_funcion, top_temas_noticieros_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
@@ -652,14 +652,22 @@ def update_top_temas(pais):
     fig = top_temas_funcion(pais)
     return fig
 
+
 # Pie para mostrar grafica de evolucion de hashtags
 @app.callback(
     dash.dependencies.Output('evol-hashtags-pie', 'figure'),
     [dash.dependencies.Input('top-temas-seleccion', 'value')])
-def update_top_temas(pais):
+def update_top_evol_temas(pais):
     fig = evol_hastags_main(pais)
     return fig
 
+# Pie para mostrar grafica de temas mencionados en noticieros
+@app.callback(
+    dash.dependencies.Output('noticieros-temas-pie', 'figure'),
+    [dash.dependencies.Input('medios-seleccion', 'value')])
+def update_top_temas(pais):
+    fig = top_temas_noticieros_funcion(pais)
+    return fig
 
 ##################################
 #### Página Tendencia ############
