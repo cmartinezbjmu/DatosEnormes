@@ -18,7 +18,6 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
-from assets.pys.modelo_tweet_emocion_col import main as main_col
 from assets.pys.modelo_tweet_emocion_col import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
@@ -28,6 +27,19 @@ from assets.pys.vista_tendencia import plot_tendencia
 import pickle
 
 cwd = os.getcwd()
+
+
+##Librerías de correr modelos
+from assets.pys.modelo_tweet_emocion_col import main as emocion_col
+from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
+
+from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
+from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
+
+from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
+from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
+
+
 
 # Librería para nube de temas
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -123,7 +135,7 @@ finally:
     client.close()
 
 
-## Cargar modelo de preficción de colombia
+## Cargar modelo de preficcióntendencia de colombia
 clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
 loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
 
