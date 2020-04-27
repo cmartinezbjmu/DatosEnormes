@@ -76,7 +76,7 @@ def query_usuarios(pais):
 def plot_followers(pais, user):
     df = pd.DataFrame(query(pais, user), columns=['usuario', 'fecha', 'No. Seguidores'])
     df = df.sort_values(by=['fecha']).reset_index()
-    fig = px.line(df, x="fecha", y="No. Seguidores", color='usuario')
+    fig = px.line(df, x="fecha", y="No. Seguidores", color='usuario', title='Histórico de seguidores')
 
     return fig
 
