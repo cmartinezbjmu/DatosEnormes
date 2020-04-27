@@ -12,32 +12,32 @@ reduce = Code("function (key, values) {"
 
 
 def cuenta_tweets():
-    map = Code("function () {"
+    mapper = Code("function () {"
             "var tweets = this.id;"                       
             "emit(tweets, 1);"
             "}")
-    return map
+    return mapper
 
 
 def cuenta_replys():
-    map = Code("function () {"            
+    mapper = Code("function () {"            
             "var tweet_replys = this.replys;"
             "tweet_replys.forEach(function(y) {"
             "emit(y['id'], 1);"
             "});" 
           "}")
     
-    return map
+    return mapper
 
 def cuenta_quotes():
-    map = Code("function () {"            
+    mapper = Code("function () {"            
                 "var tweet_quotes = this.quotes;"
                 "tweet_quotes.forEach(function(y) {"
                 "emit(y['id'], 1);"
                 "});" 
             "}")
     
-    return map
+    return mapper
 
 
 def cuenta_total():
@@ -51,15 +51,18 @@ def cuenta_total():
 
     mapper = cuenta_tweets()
     result = database.ARG_tweets.map_reduce(mapper, reduce, "cant_ARG")
+    collection = database["cant_ARG"]
     total_tweets = collection.find().count()
 
     mapper = cuenta_replys()
     result = database.ARG_tweets.map_reduce(mapper, reduce, "cant_ARG")
+    collection = database["cant_ARG"]
     total_replys = collection.find().count()
 
     mapper = cuenta_quotes()
     result = database.ARG_tweets.map_reduce(mapper, reduce, "cant_ARG")
+    collection = database["cant_ARG"]
     total_quotes = collection.find().count()
 
-    return total_tweets + total_replys + total_quotes
+    return total_tweets, total_replys, total_quotes, total_tweets + total_replys + total_quotes
 
