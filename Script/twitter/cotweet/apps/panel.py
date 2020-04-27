@@ -78,7 +78,7 @@ app.layout =  html.Div(
                         ),
                         html.Button("Calibrar modelo", id="panel-correr-modelo"),
                         html.P(
-                            "Pare obtener más tweets para el estudio hace click en el botón",
+                            "Pare obtener más tweets para el estudio haga click en el botón",
                             className="control_label",
                         ),
 
