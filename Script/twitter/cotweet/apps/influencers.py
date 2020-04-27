@@ -63,6 +63,30 @@ app.layout = html.Div([
             html.Div([
                 dcc.Graph(id='emociones-user')
             ]),
+            html.H5('Análisis de polaridad'),
+            html.P('Evolución de sentmientos respecto a los informes del Ministerio de Salud sobre la pandemia'),
+            html.Div([
+                dcc.Graph(id='emociones-minsalud')
+            ]),            
+        ]),
+        dcc.Tab(label='Coherencia', value='coherencia', children=[
+            html.Div([
+            dcc.RadioItems(id='coherencia-seleccion',
+                    options=[
+                            {'label': 'Colombia', 'value': 'COL'},
+                            {'label': 'Argentina', 'value': 'ARG'},
+                            {'label': 'Mixto', 'value': 'CA'}
+                        ],
+                        value='COL',
+                        labelStyle={'display': 'inline-block'}
+            )
+            ]),
+            html.Div([
+                dcc.Graph(id='coherencia-general')
+            ]), 
+            html.Div([
+                dcc.Graph(id='coherencia-user')
+            ]),
         ]),
     ]),
     )

@@ -25,6 +25,7 @@ from assets.pys.modelo_top_temas import top_temas_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
+from assets.pys.vista_coherencia import plot_coherencia
 import pickle
 import random
 
@@ -682,12 +683,25 @@ def update_tendencia(pais):
 # Grafica de emociones
 @app.callback(
     [dash.dependencies.Output('emociones-general', 'figure'),
-     dash.dependencies.Output('emociones-user', 'figure')],
+     dash.dependencies.Output('emociones-user', 'figure'),
+     dash.dependencies.Output('emociones-minsalud', 'figure')],
     [dash.dependencies.Input('emociones-seleccion', 'value')])
 def update_emociones(pais):
-    fig1, fig2 = plot_emociones(pais)
-    return fig1, fig2
+    fig1, fig2, fig3 = plot_emociones(pais)
+    return fig1, fig2, fig3
 
+##################################
+#### Página Coherencia ###########
+##################################
+
+# Grafica de coherencia
+@app.callback(
+    [dash.dependencies.Output('coherencia-general', 'figure'),
+     dash.dependencies.Output('coherencia-user', 'figure')],
+    [dash.dependencies.Input('coherencia-seleccion', 'value')])
+def update_coherencia(pais):
+    fig1, fig2 = plot_coherencia(pais)
+    return fig1, fig2
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
