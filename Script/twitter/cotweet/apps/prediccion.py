@@ -29,7 +29,7 @@ app.layout = html.Div([
                         {'label': 'Argentina', 'value': 'ARG'},
                         {'label': 'Mixto', 'value': 'MIX'}
                     ],
-                    value='C',
+                    value='COL',
                     labelStyle={'display': 'inline-block'}
         )
     ]),
@@ -49,6 +49,11 @@ app.layout = html.Div([
                 id='prediccion-modelos'
             )
         ]),
+        html.Div([
+            dcc.Graph(
+                id='prediccion-matriz'
+            )
+        ]),
         html.Button('Calibrar modelo', id='prediccion-correr-modelo',className='drop-izq'),
         html.Div(
             dcc.Dropdown(
@@ -62,8 +67,18 @@ app.layout = html.Div([
                             value='NB',
                             clearable=False
             ),
-        className='drop-der'),
+        className='drop-der-test'),
+        html.Div([
+        dcc.RadioItems(id='prediccion-balance',
+                options=[
+                        {'label': 'Balanceado', 'value': 1},
+                        {'label': 'Original', 'value': 0}
+                    ],
+
+                    labelStyle={'display': 'inline-block'}
+        ),
         html.H5(id='prediccion-exito-modelo'),
+    ]),
 
         ]),
     
@@ -73,33 +88,8 @@ app.layout = html.Div([
     
     
     dcc.Tab(label='Tendencia', children=[
-        html.Div([
-            dcc.Graph(id='prediccion-pie-t'
-                    )
-        ]),
-        html.H4('Box plot de precisón según los diferentes modelos'),
-        html.Div([
-            dcc.Graph(
-                id='prediccion-modelos-t'
-            )
-        ]),
-        html.Button('Calibrar modelo', id='prediccion-correr-modelo-t',className='drop-izq'),
-        html.Div(
-            dcc.Dropdown(
-                        id='prediccion-drop-t',
-                            options=[
-                                {'label': 'Naive Bayes Multinomial', 'value': 'NB'},
-                                {'label': 'Random Forest', 'value': 'RF'},
-                                {'label': 'Regresión Logística', 'value': 'LR'},
-                                {'label': 'Soporte Vectorial', 'value': 'SV'}
-                            ],
-                            value='NB',
-                            clearable=False
-            ),
-        className='drop-der'),
-        html.H5(id='prediccion-exito-modelo-t'),
 
-        
+   
         
         ]),
     ####################################
@@ -107,32 +97,6 @@ app.layout = html.Div([
     ####################################
     
     dcc.Tab(label='Coherencia', children=[
-        html.Div([
-            dcc.Graph(id='prediccion-pie-c'
-                    )
-        ]),
-        html.H4('Box plot de precisón según los diferentes modelos'),
-        html.Div([
-            dcc.Graph(
-                id='prediccion-modelos-c'
-            )
-        ]),
-        html.Button('Calibrar modelo', id='prediccion-correr-modelo-c',className='drop-izq'),
-        html.Div(
-            dcc.Dropdown(
-                        id='prediccion-drop-c',
-                            options=[
-                                {'label': 'Naive Bayes Multinomial', 'value': 'NB'},
-                                {'label': 'Random Forest', 'value': 'RF'},
-                                {'label': 'Regresión Logística', 'value': 'LR'},
-                                {'label': 'Soporte Vectorial', 'value': 'SV'}
-                            ],
-                            value='NB',
-                            clearable=False
-            ),
-        className='drop-der-c'),
-        html.H5(id='prediccion-exito-modelo'),
-
         
         
     ])
@@ -140,14 +104,6 @@ app.layout = html.Div([
     
     
 
-    # html.H4('Clasificador de tweets'),
-    # html.P(id='prediccion-tweet'),
-    # html.H5(id='prediccion-emocion'),
-    # dcc.Interval(
-    #     id='prediccion-interval',
-    #     interval=3*1000, # in milliseconds
-    #     n_intervals=0
-    # )
     
     
 ])

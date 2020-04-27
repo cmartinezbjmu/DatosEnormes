@@ -26,20 +26,13 @@ from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
 import pickle
+import random
 
 cwd = os.getcwd()
 
 
 ##Librerías de correr modelos
-# from assets.pys.modelo_tweet_emocion_col import main as emocion_col
-# from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
-
-# from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
-# from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
-
-# from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
-# from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
-
+from assets.pys.modelo_tweet import main as entrenar_modelo
 from assets.pys.mejor_modelo import main as mejor_modelo
 
 
@@ -137,12 +130,37 @@ finally:
     client.close()
 
 
-## Cargar modelo de preficcióntendencia de colombia
+## Cargar modelo de predicción
+#Emociones
 clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
 loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
 
 clf_arg = load(cwd+'/assets/pys/modelo_sentimientos_arg.joblib') 
 loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_arg.pkl", "rb")))
+
+clf_mix = load(cwd+'/assets/pys/modelo_sentimientos_mix.joblib') 
+loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_mix.pkl", "rb")))
+
+
+clf_t_col = load(cwd+'/assets/pys/modelo_tendencia_col.joblib') 
+loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_col.pkl", "rb")))
+
+clf_t_arg = load(cwd+'/assets/pys/modelo_tendencia_arg.joblib') 
+loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_arg.pkl", "rb")))
+
+clf_t_mix = load(cwd+'/assets/pys/modelo_tendencia_mix.joblib') 
+loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_mix.pkl", "rb")))
+
+clf_c_col = load(cwd+'/assets/pys/modelo_coherencia_col.joblib') 
+loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_col.pkl", "rb")))
+
+clf_c_arg = load(cwd+'/assets/pys/modelo_coherencia_arg.joblib') 
+loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_arg.pkl", "rb")))
+
+clf_c_mix = load(cwd+'/assets/pys/modelo_coherencia_mix.joblib') 
+loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_mix.pkl", "rb")))
+
+
 
 
 
@@ -490,23 +508,26 @@ def update_tweet(pais):
 #### Página de predicción #########
 ###################################
 
-# # Intervalo para mostrar tweets cada 5 segundos
-# @app.callback(
-#     [dash.dependencies.Output('prediccion-tweet', 'children'),
-#      dash.dependencies.Output('prediccion-emocion', 'children')],
-#     [dash.dependencies.Input('prediccion-interval', 'n_intervals'),
-#     dash.dependencies.Input('prediccion-seleccion', 'value')])
-# def update_tweet_live(n, pais):
-#     print('aleatorio ' + pais)
-#     tweet=get_random_tweet(pais)[3]
-#     if pais=='COL':
-#         emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
-#         emocion=label_emocion(emocion_num)
-#         return tweet, emocion
-#     elif pais=='ARG':
-#         emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
-#         emocion=label_emocion(emocion_num)
-#         return tweet, emocion
+# Intervalo para mostrar tweets cada 5 segundos
+@app.callback(
+    [dash.dependencies.Output('prediccion-tweet', 'children'),
+     dash.dependencies.Output('prediccion-emocion', 'children')],
+    [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
+def update_tweet_live(n):
+    # paises=['COL','ARG']
+    # pais=paises[random.randint(0,1)]  
+    tweet=get_random_tweet('COL')[3]
+    # if pais=='COL':
+    if tweet:
+        print(clf_col.predict(loaded_vec_col.transform([quitars_cuentas(tweet)])))
+
+        emocion_num=int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
+        emocion=label_emocion(emocion_num)
+        return tweet, emocion
+    # elif pais=='ARG':
+    #     emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
+    #     emocion=label_emocion(emocion_num)
+    #     return tweet, emocion
 
 
 ########## Modelo Emociones ################
@@ -515,12 +536,46 @@ def update_tweet(pais):
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_graph_live(pais):
-    print('gráfica ' + pais)
-    data = obtener_base(pais)
-    data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_mix.predict(loaded_vec_mix.transform([quitar_cuentas(x)]))[0])))
     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
     fig = px.pie(res, values='reply_or_quote', names='prediccion')
     return fig
+
+# Pintar matriz de confusión
+@app.callback(
+    dash.dependencies.Output('prediccion-matriz', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def update_graph_live(pais):
+    if pais=='MIX':
+        data_col= obtener_base('COL')
+        data_arg= obtener_base('ARG')
+        data=pd.concat([data_arg,data_col])
+    else:
+        data = obtener_base(pais)
+    if pais=='COL':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
+    if pais=='ARG':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(x)]))[0])))
+    if pais=='MIX':
+        data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_mix.predict(loaded_vec_mix.transform([quitar_cuentas(x)]))[0])))
+    res = data.groupby(['prediccion','emocion']).count().reset_index()
+    res = res[['prediccion','emocion','id']]
+    res.columns=['prediccion','emocion','clasificación']
+    fig = go.Figure(data=go.Heatmap(z=res['clasificación'],x=res['emocion'],y=res['prediccion'],colorscale='Viridis'))
+    return fig
+
+
 
 ## Correr el modelo de nuevo
 @app.callback(

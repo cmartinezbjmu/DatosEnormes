@@ -18,13 +18,16 @@ app.explanation = ''' Análisis de la coyuntura del Covid-19 y la percepción de
 
 app.layout = html.Div(
     [
+        html.H4('Clasificador de tweets'),
+        html.P(id='prediccion-tweet'),
+        html.H5(id='prediccion-emocion'),
+        dcc.Interval(
+            id='prediccion-interval',
+            interval=3*1000, # in milliseconds
+            n_intervals=0
+        ),
         html.H2('Temas relacionados con el Covid-19'),
         html.P('Nube de palabras con los Hashtags que se trinaron durante la toma de los datos'),
-        html.Iframe(src="https://twitframe.com/show?url=https://twitter.com/ValentinaO3009/status/1247718893109628928",
-                        style={'width':'100%',
-                               'height': 'auto'
-                               } 
-                    ),
         html.Img(src="/assets/images/home-nube.png")
     ]
     )
