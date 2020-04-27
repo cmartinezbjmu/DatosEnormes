@@ -21,6 +21,8 @@ from sklearn.model_selection import cross_val_score
 from imblearn.datasets import make_imbalance
 import sys
 import os
+from joblib import dump, load
+import pickle
 
 def quitar_cuentas(a):
     texto=" ".join(filter(lambda x:x[0]!='@', a.split()))
@@ -50,7 +52,7 @@ def query():
                 break
 
     database = client["Grupo03"]
-    collection = database["COL_dataset"]
+    collection = database["ARG_dataset"]
     query = {}
     query["tendencia"] = {
         u"$ne": u""
@@ -89,9 +91,5 @@ def main(algoritmo):
 
     clf=correr_modelo(algoritmo, X_train_tfidf, y_train)
     cwd = os.getcwd()
-
-    from joblib import dump, load
-    dump(clf, cwd + '/assets/pys/modelo_tendencia_col.joblib') 
-
-    import pickle
-    pickle.dump(count_vect.vocabulary_,open(cwd + "/assets/pys/vocabgit", 'wb'))
+    dump(clf, cwd + '/assets/pys/modelo_tendencia_arg.joblib')
+    pickle.dump(count_vect.vocabulary_,open(cwd + "/assets/pys/vocabulario_tendencia_arg.pkl", 'wb'))

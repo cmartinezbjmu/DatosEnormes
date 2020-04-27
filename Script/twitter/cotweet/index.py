@@ -36,8 +36,8 @@ from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
 from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
 from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
 
-from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
-from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
+#from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
+#from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
 
 
 
