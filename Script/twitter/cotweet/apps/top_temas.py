@@ -15,7 +15,14 @@ app = dash.Dash(__name__)
 
 app.titulo = "Top temas y hashtags"
 
-app.explanation = '''
+app.explanation = ''' En esta página se encuentra el análisis realizado a 
+                      los hashtags durante la etapa de recolección de tweets,
+                      para así analizar la duración de los hashtag más comentados
+                      y los temas más relevantes en la red. Por otra parte, 
+                      se encuentrar los top 10 temas que sehan comentado en los tweet,
+                      estos temas fueron obtenidos con el contenido de las palabras de
+                      los tweets
+                      
 
                     '''
 
