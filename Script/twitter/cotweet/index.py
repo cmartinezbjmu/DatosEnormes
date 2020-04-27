@@ -627,11 +627,12 @@ def update_tendencia(pais):
 # Grafica de emociones
 @app.callback(
     [dash.dependencies.Output('emociones-general', 'figure'),
-     dash.dependencies.Output('emociones-user', 'figure')],
+     dash.dependencies.Output('emociones-user', 'figure'),
+     dash.dependencies.Output('emociones-minsalud', 'figure')],
     [dash.dependencies.Input('emociones-seleccion', 'value')])
 def update_emociones(pais):
-    fig1, fig2 = plot_emociones(pais)
-    return fig1, fig2
+    fig1, fig2, fig3 = plot_emociones(pais)
+    return fig1, fig2, fig3
 
 
 if __name__ == '__main__':
