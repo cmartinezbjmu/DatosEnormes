@@ -94,4 +94,4 @@ def main(algoritmo)
     dump(clf, cwd + '/assets/pys/modelo_tendencia_col.joblib') 
 
     import pickle
-    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_tendencia_col.pkl","wb"))
+    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabgit 
