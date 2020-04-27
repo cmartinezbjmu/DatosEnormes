@@ -23,6 +23,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
 from assets.pys.modelo_top_temas import top_temas_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
+from assets.pys.vista_tendencia import plot_tendencia
 import pickle
 
 cwd = os.getcwd()
@@ -48,7 +49,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, temas , prediccion, top_temas
+from apps import homepage, model, tendencia, prediccion, top_temas
 # Barra izquierda
 from navbar import Navbar
 
@@ -340,8 +341,8 @@ def display_page(pathname):
         return homepage.app.layout
     if pathname == '/apps/model':
         return model.app.layout
-    if pathname == '/apps/temas':
-        return temas.app.layout
+    if pathname == '/apps/tendencia':
+        return tendencia.app.layout
     if pathname == '/apps/prediccion':
         return prediccion.app.layout
     if pathname == '/apps/top_temas':
@@ -356,8 +357,8 @@ def display_title(pathname):
         return homepage.app.titulo
     if pathname == '/apps/model':
         return model.app.titulo
-    if pathname == '/apps/temas':
-        return temas.app.titulo
+    if pathname == '/apps/tendencia':
+        return tendencia.app.titulo
     if pathname == '/apps/prediccion':
         return prediccion.app.titulo
     if pathname == '/apps/top_temas':
@@ -372,8 +373,8 @@ def display_explanation(pathname):
         return homepage.app.explanation
     if pathname == '/apps/model':
         return model.app.explanation
-    if pathname == '/apps/temas':
-        return temas.app.explanation
+    if pathname == '/apps/tendencia':
+        return tendencia.app.explanation
     if pathname == '/apps/prediccion':
         return prediccion.app.explanation
     if pathname == '/apps/top_temas':
@@ -588,6 +589,22 @@ def update_top_temas(pais):
 def update_top_temas(pais):
     fig = evol_hastags_main(pais)
     return fig
+
+
+##################################
+#### Página Tendencia ############
+##################################
+
+
+# Grafica de tendencias
+@app.callback(
+    [dash.dependencies.Output('tendencia-general', 'figure'),
+     dash.dependencies.Output('tendencia-user', 'figure')],
+    [dash.dependencies.Input('tendencia-seleccion', 'value')])
+def update_tendencia(pais):
+    fig1, fig2 = plot_tendencia(pais)
+    return fig1, fig2
+
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
