@@ -126,6 +126,11 @@ finally:
 clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
 loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
 
+clf_arg = load(cwd+'/assets/pys/modelo_sentimientos_arg.joblib') 
+loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_arg.pkl", "rb")))
+
+
+
 emociones=[["Neutro",0],
            ["Optimista",1],
            ["Triste",2],
@@ -133,7 +138,7 @@ emociones=[["Neutro",0],
            ["Sorprendido",4],
            ["Orgulloso",5]]
 
-## Poner el label de la emoción seg+un el número
+## Poner el label de la emoción según el número
 def label_emocion(number):
     emocion=''
     for i in range(len(emociones)):
@@ -253,21 +258,21 @@ def get_tweet_count(pais):
 
 
 def obtener_base(Pais):
-    data = None
-    while True:
-        try:
-            client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
-            database = client["Grupo03"]
-            collection_dataset = database[Pais + "_dataset"]
-            data = pd.DataFrame(list(collection_dataset.find()))
+    # data = None
+    # while True:
+    #     try:
+    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+    database = client["Grupo03"]
+    collection_dataset = database[Pais + "_dataset"]
+    data = pd.DataFrame(list(collection_dataset.find()))
             # col = ['reply_or_quote', 'emocion']
             # data=data[col]
-        except errors.ServerSelectionTimeoutError as err:
-            print(err)
-        finally:
-            if data.empty():
-                continue
-            else: break
+        # except errors.ServerSelectionTimeoutError as err:
+        #     print(err)
+        # finally:
+        #     if data.empty():
+        #         continue
+        #     else: break
     
     return data
         
@@ -465,11 +470,16 @@ def update_tweet(pais):
     dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_tweet_live(n, pais):
     tweet=get_random_tweet(pais)[3]
-    emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
-    emocion=label_emocion(emocion_num)
-    return tweet, emocion
+    if pais=='COL':
+        emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
+        emocion=label_emocion(emocion_num)
+        return tweet, emocion
+    elif pais=='ARG':
+        emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
+        emocion=label_emocion(emocion_num)
+        return tweet, emocion
 
-# Pie para mostrar el porcentae de emociones frente a los tweets
+# Pie para mostrar el porcentaje de emociones frente a los tweets
 @app.callback(
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
@@ -489,6 +499,11 @@ def displayPage(n_clicks):
         main_col()
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
+
+##################################
+#### Página Top temas ############
+##################################
+
 
 # Pie para mostrar grafica de top temas
 @app.callback(

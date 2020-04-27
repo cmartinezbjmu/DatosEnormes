@@ -38,12 +38,12 @@ def correr_modelo(val, X_train_tfidf, y_train):
         clf = LinearSVC()().fit(X_train_tfidf, y_train)
     return clf
 
-def main(algoritmo):
+def main():
     #Conexión con las bd de mongo
     client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
     database = client["Grupo03"]
-    collection = database["COL_tweets"]
-    collection_dataset = database["COL_dataset"]
+    collection = database["ARG_tweets"]
+    collection_dataset = database["ARG_dataset"]
     
     query = {}
     query["emocion"] = {
@@ -83,15 +83,15 @@ def main(algoritmo):
     tfidf_transformer = TfidfTransformer()
     X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
     
-    clf=correr_modelo(algoritmo, X_train_tfidf, y_train)
+    clf=correr_modelo('NB', X_train_tfidf, y_train)
     cwd = os.getcwd()
         
     from joblib import dump, load
-    dump(clf, cwd + '/assets/pys/modelo_sentimientos_col.joblib') 
+    dump(clf, cwd + '/assets/pys/modelo_sentimientos_arg.joblib') 
     
     
     import pickle
-    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_sentimientos_col.pkl","wb"))
+    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_sentimientos_arg.pkl","wb"))
     
 
 

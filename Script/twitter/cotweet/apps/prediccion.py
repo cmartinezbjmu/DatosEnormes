@@ -37,7 +37,19 @@ app.layout = html.Div([
         dcc.Graph(id='prediccion-pie'
                   )
     ]),
-    html.Button('Calibrar modelo', id='prediccion-correr-modelo'),
+    html.Button('Calibrar modelo', id='prediccion-correr-modelo',className='drop-izq'),
+    html.Div(
+        dcc.Dropdown(
+                    id='prediccion-drop',
+                        options=[
+                            {'label': 'Naive Bayes Multinomial', 'value': 'NB'},
+                            {'label': 'Random Forest', 'value': 'RF'},
+                            {'label': 'Regresión Logística', 'value': 'LR'},
+                            {'label': 'Soporte Vectorial', 'value': 'SV'}
+                        ],
+                        value='NB'
+        ),
+    className='drop-der'),
     html.H5(id='prediccion-exito-modelo'),
     html.H4('Clasificador de tweets'),
     html.P(id='prediccion-tweet'),
