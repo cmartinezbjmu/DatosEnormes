@@ -496,10 +496,12 @@ def update_graph_live(pais):
 @app.callback(
     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
     [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
-     dash.dependencies.Input('prediccion-drop', 'value')])
-def displayPage(n_clicks,drop):
+     dash.dependencies.Input('prediccion-drop', 'value'),
+     dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(n_clicks,drop,pais):
     if n_clicks:
-        main_col(drop)
+        if pais=='COL':
+            main_col(drop)
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
 
