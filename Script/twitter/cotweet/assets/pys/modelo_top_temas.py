@@ -7,6 +7,46 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
 import plotly.express as px
+import plotly.graph_objects as go
+
+def temas_noticias():
+    palabra_clave = {
+        'tema': [
+        'covid',
+        'covid-19',
+        'coronavirus ',
+        'aislamiento',
+        'cuarentena',
+        'empleo',
+        'empleos',
+        'teletrabajo',
+        'negocios',
+        'empresas',
+        'despidos',
+        'trabajo remoto',
+        'economía',
+        'industria',
+        'muerte',
+        'gobierno',
+        'presidente',
+        'pruebas',
+        'contagio',
+        'educación',
+        'liquidéz',
+        'confinamiento',
+        'e-commerce',
+        'comercio electrónico',
+        'subsidio',
+        'ayuda',
+        'miedo',
+        'alimentación',
+        'alimentos',
+        'salud ',
+        'ninguno',
+        ], 'cuenta': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    }
+    df_temas = pd.DataFrame(palabra_clave)
+    return df_temas
 
 def query(pais):
     if pais != 'CA':
@@ -111,6 +151,200 @@ def display_topics(model, feature_names, no_top_words):
                         for i in topic.argsort()[:-no_top_words - 1:-1]]
     return pd.DataFrame(topic_dict)
 
+
+def query_noticias(pais):
+    if pais != 'CA':
+        while True:
+            try:
+                client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+                database = client["Grupo03"]
+                collection = database[pais + "_dataset"]
+            except errors.ServerSelectionTimeoutError as err:        
+                print(err)
+            finally:
+                if collection:
+                    break
+        query = {}
+        query["$or"] = [
+            {
+                u"user": u"NoticiasCaracol"
+            },
+            {
+                u"user": u"RevistaSemana"
+            },
+            {
+                u"user": u"NoticiasRCN"
+            },
+            {
+                u"user": u"BluRadioCo"
+            },
+            {
+                u"user": u"lafm"
+            },
+            {
+                u"user": u"MabelLaraNews"
+            },
+        #    {
+        #        u"user": Regex(u".*eltiempo.*", "i")
+        #    },
+        #    {
+        #        u"user": Regex(u".*heliodoptero.*", "i")
+        #    },
+        #    {
+        #        u"user": Regex(u".*fdbedout.*", "i")
+        #    }
+        ]
+        query_arg = {}
+        query_arg["$or"] = [
+            {
+                u"user": u"clarincom"
+            },
+            {
+                u"user": u"LANACION"
+            },
+            {
+                u"user": u"LongobardiM"
+            },
+            {
+                u"user": u"Gatosylvestre"
+            },
+            {
+                u"user": u"JonatanViale"
+            },
+            {
+                u"user": u"C5N"
+            },
+            {
+                u"user": u"cuervotinelli"
+            },
+        ]
+        if pais == 'ARG':
+            query = query_arg
+
+        projection = {}
+        projection["tweet"] = 1.0
+        projection["user"] = 1.0
+        projection["id"] = 1.0
+
+        data = []
+        cursor = collection.find(query, projection = projection)
+        try:
+            for doc in cursor:
+                data.append([doc['id'], doc['user'], doc['tweet']])
+        finally:
+            client.close()
+
+        df = pd.DataFrame(data,columns=['id', 'user', 'tweet'])
+        df = df.drop_duplicates(['id'], keep='last')
+        return df
+    else:
+        while True:
+            try:
+                client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
+                database = client["Grupo03"]
+                collection_col = database["COL_dataset"]
+                collection_arg = database["ARG_dataset"]
+            except errors.ServerSelectionTimeoutError as err:        
+                print(err)
+            finally:
+                if collection_col and collection_arg:
+                    break
+
+        query = {}
+        query["$or"] = [
+            {
+                u"user": u"NoticiasCaracol"
+            },
+            {
+                u"user": u"RevistaSemana"
+            },
+            {
+                u"user": u"NoticiasRCN"
+            },
+            {
+                u"user": u"BluRadioCo"
+            },
+            {
+                u"user": u"lafm"
+            },
+            {
+                u"user": u"MabelLaraNews"
+            },
+        #    {
+        #        u"user": Regex(u".*eltiempo.*", "i")
+        #    },
+        #    {
+        #        u"user": Regex(u".*heliodoptero.*", "i")
+        #    },
+        #    {
+        #        u"user": Regex(u".*fdbedout.*", "i")
+        #    }
+        ]
+
+        query_arg = {}
+        query_arg["$or"] = [
+            {
+                u"user": u"clarincom"
+            },
+            {
+                u"user": u"LANACION"
+            },
+            {
+                u"user": u"LongobardiM"
+            },
+            {
+                u"user": u"Gatosylvestre"
+            },
+            {
+                u"user": u"JonatanViale"
+            },
+            {
+                u"user": u"C5N"
+            },
+            {
+                u"user": u"cuervotinelli"
+            },
+        ]
+
+        projection = {}
+        projection["tweet"] = 1.0
+        projection["user"] = 1.0
+        projection["id"] = 1.0
+
+        data = []
+        cursor_col = collection_col.find(query, projection = projection)
+        cursor_arg = collection_arg.find(query_arg, projection = projection)
+        try:
+            for doc in cursor_col:
+                data.append([doc['id'], doc['user'], doc['tweet']])
+            for doc in cursor_arg:
+                data.append([doc['id'], doc['user'], doc['tweet']])
+        finally:
+            client.close()
+
+        df = pd.DataFrame(data,columns=['id', 'user', 'tweet'])
+        df = df.drop_duplicates(['id'], keep='last')
+        return df
+
+def grafica_temas_noticias(pais):
+    df = query_noticias(pais)
+    df_temas = temas_noticias()
+    for i in range(0, len(df)):
+        tweet = df.iloc[i]['tweet']
+        for index, row in df_temas.iterrows():
+            tema = df_temas.iloc[index]['tema']
+            cuenta = df_temas.iloc[index]['cuenta']        
+            if tema in tweet:
+                df_temas.at[index,'cuenta'] = cuenta + 1
+            else:
+                df_temas.at[30,'cuenta'] = cuenta + 1
+    
+    fig = go.Figure(data=[go.Pie(labels=df_temas['tema'], values=df_temas['cuenta'], textposition='inside')])
+    return fig
+
+
+
+
 def top_temas_funcion(pais):
     df = query(pais)
     df['clean_tweet'] = df.text.apply(clean_tweet)
@@ -151,5 +385,11 @@ def top_temas_funcion(pais):
     nuevo_df['valores'] = valores
     nuevo_df['pesos'] = pesos
     nuevo_df['temas'] = temas
+
+    # Funcion que captura Pig de temas sobre cuentas de noticieros
     fig = px.treemap(nuevo_df, path=['temas', 'valores'], values='pesos')
+    return fig
+
+def top_temas_noticieros_funcion(pais):
+    fig = grafica_temas_noticias(pais)
     return fig

@@ -21,12 +21,13 @@ from PIL import Image
 from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
-from assets.pys.modelo_top_temas import top_temas_funcion
+from assets.pys.modelo_top_temas import top_temas_funcion, top_temas_noticieros_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
 from assets.pys.vista_coherencia import plot_coherencia
 from assets.pys.recolectar_tweets import main as recolectar_tweets
+from assets.pys.vista_followers import plot_followers, lista_usuarios
 import pickle
 import random
 
@@ -318,29 +319,12 @@ def get_tweet_count(pais):
 
 
 def obtener_base(Pais):
-    # data = None
-    # while True:
-    #     try:
     client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
     database = client["Grupo03"]
     collection_dataset = database[Pais + "_dataset"]
     data = pd.DataFrame(list(collection_dataset.find()))
-            # col = ['reply_or_quote', 'emocion']
-            # data=data[col]
-        # except errors.ServerSelectionTimeoutError as err:
-        #     print(err)
-        # finally:
-        #     if data.empty():
-        #         continue
-        #     else: break
     
     return data
-        
-
-
-
-
-
 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED])
@@ -779,14 +763,22 @@ def update_top_temas(pais):
     fig = top_temas_funcion(pais)
     return fig
 
+
 # Pie para mostrar grafica de evolucion de hashtags
 @app.callback(
     dash.dependencies.Output('evol-hashtags-pie', 'figure'),
     [dash.dependencies.Input('top-temas-seleccion', 'value')])
-def update_top_temas(pais):
+def update_top_evol_temas(pais):
     fig = evol_hastags_main(pais)
     return fig
 
+# Pie para mostrar grafica de temas mencionados en noticieros
+@app.callback(
+    dash.dependencies.Output('noticieros-temas-pie', 'figure'),
+    [dash.dependencies.Input('medios-seleccion', 'value')])
+def update_top_temas(pais):
+    fig = top_temas_noticieros_funcion(pais)
+    return fig
 
 ##################################
 #### Página Tendencia ############
@@ -855,6 +847,25 @@ def displayPage(n_clicks,n_recolectar,drop,balance,pais,tipo_modelo):
 
 
 
+
+##################################
+#### Página Seguidores ###########
+##################################
+
+# Lista de usuarios
+@app.callback(
+    dash.dependencies.Output('seguidores-list', 'options'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value')])
+def update_seguidores_list(pais):    
+    return [{'label':i,'value':i} for i in lista_usuarios(pais)]
+
+# Grafica de followers
+@app.callback(
+    dash.dependencies.Output('seguidores-fig', 'figure'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value'),
+    dash.dependencies.Input('seguidores-list', 'value')])
+def update_seguidores_fig(pais, user):    
+    return plot_followers(pais, user)
 
 
 if __name__ == '__main__':
