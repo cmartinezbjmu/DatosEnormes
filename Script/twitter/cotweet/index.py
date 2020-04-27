@@ -32,12 +32,13 @@ cwd = os.getcwd()
 from assets.pys.modelo_tweet_emocion_col import main as emocion_col
 from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
 
-from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
-from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
+# from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
+# from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
 
-from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
-from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
+# from assets.pys.modelo_tweet_coherencia_col import main as coherencia_col
+# from assets.pys.modelo_tweet_coherencia_arg import main as coherencia_arg
 
+from assets.pys.mejor_modelo import main as mejor_modelo
 
 
 # Librería para nube de temas
@@ -474,24 +475,26 @@ def update_tweet(pais):
 #### Página de predicción #########
 ###################################
 
-# Intervalo para mostrar tweets cada 5 segundos
-@app.callback(
-    [dash.dependencies.Output('prediccion-tweet', 'children'),
-     dash.dependencies.Output('prediccion-emocion', 'children')],
-    [dash.dependencies.Input('prediccion-interval', 'n_intervals'),
-    dash.dependencies.Input('prediccion-seleccion', 'value')])
-def update_tweet_live(n, pais):
-    print('aleatorio ' + pais)
-    tweet=get_random_tweet(pais)[3]
-    if pais=='COL':
-        emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
-        emocion=label_emocion(emocion_num)
-        return tweet, emocion
-    elif pais=='ARG':
-        emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
-        emocion=label_emocion(emocion_num)
-        return tweet, emocion
+# # Intervalo para mostrar tweets cada 5 segundos
+# @app.callback(
+#     [dash.dependencies.Output('prediccion-tweet', 'children'),
+#      dash.dependencies.Output('prediccion-emocion', 'children')],
+#     [dash.dependencies.Input('prediccion-interval', 'n_intervals'),
+#     dash.dependencies.Input('prediccion-seleccion', 'value')])
+# def update_tweet_live(n, pais):
+#     print('aleatorio ' + pais)
+#     tweet=get_random_tweet(pais)[3]
+#     if pais=='COL':
+#         emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
+#         emocion=label_emocion(emocion_num)
+#         return tweet, emocion
+#     elif pais=='ARG':
+#         emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
+#         emocion=label_emocion(emocion_num)
+#         return tweet, emocion
 
+
+########## Modelo Emociones ################
 # Pie para mostrar el porcentaje de emociones frente a los tweets
 @app.callback(
     dash.dependencies.Output('prediccion-pie', 'figure'),
@@ -516,6 +519,54 @@ def displayPage(n_clicks,drop,pais):
             main_col(drop)
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
+    
+    
+# Box plot del mejor modelo
+@app.callback(
+    dash.dependencies.Output('prediccion-modelos', 'figure'),
+    [dash.dependencies.Input('prediccion-seleccion', 'value')])
+def displayPage(pais):
+    data_precision= mejor_modelo(pais,'emocion')
+    fig = px.box(data_precision, x="model_name", y="accuracy")
+    return fig
+
+
+
+# ########## Modelo tendencia ################
+# # Pie para mostrar el porcentaje de emociones frente a los tweets
+# @app.callback(
+#     dash.dependencies.Output('prediccion-pie-t', 'figure'),
+#     [dash.dependencies.Input('prediccion-seleccion', 'value')])
+# def update_graph_live(pais):
+#     data = obtener_base(pais)
+#     data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_tendencia(int(clf_t_col.predict(loaded_vec_t_col.transform([quitar_cuentas(x)]))[0])))
+#     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
+#     fig = px.pie(res, values='reply_or_quote', names='prediccion')
+#     return fig
+
+# ## Correr el modelo de nuevo
+# @app.callback(
+#     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
+#     [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
+#      dash.dependencies.Input('prediccion-drop', 'value'),
+#      dash.dependencies.Input('prediccion-seleccion', 'value')])
+# def displayPage(n_clicks,drop,pais):
+#     if n_clicks:
+#         if pais=='COL':
+#             main_col(drop)
+#         exito='El modelo ha sido calibrado - Recargar página por favor'
+#         return exito
+    
+    
+# # Box plot del mejor modelo
+# @app.callback(
+#     dash.dependencies.Output('prediccion-modelos', 'figure'),
+#     [dash.dependencies.Input('prediccion-seleccion', 'value')])
+# def displayPage(pais):
+#     data_precision= mejor_modelo(pais,'emocion')
+#     fig = px.box(data_precision, x="model_name", y="accuracy")
+#     return fig
+    
 
 ##################################
 #### Página Top temas ############
