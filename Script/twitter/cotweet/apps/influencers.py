@@ -32,7 +32,7 @@ app.layout = html.Div([
                                 {'label': 'Argentina', 'value': 'ARG'},
                                 {'label': 'Mixto', 'value': 'CA'}
                             ],
-                            value='COL',
+                            #value='COL',
                             labelStyle={'display': 'inline-block'}
                 )
             ]),
@@ -53,7 +53,7 @@ app.layout = html.Div([
                             {'label': 'Argentina', 'value': 'ARG'},
                             {'label': 'Mixto', 'value': 'CA'}
                         ],
-                        value='COL',
+                        #value='COL',
                         labelStyle={'display': 'inline-block'}
             )
             ]),
@@ -77,7 +77,7 @@ app.layout = html.Div([
                             {'label': 'Argentina', 'value': 'ARG'},
                             {'label': 'Mixto', 'value': 'CA'}
                         ],
-                        value='COL',
+                        #value='COL',
                         labelStyle={'display': 'inline-block'}
             )
             ]),
