@@ -116,5 +116,4 @@ static_collected
 Script/twitter/cotweet/assets/images/home-nube.png
 Script/twitter/test_pymongo.py
 Script/twitter/twitter_data.json
-*.pkl
-*.joblib
+

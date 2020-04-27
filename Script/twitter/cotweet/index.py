@@ -160,6 +160,19 @@ def label_emocion(number):
             emocion=emociones[i][0]
     return emocion
     
+tendencias =[["Apoyo",0],
+             ["Contradicción",1],
+             ["Matoneo",2]]
+
+    
+def label_tendencia(number):
+    tendencia = ''
+    for i in range(len(tendencias)):
+        if tendencias[i][1] == number:
+            tendencia = tendencias[i][0]
+    return tendencia
+    
+
 def yellow_color_func(word, font_size, position, orientation, random_state=None,
                     **kwargs):
     return "hsl(0, 0%%, %d%%)" % randint(0, 10)
