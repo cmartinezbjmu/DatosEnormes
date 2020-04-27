@@ -64,6 +64,25 @@ app.layout = html.Div([
                 dcc.Graph(id='emociones-user')
             ]),
         ]),
+        dcc.Tab(label='Coherencia', value='coherencia', children=[
+            html.Div([
+            dcc.RadioItems(id='coherencia-seleccion',
+                    options=[
+                            {'label': 'Colombia', 'value': 'COL'},
+                            {'label': 'Argentina', 'value': 'ARG'},
+                            {'label': 'Mixto', 'value': 'CA'}
+                        ],
+                        value='COL',
+                        labelStyle={'display': 'inline-block'}
+            )
+            ]),
+            html.Div([
+                dcc.Graph(id='coherencia-general')
+            ]), 
+            html.Div([
+                dcc.Graph(id='coherencia-user')
+            ]),
+        ]),
     ]),
     )
 ])
