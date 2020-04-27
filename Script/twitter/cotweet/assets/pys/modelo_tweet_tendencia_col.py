@@ -74,24 +74,24 @@ def query():
     df = pd.DataFrame(data,columns=['tweet', 'tendencia'])
     return df
 
+def main(algoritmo)
+    df = query()
 
-df = query()
+    df['tendencia'] = df['tendencia'].astype('int')
+    df['tweet']=df['tweet'].apply(lambda x: quitar_cuentas(x))
 
-df['tendencia'] = df['tendencia'].astype('int')
-df['tweet']=df['tweet'].apply(lambda x: quitar_cuentas(x))
+    ## Train y test para el modelo
+    X_train, X_test, y_train, y_test = train_test_split(df['tweet'], df['tendencia'], random_state = 0)
+    count_vect = CountVectorizer()
+    X_train_counts = count_vect.fit_transform(X_train)
+    tfidf_transformer = TfidfTransformer()
+    X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-## Train y test para el modelo
-X_train, X_test, y_train, y_test = train_test_split(df['tweet'], df['tendencia'], random_state = 0)
-count_vect = CountVectorizer()
-X_train_counts = count_vect.fit_transform(X_train)
-tfidf_transformer = TfidfTransformer()
-X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+    clf=correr_modelo(algoritmo, X_train_tfidf, y_train)
+    cwd = os.getcwd()
 
-clf=correr_modelo('NB', X_train_tfidf, y_train)
-cwd = os.getcwd()
+    from joblib import dump, load
+    dump(clf, cwd + '/assets/pys/modelo_tendencia_col.joblib') 
 
-from joblib import dump, load
-dump(clf, cwd + '/assets/pys/modelo_tendencia_col.joblib') 
-
-import pickle
-pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabulario_tendencia_col.pkl","wb"))
+    import pickle
+    pickle.dump(count_vect.vocabulary_,open( cwd + "/assets/pys/vocabgit 

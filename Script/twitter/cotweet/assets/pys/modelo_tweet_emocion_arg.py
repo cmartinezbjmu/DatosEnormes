@@ -38,7 +38,7 @@ def correr_modelo(val, X_train_tfidf, y_train):
         clf = LinearSVC()().fit(X_train_tfidf, y_train)
     return clf
 
-def main():
+def main(algortimo):
     #Conexión con las bd de mongo
     client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
     database = client["Grupo03"]
@@ -83,7 +83,7 @@ def main():
     tfidf_transformer = TfidfTransformer()
     X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
     
-    clf=correr_modelo('NB', X_train_tfidf, y_train)
+    clf=correr_modelo(algortimo, X_train_tfidf, y_train)
     cwd = os.getcwd()
         
     from joblib import dump, load
