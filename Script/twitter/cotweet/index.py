@@ -26,6 +26,7 @@ from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
 from assets.pys.vista_coherencia import plot_coherencia
+from assets.pys.vista_followers import plot_followers, lista_usuarios
 import pickle
 import random
 
@@ -305,29 +306,12 @@ def get_tweet_count(pais):
 
 
 def obtener_base(Pais):
-    # data = None
-    # while True:
-    #     try:
     client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
     database = client["Grupo03"]
     collection_dataset = database[Pais + "_dataset"]
     data = pd.DataFrame(list(collection_dataset.find()))
-            # col = ['reply_or_quote', 'emocion']
-            # data=data[col]
-        # except errors.ServerSelectionTimeoutError as err:
-        #     print(err)
-        # finally:
-        #     if data.empty():
-        #         continue
-        #     else: break
     
     return data
-        
-
-
-
-
-
 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED])
@@ -515,20 +499,17 @@ def update_tweet(pais):
      dash.dependencies.Output('prediccion-emocion', 'children')],
     [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
 def update_tweet_live(n):
-    # paises=['COL','ARG']
-    # pais=paises[random.randint(0,1)]  
-    tweet=get_random_tweet('COL')[3]
-    # if pais=='COL':
-    if tweet:
-        print(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
-
+    paises=['COL','ARG']
+    pais=paises[random.randint(0,1)]  
+    tweet=get_random_tweet(pais)[3]
+    if pais=='COL':
         emocion_num=int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
         emocion=label_emocion(emocion_num)
         return tweet, emocion
-    # elif pais=='ARG':
-    #     emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
-    #     emocion=label_emocion(emocion_num)
-    #     return tweet, emocion
+    elif pais=='ARG':
+        emocion_num=int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0])
+        emocion=label_emocion(emocion_num)
+        return tweet, emocion
 
 
 ########## Modelo Emociones ################
@@ -570,6 +551,8 @@ def update_graph_live(pais):
         data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(x)]))[0])))
     if pais=='MIX':
         data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_mix.predict(loaded_vec_mix.transform([quitar_cuentas(x)]))[0])))
+    data['emocion'] = data['emocion'].apply(lambda x: label_emocion(x))
+    data=data[data["emocion"]!='']
     res = data.groupby(['prediccion','emocion']).count().reset_index()
     res = res[['prediccion','emocion','id']]
     res.columns=['prediccion','emocion','clasificación']
@@ -583,11 +566,11 @@ def update_graph_live(pais):
     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
     [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
      dash.dependencies.Input('prediccion-drop', 'value'),
+     dash.dependencies.Input('prediccion-balance', 'value'),
      dash.dependencies.Input('prediccion-seleccion', 'value')])
-def displayPage(n_clicks,drop,pais):
+def displayPage(n_clicks,drop,balance,pais):
     if n_clicks:
-        if pais=='COL':
-            main_col(drop)
+        entrenar_modelo(drop,pais,'emocion',balance)
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
     
@@ -710,6 +693,25 @@ def update_emociones(pais):
 def update_coherencia(pais):
     fig1, fig2 = plot_coherencia(pais)
     return fig1, fig2
+
+##################################
+#### Página Seguidores ###########
+##################################
+
+# Lista de usuarios
+@app.callback(
+    dash.dependencies.Output('seguidores-list', 'options'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value')])
+def update_seguidores_list(pais):    
+    return [{'label':i,'value':i} for i in lista_usuarios(pais)]
+
+# Grafica de followers
+@app.callback(
+    dash.dependencies.Output('seguidores-fig', 'figure'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value'),
+    dash.dependencies.Input('seguidores-list', 'value')])
+def update_seguidores_fig(pais, user):    
+    return plot_followers(pais, user)
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
