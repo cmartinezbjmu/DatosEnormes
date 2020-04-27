@@ -24,6 +24,7 @@ from joblib import dump, load
 from assets.pys.modelo_top_temas import top_temas_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
+from assets.pys.vista_emociones import plot_emociones
 import pickle
 
 cwd = os.getcwd()
@@ -49,7 +50,7 @@ import matplotlib.pyplot as plt
 ## Importar aplicaciones
 from app import app
 # Paǵinas de la app
-from apps import homepage, model, tendencia, prediccion, top_temas
+from apps import homepage, model, prediccion, top_temas, influencers
 # Barra izquierda
 from navbar import Navbar
 
@@ -354,8 +355,8 @@ def display_page(pathname):
         return homepage.app.layout
     if pathname == '/apps/model':
         return model.app.layout
-    if pathname == '/apps/tendencia':
-        return tendencia.app.layout
+    if pathname == '/apps/analisis':
+        return influencers.app.layout
     if pathname == '/apps/prediccion':
         return prediccion.app.layout
     if pathname == '/apps/top_temas':
@@ -370,10 +371,10 @@ def display_title(pathname):
         return homepage.app.titulo
     if pathname == '/apps/model':
         return model.app.titulo
-    if pathname == '/apps/tendencia':
-        return tendencia.app.titulo
+    if pathname == '/apps/analisis':
+        return influencers.app.titulo
     if pathname == '/apps/prediccion':
-        return prediccion.app.titulo
+        return prediccion.app.titulo    
     if pathname == '/apps/top_temas':
         return top_temas.app.titulo
 
@@ -386,10 +387,10 @@ def display_explanation(pathname):
         return homepage.app.explanation
     if pathname == '/apps/model':
         return model.app.explanation
-    if pathname == '/apps/tendencia':
-        return tendencia.app.explanation
+    if pathname == '/apps/analisis':
+        return influencers.app.explanation
     if pathname == '/apps/prediccion':
-        return prediccion.app.explanation
+        return prediccion.app.explanation    
     if pathname == '/apps/top_temas':
         return top_temas.app.explanation
 ########################################################
@@ -616,6 +617,20 @@ def update_top_temas(pais):
     [dash.dependencies.Input('tendencia-seleccion', 'value')])
 def update_tendencia(pais):
     fig1, fig2 = plot_tendencia(pais)
+    return fig1, fig2
+
+##################################
+#### Página Emociones ############
+##################################
+
+
+# Grafica de emociones
+@app.callback(
+    [dash.dependencies.Output('emociones-general', 'figure'),
+     dash.dependencies.Output('emociones-user', 'figure')],
+    [dash.dependencies.Input('emociones-seleccion', 'value')])
+def update_emociones(pais):
+    fig1, fig2 = plot_emociones(pais)
     return fig1, fig2
 
 
