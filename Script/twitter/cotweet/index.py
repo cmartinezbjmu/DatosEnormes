@@ -469,6 +469,7 @@ def update_tweet(pais):
     [dash.dependencies.Input('prediccion-interval', 'n_intervals'),
     dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_tweet_live(n, pais):
+    print('aleatorio ' + pais)
     tweet=get_random_tweet(pais)[3]
     if pais=='COL':
         emocion_num=clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0]
@@ -484,6 +485,7 @@ def update_tweet_live(n, pais):
     dash.dependencies.Output('prediccion-pie', 'figure'),
     [dash.dependencies.Input('prediccion-seleccion', 'value')])
 def update_graph_live(pais):
+    print('gráfica ' + pais)
     data = obtener_base(pais)
     data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(x)]))[0])))
     res = data.groupby('prediccion').reply_or_quote.count().reset_index()
@@ -493,10 +495,11 @@ def update_graph_live(pais):
 ## Correr el modelo de nuevo
 @app.callback(
     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
-    [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks')])
-def displayPage(n_clicks):
+    [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
+     dash.dependencies.Input('prediccion-drop', 'value')])
+def displayPage(n_clicks,drop):
     if n_clicks:
-        main_col()
+        main_col(drop)
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
 

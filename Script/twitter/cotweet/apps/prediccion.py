@@ -25,8 +25,8 @@ app.layout = html.Div([
     html.Div([
         dcc.RadioItems(id='prediccion-seleccion',
                 options=[
-                        {'label': 'Colombia', 'value': 'C'},
-                        {'label': 'Argentina', 'value': 'A'},
+                        {'label': 'Colombia', 'value': 'COL'},
+                        {'label': 'Argentina', 'value': 'ARG'},
                         {'label': 'Mixto', 'value': 'CA'}
                     ],
                     value='C',
@@ -47,7 +47,8 @@ app.layout = html.Div([
                             {'label': 'Regresión Logística', 'value': 'LR'},
                             {'label': 'Soporte Vectorial', 'value': 'SV'}
                         ],
-                        value='NB'
+                        value='NB',
+                        clearable=False
         ),
     className='drop-der'),
     html.H5(id='prediccion-exito-modelo'),
