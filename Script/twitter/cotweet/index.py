@@ -26,6 +26,7 @@ from assets.pys.evol_hashtags import evol_hastags_main
 from assets.pys.vista_tendencia import plot_tendencia
 from assets.pys.vista_emociones import plot_emociones
 from assets.pys.vista_coherencia import plot_coherencia
+from assets.pys.vista_followers import plot_followers, lista_usuarios
 import pickle
 import random
 
@@ -305,29 +306,12 @@ def get_tweet_count(pais):
 
 
 def obtener_base(Pais):
-    # data = None
-    # while True:
-    #     try:
     client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
     database = client["Grupo03"]
     collection_dataset = database[Pais + "_dataset"]
     data = pd.DataFrame(list(collection_dataset.find()))
-            # col = ['reply_or_quote', 'emocion']
-            # data=data[col]
-        # except errors.ServerSelectionTimeoutError as err:
-        #     print(err)
-        # finally:
-        #     if data.empty():
-        #         continue
-        #     else: break
     
     return data
-        
-
-
-
-
-
 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED])
@@ -701,6 +685,25 @@ def update_emociones(pais):
 def update_coherencia(pais):
     fig1, fig2 = plot_coherencia(pais)
     return fig1, fig2
+
+##################################
+#### Página Seguidores ###########
+##################################
+
+# Lista de usuarios
+@app.callback(
+    dash.dependencies.Output('seguidores-list', 'options'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value')])
+def update_seguidores_list(pais):    
+    return [{'label':i,'value':i} for i in lista_usuarios(pais)]
+
+# Grafica de followers
+@app.callback(
+    dash.dependencies.Output('seguidores-fig', 'figure'),    
+    [dash.dependencies.Input('seguidores-seleccion', 'value'),
+    dash.dependencies.Input('seguidores-list', 'value')])
+def update_seguidores_fig(pais, user):    
+    return plot_followers(pais, user)
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)

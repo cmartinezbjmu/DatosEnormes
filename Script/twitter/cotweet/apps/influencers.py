@@ -88,6 +88,27 @@ app.layout = html.Div([
                 dcc.Graph(id='coherencia-user')
             ]),
         ]),
+        dcc.Tab(label='Histórico de seguidores', value='seguidores', children=[
+            html.Div([
+            dcc.RadioItems(id='seguidores-seleccion',
+                    options=[
+                            {'label': 'Colombia', 'value': 'COL'},
+                            {'label': 'Argentina', 'value': 'ARG'},
+                        ],
+                        
+                        labelStyle={'display': 'inline-block'}
+            )
+            ]),
+            html.Div([
+                dcc.Dropdown(
+                    id='seguidores-list',                    
+                    placeholder="Selecciona un usuario",
+                )
+            ]),
+            html.Div([
+                dcc.Graph(id='seguidores-fig')
+            ]),
+        ]),
     ]),
     )
 ])
