@@ -18,7 +18,7 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
-from assets.pys.modelo_tweet_emocion_col import quitar_cuentas
+from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
 from assets.pys.modelo_top_temas import top_temas_funcion
@@ -31,8 +31,8 @@ cwd = os.getcwd()
 
 
 ##Librerías de correr modelos
-from assets.pys.modelo_tweet_emocion_col import main as emocion_col
-from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
+# from assets.pys.modelo_tweet_emocion_col import main as emocion_col
+# from assets.pys.modelo_tweet_emocion_arg import main as emocion_arg
 
 # from assets.pys.modelo_tweet_tendencia_col import main as tendencia_col
 # from assets.pys.modelo_tweet_tendencia_arg import main as tendencia_arg
