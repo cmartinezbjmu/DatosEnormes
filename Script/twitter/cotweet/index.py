@@ -24,6 +24,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
 from assets.pys.modelo_top_temas import top_temas_funcion
 from assets.pys.evol_hashtags import evol_hastags_main
+from assets.pys.vista_tendencia import plot_tendencia
 import pickle
 
 cwd = os.getcwd()
@@ -535,8 +536,8 @@ def update_top_temas(pais):
     [dash.dependencies.Output('tendencia-general', 'figure'),
      dash.dependencies.Output('tendencia-user', 'figure')],
     [dash.dependencies.Input('tendencia-seleccion', 'value')])
-def update_top_temas(pais):
-    fig1, fig2 = top_temas_funcion(pais)
+def update_tendencia(pais):
+    fig1, fig2 = plot_tendencia(pais)
     return fig1, fig2
 
 
