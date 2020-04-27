@@ -28,6 +28,8 @@ from assets.pys.vista_emociones import plot_emociones
 from assets.pys.vista_coherencia import plot_coherencia
 from assets.pys.recolectar_tweets import main as recolectar_tweets
 from assets.pys.vista_followers import plot_followers, lista_usuarios
+from assets.pys.total_tweets_ARG import cuenta_total as cuenta_arg
+from assets.pys.total_tweets_COL import cuenta_total as cuenta_col
 import pickle
 import random
 
@@ -844,10 +846,41 @@ def displayPage(n_clicks,n_recolectar,drop,balance,pais,tipo_modelo):
         recolectar_tweets(pais)
         exito='Recargar página por favor'
         return exito
+    
+## Correr el modelo de nuevo desde el panel
+@app.callback(
+    dash.dependencies.Output('panel-graph', 'figure'),
+    [dash.dependencies.Input('panel-seleccion', 'value')])
+def displayPage(pais):
+    data = obtener_base(pais)
+    res=data.groupby('user').count().reset_index()
+    fig = px.bar(res, y='tweet', x='user', text='tweet', title='Respuestas por usuario')
+    fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+    return fig    
 
-
-
-
+## Aliementar cifras de la base de datos
+@app.callback(
+    [dash.dependencies.Output('panel-tweets', 'children'),
+     dash.dependencies.Output('panel-cuentas', 'children'),
+     dash.dependencies.Output('panel-comentarios', 'children'),
+     dash.dependencies.Output('panel-citas', 'children')
+     ],
+    [dash.dependencies.Input('panel-seleccion', 'value')])
+def displayPage(pais):
+    if pais=='COL':
+        total=cuenta_col()[3]
+        total_inf=cuenta_col()[0]
+        comentario=cuenta_col()[1]
+        cita=cuenta_col()[2]
+        return total,total_inf,comentario,cita
+    if pais=='ARG':
+        total=cuenta_arg()[3]
+        total_inf=cuenta_arg()[0]
+        comentario=cuenta_arg()[1]
+        cita=cuenta_arg()[2]
+        return total,total_inf,comentario,cita
+    
+    
 ##################################
 #### Página Seguidores ###########
 ##################################

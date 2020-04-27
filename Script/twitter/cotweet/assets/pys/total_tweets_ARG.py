@@ -61,5 +61,5 @@ def cuenta_total():
     result = database.ARG_tweets.map_reduce(mapper, reduce, "cant_ARG")
     total_quotes = collection.find().count()
 
-    return total_tweets + total_replys + total_quotes
+    return total_tweets, total_replys, total_quotes, total_tweets + total_replys + total_quotes
 
