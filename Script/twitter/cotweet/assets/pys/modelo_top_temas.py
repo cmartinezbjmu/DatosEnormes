@@ -184,15 +184,15 @@ def query_noticias(pais):
             {
                 u"user": u"MabelLaraNews"
             },
-        #    {
-        #        u"user": Regex(u".*eltiempo.*", "i")
-        #    },
-        #    {
-        #        u"user": Regex(u".*heliodoptero.*", "i")
-        #    },
-        #    {
-        #        u"user": Regex(u".*fdbedout.*", "i")
-        #    }
+            {
+                u"user": u"ELTIEMPO"
+            },
+            {
+                u"user": u"HELIODOPTERO"
+            },
+            {
+                u"user": u"fdbedout"
+            }
         ]
         query_arg = {}
         query_arg["$or"] = [
@@ -270,15 +270,15 @@ def query_noticias(pais):
             {
                 u"user": u"MabelLaraNews"
             },
-        #    {
-        #        u"user": Regex(u".*eltiempo.*", "i")
-        #    },
-        #    {
-        #        u"user": Regex(u".*heliodoptero.*", "i")
-        #    },
-        #    {
-        #        u"user": Regex(u".*fdbedout.*", "i")
-        #    }
+            {
+                u"user": u"ELTIEMPO"
+            },
+            {
+                u"user": u"HELIODOPTERO"
+            },
+            {
+                u"user": u"fdbedout"
+            }
         ]
 
         query_arg = {}
