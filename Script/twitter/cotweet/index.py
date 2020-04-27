@@ -144,22 +144,22 @@ loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(o
 
 
 clf_t_col = load(cwd+'/assets/pys/modelo_tendencia_col.joblib') 
-loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_col.pkl", "rb")))
+loaded_vec_t_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_col.pkl", "rb")))
 
 clf_t_arg = load(cwd+'/assets/pys/modelo_tendencia_arg.joblib') 
-loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_arg.pkl", "rb")))
+loaded_vec_t_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_arg.pkl", "rb")))
 
 clf_t_mix = load(cwd+'/assets/pys/modelo_tendencia_mix.joblib') 
-loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_mix.pkl", "rb")))
+loaded_vec_t_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_tendencia_mix.pkl", "rb")))
 
 clf_c_col = load(cwd+'/assets/pys/modelo_coherencia_col.joblib') 
-loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_col.pkl", "rb")))
+loaded_vec_c_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_col.pkl", "rb")))
 
 clf_c_arg = load(cwd+'/assets/pys/modelo_coherencia_arg.joblib') 
-loaded_vec_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_arg.pkl", "rb")))
+loaded_vec_c_arg = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_arg.pkl", "rb")))
 
 clf_c_mix = load(cwd+'/assets/pys/modelo_coherencia_mix.joblib') 
-loaded_vec_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_mix.pkl", "rb")))
+loaded_vec_c_mix = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_coherencia_mix.pkl", "rb")))
 
 
 
@@ -520,7 +520,7 @@ def update_tweet_live(n):
     tweet=get_random_tweet('COL')[3]
     # if pais=='COL':
     if tweet:
-        print(clf_col.predict(loaded_vec_col.transform([quitars_cuentas(tweet)])))
+        print(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
 
         emocion_num=int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
         emocion=label_emocion(emocion_num)
