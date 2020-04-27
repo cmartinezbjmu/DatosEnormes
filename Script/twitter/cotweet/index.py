@@ -515,20 +515,17 @@ def update_tweet(pais):
      dash.dependencies.Output('prediccion-emocion', 'children')],
     [dash.dependencies.Input('prediccion-interval', 'n_intervals')])
 def update_tweet_live(n):
-    # paises=['COL','ARG']
-    # pais=paises[random.randint(0,1)]  
-    tweet=get_random_tweet('COL')[3]
-    # if pais=='COL':
-    if tweet:
-        print(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
-
+    paises=['COL','ARG']
+    pais=paises[random.randint(0,1)]  
+    tweet=get_random_tweet(pais)[3]
+    if pais=='COL':
         emocion_num=int(clf_col.predict(loaded_vec_col.transform([quitar_cuentas(tweet)]))[0])
         emocion=label_emocion(emocion_num)
         return tweet, emocion
-    # elif pais=='ARG':
-    #     emocion_num=clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0]
-    #     emocion=label_emocion(emocion_num)
-    #     return tweet, emocion
+    elif pais=='ARG':
+        emocion_num=int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(tweet)]))[0])
+        emocion=label_emocion(emocion_num)
+        return tweet, emocion
 
 
 ########## Modelo Emociones ################
@@ -570,6 +567,8 @@ def update_graph_live(pais):
         data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_arg.predict(loaded_vec_arg.transform([quitar_cuentas(x)]))[0])))
     if pais=='MIX':
         data['prediccion'] = data['reply_or_quote'].apply(lambda x: label_emocion(int(clf_mix.predict(loaded_vec_mix.transform([quitar_cuentas(x)]))[0])))
+    data['emocion'] = data['emocion'].apply(lambda x: label_emocion(x))
+    data=data[data["emocion"]!='']
     res = data.groupby(['prediccion','emocion']).count().reset_index()
     res = res[['prediccion','emocion','id']]
     res.columns=['prediccion','emocion','clasificación']
@@ -583,11 +582,11 @@ def update_graph_live(pais):
     dash.dependencies.Output('prediccion-exito-modelo', 'children'),
     [dash.dependencies.Input('prediccion-correr-modelo', 'n_clicks'),
      dash.dependencies.Input('prediccion-drop', 'value'),
+     dash.dependencies.Input('prediccion-balance', 'value'),
      dash.dependencies.Input('prediccion-seleccion', 'value')])
-def displayPage(n_clicks,drop,pais):
+def displayPage(n_clicks,drop,balance,pais):
     if n_clicks:
-        if pais=='COL':
-            main_col(drop)
+        entrenar_modelo(drop,pais,'emocion',balance)
         exito='El modelo ha sido calibrado - Recargar página por favor'
         return exito
     
