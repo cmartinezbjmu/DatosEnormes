@@ -17,14 +17,14 @@ app.explanation = ''' Análisis de la coyuntura del Covid-19 y la percepción de
 		     a traves de algoritmos de Inteligencia Artifical y herramientas de Big Data  '''
 
 app.layout = html.Div(
-    [
+    [   
         html.H2('Temas relacionados con el Covid-19'),
         html.P('Nube de palabras con los Hashtags que se trinaron durante la toma de los datos'),
-        html.Iframe(src="https://twitframe.com/show?url=https://twitter.com/ValentinaO3009/status/1247718893109628928",
-                        style={'width':'100%',
-                               'height': 'auto'
-                               } 
-                    ),
+        #html.Iframe(src="https://twitframe.com/show?url=https://twitter.com/ValentinaO3009/status/1247718893109628928",
+        #                style={'width':'100%',
+        #                       'height': 'auto'
+        #                       } 
+        #            ),
         html.Img(src="/assets/images/home-nube.png")
     ]
     )
