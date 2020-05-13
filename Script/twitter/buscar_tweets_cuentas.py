@@ -21,16 +21,18 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-cuentas = ['ivanduque', 'claudialopez', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
-           'revistasemana', 'noticiascaracol', 'noticiasrcn', 'bluradioco',
-           'lafm', 'mabellaranews', 'petrogustavo', 'eltiempo', 'gustavobolivar', 
-           'jerobledo', 'heliodoptero', 'fdbedout', 'alvarouribevel', 'cedemocratico']
-
-cuentas_arg = ['alferdez', 'horaciorlarreta', 'msalnacion',
-               'CFKArgentina', 'clarincom', 'LANACION', 'LongobardiM',
-               'Gatosylvestre', 'JonatanViale', 'SergioMassa', 'proargentina',
-               'mauriciomacri', 'FpVNacional', 'UBARectorado', 'mariuvidal',
-               'C5N', 'Kicillofok', 'cuervotinelli', 'PatoBullrich', 'marioraulnegri']
+cuentas = ['infopresidencia', 'SenadoGovCo', 'AABenedetti', 'minsaludcol', 'CristoBustos', 
+'velascoluisf', 'GNavasTalero', 'DavidRacero', 'intiasprilla', 'Bogota', 'AlcaldiadeMed', 
+'AlcaldiaDeCali', 'AlcaldiaCTG', 'SectorSalud', 'SaludAntioquia', 'secsaludvalle', 'GobAntioquia', 
+'GobValle', 'AlcaldiaBGA', 'CundinamarcaGob', 'MinHacienda', 'colombiacompra', 'MintrabajoCol', 
+'GobChoco', 'Goberamazonas', 'noticiascaracol', 'noticiasrcn', 'NoticiasUno', 'bluradioco', 'lafm', 
+'eltiempo', 'elespectador', 'revistasemana', 'WRadioColombia', 'alvarouribevel', 'fdbedout', 
+'heliodoptero', 'jerobledo', 'petrogustavo', 'ivanduque', 'claudialopez', 'jorgeivanospina', 
+'quinterocalle', 'MJDuzan', 'VickyDavilaH', 'CaracolRadio', 'jsanchezcristo', 'HassNassar', 'lcvelez', 
+'YolandaRuizCe', 'ZuluagaCamila', 'Citytv', 'MiguelPoloP', 'GustavoBolivar', 'PizarroMariaJo', 
+'AngelicaLozanoC', 'MafeCarrascal', 'CathyJuvinao', 'RoyBarreras', 'PGN_COL', 'DNP_Colombia', 
+'CGR_Colombia', 'PublimetroCol', 'sergio_fajardo', 'cedemocratico', 'mabellaranews',
+'LevyRincon', 'DANE_Colombia', 'tobonsanin']
 
 def retrieve_replied_tweet(id_tweet):
     resultado = None
