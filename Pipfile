@@ -32,6 +32,9 @@ scikit-learn = "*"
 imblearn = "*"
 feedparser = "*"
 sparqlwrapper = "*"
+numpy = "*"
+scipy = "*"
+sematch = "*"
 
 [requires]
 python_version = "3.8"
