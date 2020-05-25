@@ -25,10 +25,12 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-cuentas = ['ivanduque', 'claudialopez', 'jorgeivanospina', 'quinterocalle', 'minsaludcol',
-           'revistasemana', 'noticiascaracol', 'noticiasrcn', 'bluradioco',
-           'lafm', 'mabellaranews', 'petrogustavo', 'eltiempo', 'gustavobolivar', 
-           'jerobledo', 'heliodoptero', 'fdbedout', 'alvarouribevel', 'cedemocratico']
+cuentas = ['infopresidencia', 'SenadoGovCo', 'AABenedetti', 'minsaludcol', 'CristoBustos', 
+'velascoluisf', 'GNavasTalero', 'DavidRacero', 'intiasprilla', 'Bogota', 'AlcaldiadeMed', 
+'AlcaldiaDeCali', 'AlcaldiaCTG', 'SectorSalud', 'SaludAntioquia', 'secsaludvalle', 'GobAntioquia', 
+'GobValle', 'AlcaldiaBGA', 'CundinamarcaGob', 'MinHacienda', 'colombiacompra', 'MintrabajoCol', 
+'GobChoco', 'Goberamazonas', 'noticiascaracol', 'noticiasrcn', 'NoticiasUno', 'bluradioco', 'lafm', 
+'eltiempo', 'elespectador', 'revistasemana', 'WRadioColombia', 'alvarouribevel', 'fdbedout']
 
 cuentas_arg = ['alferdez', 'horaciorlarreta', 'msalnacion',
                'CFKArgentina', 'clarincom', 'LANACION', 'LongobardiM',
@@ -69,7 +71,7 @@ def retrieve_replied_tweet(id_tweet):
 def retrieve_initial_tweets(screen_name):
     replys = []
     yesterday = datetime.date.today() - datetime.timedelta(1)
-    for tweet in tweepy.Cursor(api.search, q='{}'.format(screen_name), lang="es", tweet_mode='extended').items(5000):
+    for tweet in tweepy.Cursor(api.search, q='{}'.format(screen_name), lang="es", tweet_mode='extended').items(10):
         tweet_date = datetime.datetime.strptime(tweet._json['created_at'], '%a %b %d %H:%M:%S %z %Y')
             # Filtro por tweets del dia anterior
         if tweet_date.date() == yesterday:
@@ -226,8 +228,8 @@ for i in cuentas:
                                                                 }, indent=4, ensure_ascii=False))
                     except KeyError as e:
                         continue
-                json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
-                json_result['quotes'] = retrieve_all_quotes(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
+                #json_result['replys'] = retrieve_all_replys(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
+                #json_result['quotes'] = retrieve_all_quotes(tweet._json['id'], tweet._json['user']['id'], initial_tweets)
                 #print(json.dumps(json_result, ensure_ascii=False).encode('utf8').decode())
                 post_id = collection.insert_one(json_result).inserted_id
                 print('Termino: ' + i)
