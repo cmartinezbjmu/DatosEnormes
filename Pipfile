@@ -33,6 +33,8 @@ imblearn = "*"
 feedparser = "*"
 sparqlwrapper = "*"
 beautifulsoup4 = "*"
-
+numpy = "*"
+scipy = "*"
+sematch = "*"
 [requires]
 python_version = "3.8"
