@@ -7,12 +7,13 @@ politicos = ['Sergio_Fajardo', 'Álvaro_Uribe', 'Armando_Benedetti', 'Juan_Ferna
 periodistas = ['Félix_de_Bedout', 'Mábel_Lara', 'Gilberto_Tobón_Sanín', 'Yolanda_Ruiz', 'Camila_Zuluaga', 'Gonzalo_Guillén', 'María_Jimena_Duzán', 'Vicky_Dávila']
 
 def buscar_relaciones_politicas(politico):
-    query = '''PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> \
-                SELECT ?Nombre ?Thumbnail WHERE { \
-                ?name <http://dbpedia.org/ontology/party> ?party . \
-                <http://es.dbpedia.org/resource/%s> <http://dbpedia.org/ontology/party> ?party . \
-                ?name rdfs:label ?Nombre . \
-                ?name dbpedia-owl:thumbnail ?Thumbnail .
+    query = '''PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>  \
+            SELECT * WHERE { \
+            ?name <http://dbpedia.org/ontology/party> ?party . \
+            <http://es.dbpedia.org/resource/Gustavo_Petro> <http://dbpedia.org/ontology/party> ?party . \
+            ?name rdfs:label ?Nombre . \
+            OPTIONAL {?name dbpedia-owl:thumbnail ?Thumbnail }. \
+            OPTIONAL {?name <http://es.dbpedia.org/property/cónyuge> ?Conyugue }. \
             }'''% (politico)
 
     sparql = SPARQLWrapper("http://es.dbpedia.org/sparql")
