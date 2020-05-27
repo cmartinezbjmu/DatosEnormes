@@ -11,30 +11,10 @@ from time import sleep
 from bson.objectid import ObjectId
 
 
-emociones=[["Neutro",0],
-           ["Optimista",1],
-           ["Triste",2],
-           ["Enojo",3],
-           ["Sorprendido",4],
-           ["Orgulloso",5]]
-
-
-tendencia=[
-    ["Apoyo",0],
-    ["Contradicción",1],
-    ["Matoneo",2] 
-]
-
-coherencia=[
-    ["Si",0],
-    ["No",1]
-]
-
-
 
 app = dash.Dash(__name__)
 
-app.titulo = "Entrenamiento del modelo"
+app.titulo = "Modelos de Similitud Semántica"
 
 app.explanation = '''
                     En la siguiente aplicación podrás darnos tus opiniones y ayudar a entrenar el modelo de inteligencia artificial
@@ -49,5 +29,20 @@ app.explanation = '''
 
 
 app.layout = html.Div([
+    html.Div([
+        html.H3('Distribución de lugares'),
+        dcc.Graph(
+            id='model-pietemas',
+        ),
+        html.Button(id='model-buttemas',children="Calibrar Lugares")
+    ],className='drop-der-test'),
+    html.Div([
+        html.H3('Distribución de lugares'),
+        dcc.Graph(
+            id='model-pieciudades'
+        ),
+        html.Button(id='model-butciudades',children="Calibrar Lugares")
+    ],className='drop-izq'),    
+    
 
 ])

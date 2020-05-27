@@ -18,28 +18,14 @@ from random import randint
 from bson.objectid import ObjectId
 from time import sleep
 from PIL import Image
+from assets.pys.read_rss import  main as read_rss
 from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from joblib import dump, load
-from assets.pys.modelo_top_temas import top_temas_funcion, top_temas_noticieros_funcion
-from assets.pys.evol_hashtags import evol_hastags_main
-from assets.pys.vista_tendencia import plot_tendencia
-from assets.pys.vista_emociones import plot_emociones
-from assets.pys.vista_coherencia import plot_coherencia
-from assets.pys.recolectar_tweets import main as recolectar_tweets
-from assets.pys.vista_followers import plot_followers, lista_usuarios
-from assets.pys.total_tweets_ARG import cuenta_total as cuenta_arg
-from assets.pys.total_tweets_COL import cuenta_total as cuenta_col
 import pickle
 import random
 
 cwd = os.getcwd()
-
-
-##Librerías de correr modelos
-from assets.pys.modelo_tweet import main as entrenar_modelo
-from assets.pys.mejor_modelo import main as mejor_modelo
-
 
 # Librería para nube de temas
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -53,7 +39,6 @@ from apps import homepage, model, prediccion, top_temas, influencers, panel
 from navbar import Navbar
 
 
-#### Crear nube de temas del home
 
 # Relizar consultas a la base de datos
 
@@ -64,126 +49,10 @@ import random
 
 client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/", retryWrites=False)
 database = client["Grupo03"]
-collection = database["COL_tweets"]
-collection_dataset = database["COL_dataset"]
-
-# Extraemos hashtags de los influenciadores
-query = {}
-query["hashtags"] = {
-    u"$gt": {
-        u"$size": 0.0
-    }
-}
-
-
-projection = {}
-projection["hashtags"] = 1.0
-
-cursor = collection.find(query, projection = projection)
-data = []
-try:
-    for doc in cursor:
-        for i in range(len(doc['hashtags'])):
-            data.append(doc['hashtags'][i]['text'].lower())
-finally:
-    client.close()
-
-# Extraemos hashtags de los comentarios
-query = {}
-query["replys.id"] = {
-    u"$exists": True
-}
-query["replys.hashtags"] = {
-    u"$ne": u""
-}
-
-projection = {}
-projection["replys.hashtags"] = 1.0
-
-cursor = collection.find(query, projection = projection)
-#data = []
-try:
-    for doc in cursor:
-        for i in range(len(doc['replys'])):
-            if len(doc['replys'][i]['hashtags']) > 0:
-                for j in range(len(doc['replys'][i]['hashtags'])):
-                    data.append(doc['replys'][i]['hashtags'][j]['text'].lower())
-finally:
-    client.close()
-
-# Extraemos hashtags de las citas
-query = {}
-query["quotes.id"] = {
-    u"$exists": True
-}
-query["quotes.hashtags"] = {
-    u"$ne": u""
-}
-
-projection = {}
-projection["quotes.hashtags"] = 1.0
-
-cursor = collection.find(query, projection = projection)
-#data = []
-try:
-    for doc in cursor:
-        for i in range(len(doc['quotes'])):
-            if len(doc['quotes'][i]['hashtags']) > 0:
-                for j in range(len(doc['quotes'][i]['hashtags'])):
-                    data.append(doc['quotes'][i]['hashtags'][j]['text'].lower())
-finally:
-    client.close()
-
-
 ## Cargar modelo de predicción
 #Emociones
-clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
-loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
-
-
-emociones=[["Neutro",0],
-           ["Optimista",1],
-           ["Triste",2],
-           ["Enojo",3],
-           ["Sorprendido",4],
-           ["Orgulloso",5]]
-
-## Poner el label de la emoción según el número
-def label_emocion(number):
-    emocion=''
-    for i in range(len(emociones)):
-        if emociones[i][1]==number:
-            emocion=emociones[i][0]
-    return emocion
-    
-tendencias =[["Apoyo",0],
-             ["Contradicción",1],
-             ["Matoneo",2]]
-
-    
-def label_tendencia(number):
-    tendencia = ''
-    for i in range(len(tendencias)):
-        if tendencias[i][1] == number:
-            tendencia = tendencias[i][0]
-    return tendencia
-    
-coherencia=[
-    ["Si",0],
-    ["No",1]
-]
-
-
-def label_coherencia(number):
-    coherente = ''
-    for i in range(len(coherencia)):
-        if coherencia[i][1] == number:
-            coherente = coherencia[i][0]
-    return coherente
-
-def yellow_color_func(word, font_size, position, orientation, random_state=None,
-                    **kwargs):
-    return "hsl(0, 0%%, %d%%)" % randint(0, 10)
+# clf_col = load(cwd+'/assets/pys/modelo_sentimientos_col.joblib') 
+# loaded_vec_col = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_sentimientos_col.pkl", "rb")))
 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED])
@@ -277,6 +146,29 @@ def display_explanation(pathname):
 ########################################################
 ########Funciones de las paǵinas########################
 ########################################################
+
+##############################
+##### Panel de control #######
+##############################
+
+
+############
+# Botón RSS
+
+@app.callback(
+    dash.dependencies.Output('panel-exito', 'children'),
+    [dash.dependencies.Input('panel-rss', 'n_clicks'),
+     dash.dependencies.Input('panel-tweets', 'n_clicks')])
+def displayPage(n_rss,n_recolectar,drop,balance,pais,tipo_modelo):
+    if n_rss:
+        read_rss()
+        exito='Recargar página por favor'
+        return exito
+    if n_recolectar:
+        recolectar_tweets(pais)
+        exito='Recargar página por favor'
+        return exito
+
 
 
 

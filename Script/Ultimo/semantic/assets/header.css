@@ -59,19 +59,19 @@ img {
 .drop-izq {
     float: inherit;
     padding: 10px;
-    width: 50%;
+    width: 45%;
 }
 
 .drop-der {
     float: inherit;
     padding: 10px;
-    width: 50%;
+    width: 45%;
 }
 
 .drop-der-test {
     float: left;
     padding: 2px;
-    width: 50%;
+    width: 45%;
 }
 
 .fullsize

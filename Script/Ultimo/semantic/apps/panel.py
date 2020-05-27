@@ -30,59 +30,23 @@ app.layout =  html.Div(
                 html.Div(
                     [
                         html.P(
-                            "Escoja el país para obtener los datos más relevantes",
+                            "Click en el botón correspondiente para obtener los datos más relevantes",
                             className="control_label",
                         ),
-                        dcc.RadioItems(
-                            id="panel-seleccion",
-                            options=[
-                                {"label": "Colombia ", "value": "COL"},
-                                {"label": "Argentina ", "value": "ARG"},
-                            ],
-                            value="active",
-                            labelStyle={"display": "inline-block"},
-                            className="dcc_control",
-                        ),
-                        dcc.Checklist(
-                            id="panel-balanceo",
-                            options=[{"label": "Balancear muestra", "value": 1}],
-                            className="dcc_control",
-                            value=[],
-                        ),
-                        dcc.Dropdown(
-                            id="panel-tipo-modelo",
-                            options=[
-                                {'label': 'Modelo de Sentimientos', 'value': 'emocion'},
-                                {'label': 'Modelo de Tendencia', 'value': 'tendencia'},
-                                {'label': 'Modelo de coherencia', 'value': 'coherencia'},
-                            ],
-                            placeholder="¿Qué modelo quieres re-entrenar?",
-                            clearable=False,
-                            className="dcc_control",
-                        ),
-                        dcc.Dropdown(
-                            id="panel-modelos",
-                            options=[
-                                {'label': 'Naive Bayes Multinomial', 'value': 'NB'},
-                                {'label': 'Random Forest', 'value': 'RF'},
-                                {'label': 'Regresión Logística', 'value': 'LR'},
-                                {'label': 'Soporte Vectorial', 'value': 'SV'}
-                            ],
-                            placeholder="Escoje el algoritmo ",
-                            clearable=False,
-                            className="dcc_control",
-                        ),
+                        html.Button("Recolectar RSS", id="panel-rss", className='dcc_control'),
                         html.P(
-                            "Pare re - entrenar los modelos haga click en el botón",
+                            "Seleccione el volumen de captura y click en el botón para obtener los datos más relevantes",
                             className="control_label",
                         ),
-                        html.Button("Calibrar modelo", id="panel-correr-modelo"),
-                        html.P(
-                            "Pare obtener más tweets para el estudio haga click en el botón",
-                            className="control_label",
+                        dcc.Slider(
+                            id="panel-slider-tw",
+                            min=0,
+                            max=20,
+                            step=0.5,
+                            value=10,
+                            className="dcc_control",
                         ),
-
-                        html.Button("Recolectar tweets", id="panel-recolectar"),
+                        html.Button("Recolectar tweets", id="panel-tweet", className='dcc_control'),
                         html.P(
                             id='panel-exito',
                             className="control_label",
@@ -101,19 +65,19 @@ app.layout =  html.Div(
                                 
                                 
                                 html.Div(
-                                    [html.H6(id="panel-tweets"), html.P("No. de Tweets")],
+                                    [html.H6(id="panel-documentos"), html.P("No. de Documentos")],
                                     className="mini_container",
                                 ),
                                 html.Div(
-                                    [html.H6(id="panel-cuentas"), html.P("Tweets de Influencers")],
+                                    [html.H6(id="panel-temas"), html.P("Temas")],
                                     className="mini_container",
                                 ),
                                 html.Div(
-                                    [html.H6(id="panel-comentarios"), html.P("Comentarios")],
+                                    [html.H6(id="panel-fuentes"), html.P("No de fuentes")],
                                     className="mini_container",
                                 ),
                                                                 html.Div(
-                                    [html.H6(id="panel-citas"), html.P("Citas")],
+                                    [html.H6(id="panel-lugares"), html.P("Lugares")],
                                     className="mini_container",
                                 ),
 
