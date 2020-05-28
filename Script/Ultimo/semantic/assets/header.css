@@ -57,7 +57,7 @@ img {
 }
 
 .drop-izq {
-    float: inherit;
+    float: right;
     padding: 10px;
     width: 45%;
 }
@@ -65,13 +65,13 @@ img {
 .drop-der {
     float: inherit;
     padding: 10px;
-    width: 45%;
+    width: 50%;
 }
 
 .drop-der-test {
     float: left;
     padding: 2px;
-    width: 45%;
+    width: 50%;
 }
 
 .fullsize
