@@ -36,5 +36,8 @@ beautifulsoup4 = "*"
 numpy = "*"
 scipy = "*"
 sematch = "*"
+spacy = "*"
+"es-core-news-sm==2-2-5" = {file = "https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-2.2.5/es_core_news_sm-2.2.5.tar.gz"}
+
 [requires]
 python_version = "3.8"

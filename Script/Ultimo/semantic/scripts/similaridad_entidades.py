@@ -9,13 +9,13 @@ entity_sim = EntitySimilarity()
 
 def similitud_influencers():
 
-    politicos = ['Sergio_Fajardo', 'Álvaro_Uribe', 'Armando_Benedetti', 'Juan_Fernando_Cristo', 'Luis_Fernando_Velasco',
-                'Germán_Navas_Talero', 'Angélica_Lozano', 'Gustavo_Petro', 'Roy_Barreras', 'Gustavo_Bolívar',
-                'María_José_Pizarro', 'Jorge_Enrique_Robledo', 'Iván_Duque_Márquez', 'Claudia_López_Hernández',
-                'Jorge_Iván_Ospina', 'Daniel_Quintero', 'Félix_de_Bedout', 'Mábel_Lara', 'Gilberto_Tobón_Sanín', 
-                'Yolanda_Ruiz', 'Camila_Zuluaga', 'Gonzalo_Guillén', 'María_Jimena_Duzán', 'Vicky_Dávila']
+#    politicos = ['Sergio_Fajardo', 'Álvaro_Uribe', 'Armando_Benedetti', 'Juan_Fernando_Cristo', 'Luis_Fernando_Velasco',
+#                'Germán_Navas_Talero', 'Angélica_Lozano', 'Gustavo_Petro', 'Roy_Barreras', 'Gustavo_Bolívar',
+#                'María_José_Pizarro', 'Jorge_Enrique_Robledo', 'Iván_Duque_Márquez', 'Claudia_López_Hernández',
+#                'Jorge_Iván_Ospina', 'Daniel_Quintero', 'Félix_de_Bedout', 'Mábel_Lara', 'Gilberto_Tobón_Sanín', 
+#                'Yolanda_Ruiz', 'Camila_Zuluaga', 'Gonzalo_Guillén', 'María_Jimena_Duzán', 'Vicky_Dávila']
 
-    #politicos = ['Sergio_Fajardo', 'Álvaro_Uribe', 'Armando_Benedetti', 'Juan_Fernando_Cristo', 'Luis_Fernando_Velasco']                
+    politicos = ['Sergio_Fajardo', 'Álvaro_Uribe']
 
     similitudes = []
     for persona in politicos:
