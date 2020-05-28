@@ -31,5 +31,6 @@ app.layout = html.Div([
                   #html.Button('Generar gráfico', id='network_politicos_button',className='drop-izq'),
                   dcc.Graph(id='network_politicos_fig', 
                             # figure=similitud_influencers()
-                            )
+                            ),
+                  html.P(id='network_seleccion')
 ])

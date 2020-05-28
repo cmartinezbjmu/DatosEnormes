@@ -187,6 +187,17 @@ def network_politicos_figura(n_clicks):
         fig = crear_network_map(politicos)
         return fig
 
+@app.callback(
+    dash.dependencies.Output('network_seleccion', 'children'),
+    [dash.dependencies.Input('network_politicos_fig', 'clickData')]
+)
+def network_politicos_seleccion(clickData):
+    points=json.dumps(clickData, indent=2)
+    texto=json.loads(points)["points"][0]["text"]
+    return texto
+    
+
+
 
 
 if __name__ == '__main__':
