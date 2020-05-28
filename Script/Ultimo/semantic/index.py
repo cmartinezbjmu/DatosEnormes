@@ -21,6 +21,7 @@ from PIL import Image
 from assets.pys.read_rss import  main as read_rss
 from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
+from scripts.grafica_por_partido_politico import crear_network_map
 from joblib import dump, load
 import pickle
 import random
@@ -169,6 +170,22 @@ def displayPage(n_rss,n_recolectar,drop,balance,pais,tipo_modelo):
         exito='Recargar página por favor'
         return exito
 
+
+##############
+# Network politicos
+
+@app.callback(
+    dash.dependencies.Output('network_politicos_fig', 'figure'),
+    [dash.dependencies.Input('network_politicos_button', 'n_clicks')]
+)
+def network_politicos_figura(n_clicks):
+    if n_clicks:
+        politicos = ["Gustavo_Petro", "Sergio_Fajardo", "Álvaro_Uribe", "Armando_Benedetti", "Juan_Fernando_Cristo", "Luis_Fernando_Velasco",
+            "Germán_Navas_Talero", "Angélica_Lozano", "Roy_Barreras", "Gustavo_Bolívar",
+            "María_José_Pizarro", "Jorge_Enrique_Robledo", "Iván_Duque_Márquez", "Claudia_López_Hernández",
+            "Jorge_Iván_Ospina", "Daniel_Quintero"]
+        fig = crear_network_map(politicos)
+        return fig
 
 
 

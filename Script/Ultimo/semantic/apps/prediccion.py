@@ -26,8 +26,10 @@ app.explanation = ''' En esta página se encuentran los resúmenes
                       (balancear o mantener base original)
 
                     '''
-
-
 app.layout = html.Div([
-
+                  html.Button(id='network_politicos_button',children="Generar gráfico"),
+                  #html.Button('Generar gráfico', id='network_politicos_button',className='drop-izq'),
+                  dcc.Graph(id='network_politicos_fig', 
+                            # figure=similitud_influencers()
+                            )
 ])

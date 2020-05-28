@@ -1,3 +1,4 @@
+# https://plotly.com/python/network-graphs/
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 politicos = ["Gustavo_Petro"]
@@ -23,15 +24,12 @@ def buscar_relaciones_politicas(politico):
     result = sparql.query().convert()
     return result["results"]["bindings"]
 
-
-relaciones_politicas = dict()
-for politico in politicos:
-    resultados = buscar_relaciones_politicas(politico)
-    p = []
-    for resultado in resultados:
-        p.append(resultado["Nombre"]['value'])
-    relaciones_politicas[politico.replace('_', ' ')]=p
-print(relaciones_politicas)
-
-
-# https://plotly.com/python/network-graphs/
+def relaciones_politicas_map(politicos):
+    relaciones_politicas = dict()
+    for politico in politicos:
+        resultados = buscar_relaciones_politicas(politico)
+        p = []
+        for resultado in resultados:
+            p.append(resultado["Nombre"]['value'])
+        relaciones_politicas[politico.replace('_', ' ')]=p
+    return relaciones_politicas
