@@ -27,9 +27,14 @@ app.explanation = ''' En esta página se encuentran los resúmenes
 
                     '''
 app.layout = html.Div([
-                  html.Button(id='network_politicos_button',children="Generar gráfico"),
-                  dcc.Graph(id='network_politicos_fig', 
-                            ),
-                  dcc.Graph(id='network_treemap_fig', 
-                            )
-])
+    dcc.Tabs(id='network_tabs', children=[
+        dcc.Tab(label='Red de políticos', children=[
+          html.Button(id='network_politicos_button',children="Generar gráfico"),
+          dcc.Graph(id='network_politicos_fig'),
+          dcc.Graph(id='network_treemap_fig')]), 
+        dcc.Tab(label='Relación entre políticos', children=[
+          # Empezar html acá
+          
+          ]),
+    ]),
+  ])
