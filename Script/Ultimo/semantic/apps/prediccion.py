@@ -28,9 +28,8 @@ app.explanation = ''' En esta página se encuentran los resúmenes
                     '''
 app.layout = html.Div([
                   html.Button(id='network_politicos_button',children="Generar gráfico"),
-                  #html.Button('Generar gráfico', id='network_politicos_button',className='drop-izq'),
                   dcc.Graph(id='network_politicos_fig', 
-                            # figure=similitud_influencers()
                             ),
-                  html.P(id='network_seleccion')
+                  dcc.Graph(id='network_treemap_fig', 
+                            )
 ])

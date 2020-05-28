@@ -22,6 +22,7 @@ from assets.pys.read_rss import  main as read_rss
 from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from scripts.grafica_por_partido_politico import crear_network_map
+from scripts.treemap_politico import crear_figura_treemap_network
 from joblib import dump, load
 import pickle
 import random
@@ -188,13 +189,14 @@ def network_politicos_figura(n_clicks):
         return fig
 
 @app.callback(
-    dash.dependencies.Output('network_seleccion', 'children'),
+    dash.dependencies.Output('network_treemap_fig', 'figure'),
     [dash.dependencies.Input('network_politicos_fig', 'clickData')]
 )
 def network_politicos_seleccion(clickData):
     points=json.dumps(clickData, indent=2)
     texto=json.loads(points)["points"][0]["text"]
-    return texto
+    fig = crear_figura_treemap_network(texto)
+    return fig
     
 
 
