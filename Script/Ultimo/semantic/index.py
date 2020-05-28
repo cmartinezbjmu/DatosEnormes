@@ -172,8 +172,8 @@ def displayPage(n_rss,n_recolectar,drop,balance,pais,tipo_modelo):
         return exito
 
 
-##############
-# Network politicos
+##########################################
+# Network politicos completo
 
 @app.callback(
     dash.dependencies.Output('network_politicos_fig', 'figure'),
@@ -188,6 +188,8 @@ def network_politicos_figura(n_clicks):
         fig = crear_network_map(politicos)
         return fig
 
+# Treemap politico
+
 @app.callback(
     dash.dependencies.Output('network_treemap_fig', 'figure'),
     [dash.dependencies.Input('network_politicos_fig', 'clickData')]
@@ -198,9 +200,32 @@ def network_politicos_seleccion(clickData):
     fig = crear_figura_treemap_network(texto)
     return fig
     
+##########################################
+# Network politico
 
+@app.callback(
+    dash.dependencies.Output('network_politico_fig', 'figure'),
+    [dash.dependencies.Input('ddown_politicos_1', 'value'),
+    dash.dependencies.Input('ddown_politicos_2', 'value')]
+)
+def network_politicos_figura(select1, select2):
+    if (select1 != '') and (select2 != ''):
+        politicos = [select1, select2]
+        fig = crear_network_map(politicos)
+        return fig
 
+# Treemap politico
 
+@app.callback(
+    dash.dependencies.Output('politico_network_treemap_fig', 'figure'),
+    [dash.dependencies.Input('network_politico_fig', 'clickData')]
+)
+def network_politicos_seleccion(clickData):
+    points=json.dumps(clickData, indent=2)
+    texto=json.loads(points)["points"][0]["text"]
+    fig = crear_figura_treemap_network(texto)
+    return fig
+    
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
