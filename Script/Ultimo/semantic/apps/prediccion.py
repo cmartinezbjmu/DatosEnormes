@@ -18,17 +18,12 @@ politicos = ["Gustavo_Petro", "Sergio_Fajardo", "Álvaro_Uribe", "Armando_Benede
 
 app = dash.Dash(__name__)
 
-app.titulo = "Modelos de predicción"
+app.titulo = "Red relaciones politicas"
 
-app.explanation = ''' En esta página se encuentran los resúmenes 
-                      básicos de los modelos que conciernen a 
-                      Sentimientos, Tendencia y Coherencia de los
-                      tweet calificados, además se pueden re entrenar 
-                      los modelos desde la parte inferior de la página
-                      eligiendo los parámetros de tipo de modelo y que
-                      tratamiento se realizará con las muestras tomadas 
-                      (balancear o mantener base original)
-
+app.explanation = '''Análisis de entidades donde se muestra la relación de personas 
+                     de acuerdo a los partidos políticos donde han tenido participación
+                     a lo largo de su vida política. Todo esto basados en la información 
+                     disponible por DBpedia.
                     '''
 app.layout = html.Div([
     dcc.Tabs(id='network_tabs', children=[
