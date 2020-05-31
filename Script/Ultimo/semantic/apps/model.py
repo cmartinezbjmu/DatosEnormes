@@ -29,12 +29,13 @@ app.explanation = '''
 
 
 app.layout = html.Div([
+    html.Datalist(id='model-vector'),
     html.Div([
-        html.H3('Distribución de lugares'),
+        html.H3('Distribución de temas'),
         dcc.Graph(
             id='model-pietemas',
         ),
-        html.Button(id='model-buttemas',children="Calibrar Lugares")
+        html.Button(id='model-buttemas',children="Calibrar Temas")
     ],className='drop-der-test'),
     html.Div([
         html.H3('Distribución de lugares'),
@@ -42,7 +43,24 @@ app.layout = html.Div([
             id='model-pieciudades'
         ),
         html.Button(id='model-butciudades',children="Calibrar Lugares")
-    ],className='drop-izq'),    
-    
-
+    ],className='drop-izq'),
+    html.H5("Seleccione la sensibilidad de la similitud"),     
+    dcc.Slider(
+        id='model-slider',
+        min=0.25,
+        max=0.50,
+        step=0.01,
+        value=0.35
+    ),
+    dcc.Tabs(children=[
+        dcc.Tab(id='model-documentos',label='Documentos',children=[
+            dcc.Graph(
+                id='model-figura-documentos'
+            ),
+            html.H3("Documento:"),
+            html.P(id="model-texto-documentos"),
+            html.Div(id="model-texto-lista")
+            
+        ])
+    ])
 ])

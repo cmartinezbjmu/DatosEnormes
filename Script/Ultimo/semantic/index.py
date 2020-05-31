@@ -23,11 +23,36 @@ from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from scripts.grafica_por_partido_politico import crear_network_map
 from scripts.treemap_politico import crear_figura_treemap_network
+from assets.pys.correlacion_temas import get_base as base_documentos
+from assets.pys.correlacion_temas import obtener_pares_persona
+from assets.pys.correlacion_temas import red_similitud
 from joblib import dump, load
 import pickle
 import random
 
 cwd = os.getcwd()
+
+## Modelo de predicción de temas
+clf_temas = load(cwd+'/assets/pys/modelo_temas.joblib') 
+loaded_temas = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open(cwd+"/assets/pys/vocabulario_temas.pkl", "rb")))
+
+def label_tema(indice):
+    with open(cwd + '/assets/pys/temas.json') as json_file:
+        temas = json.load(json_file)
+    try:
+        tema=temas['categoria'][int(116)]
+    except:
+        tema = 'NA'
+    return tema
+
+
+def obtener_pares_similares(documento,edges):
+    listado=[]
+    for i in edges:
+        if i[0] == int(documento):
+            print(i[1])
+            listado.append(i[1])
+    return listado
 
 # Librería para nube de temas
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
@@ -198,8 +223,70 @@ def network_politicos_seleccion(clickData):
     fig = crear_figura_treemap_network(texto)
     return fig
     
+##############################
+##### Modelo de similitud ####
+##############################
 
+#######
+# Graficar red con similitud de los documentos
+@app.callback(
+    [dash.dependencies.Output('model-figura-documentos', 'figure'),
+     dash.dependencies.Output('model-vector', 'children')],
+    [dash.dependencies.Input('model-slider', 'value')]
+)
+def similitud_documentos_network(value):
+    df = base_documentos()
+    edges,text=obtener_pares_persona('ZuluagaCamila',value,'tweet',df)
+    fig =red_similitud(edges,text)
+    datalist=str(edges)
+    return fig , datalist 
 
+#######
+## Mostrar la noticia sobre la que se para
+
+@app.callback(
+    dash.dependencies.Output('model-texto-documentos', 'children'),
+    [dash.dependencies.Input('model-figura-documentos', 'hoverData')]
+)
+def similitud_documentos_network(hoverData):
+    df=base_documentos()
+    points=json.dumps(hoverData, indent=2)
+    texto=json.loads(points)["points"][0]["text"]
+    documento=df.at[int(texto.split('<br>')[0].split()[1]),'tweet']
+    return documento
+
+###############
+# Mostrar las noticias relacionadas
+
+@app.callback(
+    dash.dependencies.Output('model-texto-lista', 'children'),
+    [dash.dependencies.Input('model-figura-documentos', 'clickData')],
+    [dash.dependencies.State('model-vector', 'children')]
+)
+def similitud_documentos_network(clickData,vector):
+    df=base_documentos()
+    if clickData:
+        points=json.dumps(clickData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        texto = texto.split('<br>')[0].split()[1]
+    indices=obtener_pares_similares(int(texto),eval(vector))
+    documentos=df.loc[indices , 'tweet'].to_list()
+    return html.Ul([html.Li(x) for x in documentos])
+
+###########################
+### Mostrar pie de temas
+
+@app.callback(
+    dash.dependencies.Output('model-pietemas', 'figure'),
+    [dash.dependencies.Input('model-buttemas', 'n_clicks')]
+)
+def similitud_documentos_network(n):
+    df=base_documentos()
+    if n:
+        df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
+        temas=df.groupby('prediccion_temas').count().reset_index()
+    fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
+    return fig
 
 
 if __name__ == '__main__':
