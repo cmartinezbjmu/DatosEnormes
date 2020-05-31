@@ -23,6 +23,7 @@ from assets.pys.modelo_tweet import quitar_cuentas
 from sklearn.feature_extraction.text import CountVectorizer
 from scripts.grafica_por_partido_politico import crear_network_map
 from scripts.treemap_politico import crear_figura_treemap_network
+from scripts.agrupacion_noticias_departamento import generar_mapa
 from joblib import dump, load
 import pickle
 import random
@@ -225,7 +226,20 @@ def network_politicos_seleccion(clickData):
     texto=json.loads(points)["points"][0]["text"]
     fig = crear_figura_treemap_network(texto)
     return fig
-    
+
+##########################################
+# Distribucion noticias por departamento
+
+@app.callback(
+    dash.dependencies.Output('network_politico_fig', 'figure'),
+    [dash.dependencies.Input('ddown_politicos_1', 'value'),
+    dash.dependencies.Input('ddown_politicos_2', 'value')]
+)
+def network_politicos_figura(select1, select2):
+    if (select1 != '') and (select2 != ''):
+        politicos = [select1, select2]
+        fig = crear_network_map(politicos)
+        return fig 
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
