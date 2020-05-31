@@ -26,6 +26,7 @@ from scripts.treemap_politico import crear_figura_treemap_network
 from assets.pys.correlacion_temas import get_base as base_documentos
 from assets.pys.correlacion_temas import obtener_pares_persona
 from assets.pys.correlacion_temas import red_similitud
+from scripts.agrupacion_noticias_departamento import generar_mapa
 from joblib import dump, load
 import pickle
 import random
@@ -197,8 +198,8 @@ def displayPage(n_rss,n_recolectar,drop,balance,pais,tipo_modelo):
         return exito
 
 
-##############
-# Network politicos
+##########################################
+# Network politicos completo
 
 @app.callback(
     dash.dependencies.Output('network_politicos_fig', 'figure'),
@@ -212,6 +213,8 @@ def network_politicos_figura(n_clicks):
             "Jorge_Iván_Ospina", "Daniel_Quintero"]
         fig = crear_network_map(politicos)
         return fig
+
+# Treemap politico
 
 @app.callback(
     dash.dependencies.Output('network_treemap_fig', 'figure'),
@@ -287,7 +290,45 @@ def similitud_documentos_network(n):
         temas=df.groupby('prediccion_temas').count().reset_index()
     fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
     return fig
+##########################################
+# Network politico
 
+@app.callback(
+    dash.dependencies.Output('network_politico_fig', 'figure'),
+    [dash.dependencies.Input('ddown_politicos_1', 'value'),
+    dash.dependencies.Input('ddown_politicos_2', 'value')]
+)
+def network_politicos_figura(select1, select2):
+    if (select1 != '') and (select2 != ''):
+        politicos = [select1, select2]
+        fig = crear_network_map(politicos)
+        return fig
+
+# Treemap politico
+
+@app.callback(
+    dash.dependencies.Output('politico_network_treemap_fig', 'figure'),
+    [dash.dependencies.Input('network_politico_fig', 'clickData')]
+)
+def network_politicos_seleccion(clickData):
+    points=json.dumps(clickData, indent=2)
+    texto=json.loads(points)["points"][0]["text"]
+    fig = crear_figura_treemap_network(texto)
+    return fig
+
+##########################################
+# Distribucion noticias por departamento
+
+@app.callback(
+    dash.dependencies.Output('mapa_distribucion_noticias_fig', 'figure'),
+    [dash.dependencies.Input('seleccion_data', 'value')]
+)
+def network_politicos_figura(select):
+    if (select == 0):
+        fig = generar_mapa(0)
+    else:
+        fig = generar_mapa(1)        
+        return fig 
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
