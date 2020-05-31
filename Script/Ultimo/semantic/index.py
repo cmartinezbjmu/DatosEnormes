@@ -254,12 +254,11 @@ def similitud_documentos_network(value):
     [dash.dependencies.Input('model-figura-documentos', 'hoverData')]
 )
 def similitud_documentos_network(hoverData):
-    if hoverData:
-        df=base_documentos()
-        points=json.dumps(hoverData, indent=2)
-        texto=json.loads(points)["points"][0]["text"]
-        documento=df.at[int(texto.split('<br>')[0].split()[1]),'tweet']
-        return documento
+    df=base_documentos()
+    points=json.dumps(hoverData, indent=2)
+    texto=json.loads(points)["points"][0]["text"]
+    documento=df.at[int(texto.split('<br>')[0].split()[1]),'tweet']
+    return documento
 
 ###############
 # Mostrar las noticias relacionadas
@@ -275,9 +274,9 @@ def similitud_documentos_network(clickData,vector):
         points=json.dumps(clickData, indent=2)
         texto=json.loads(points)["points"][0]["text"]
         texto = texto.split('<br>')[0].split()[1]
-        indices=obtener_pares_similares(int(texto),eval(vector))
-        documentos=df.loc[indices , 'tweet'].to_list()
-        return html.Ul([html.Li(x) for x in documentos])
+    indices=obtener_pares_similares(int(texto),eval(vector))
+    documentos=df.loc[indices , 'tweet'].to_list()
+    return html.Ul([html.Li(x) for x in documentos])
 
 ###########################
 ### Mostrar pie de temas
@@ -287,13 +286,12 @@ def similitud_documentos_network(clickData,vector):
     [dash.dependencies.Input('model-buttemas', 'n_clicks')]
 )
 def similitud_documentos_network(n):
+    df=base_documentos()
     if n:
-        df=base_documentos()
-        if n:
-            df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
-            temas=df.groupby('prediccion_temas').count().reset_index()
-        fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
-        return fig
+        df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
+        temas=df.groupby('prediccion_temas').count().reset_index()
+    fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
+    return fig
 ##########################################
 # Network politico
 
@@ -329,11 +327,12 @@ def network_politicos_seleccion(clickData):
     [dash.dependencies.Input('seleccion_data', 'value')]
 )
 def network_politicos_figura(select):
-    if (select == 0):
+    if select == 0:
         fig = generar_mapa(0)
-    else:
+        return fig
+    if select == 1:
         fig = generar_mapa(1)        
-        return fig 
+        return fig
 
 ##########################################
 # Similitud entre entidades
