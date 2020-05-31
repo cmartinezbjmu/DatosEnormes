@@ -231,14 +231,12 @@ def network_politicos_seleccion(clickData):
 # Distribucion noticias por departamento
 
 @app.callback(
-    dash.dependencies.Output('network_politico_fig', 'figure'),
-    [dash.dependencies.Input('ddown_politicos_1', 'value'),
-    dash.dependencies.Input('ddown_politicos_2', 'value')]
+    dash.dependencies.Output('mapa_distribucion_noticias_fig', 'figure'),
+    [dash.dependencies.Input('seleccion_data', 'value')]
 )
-def network_politicos_figura(select1, select2):
-    if (select1 != '') and (select2 != ''):
-        politicos = [select1, select2]
-        fig = crear_network_map(politicos)
+def network_politicos_figura(select):
+    if (select == 0):
+        fig = generar_mapa()
         return fig 
 
 if __name__ == '__main__':

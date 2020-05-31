@@ -21,4 +21,16 @@ app.explanation = '''Análisis de tendencias de apoyo, emociones y coherencia en
                     '''
 
 app.layout = html.Div([    
+                    dcc.RadioItems(id='seleccion_data',
+                                    options=[
+                                            {'label': 'Tweets', 'value': 0},
+                                            {'label': 'Noticias', 'value': 1},
+                                            {'label': 'Ambos', 'value': 2}
+                                            
+                                        ],
+                                        labelStyle={'display': 'inline-block'}
+                            ),    
+                    dcc.Graph(id='mapa_distribucion_noticias_fig', 
+                        # figure=similitud_influencers()
+                        )
 ])

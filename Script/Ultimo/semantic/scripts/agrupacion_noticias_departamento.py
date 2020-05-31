@@ -12,7 +12,7 @@ import json
 import os
 
 cwd = os.getcwd()
-json1_file = open(cwd + '/colombia.json')
+json1_file = open(cwd + '/assets/pys/colombia.json')
 json1_str = json1_file.read()
 departamentos = json.loads(json1_str)
 
@@ -111,7 +111,7 @@ def generar_mapa():
         except:
             pass
     repeticiones = Counter(diccionario)
-    data = pd.read_csv (r'coordenadas_colombia.csv')
+    data = pd.read_csv (r'scripts/coordenadas_colombia.csv')
     df = pd.DataFrame(data, columns= ['Departamento','Latitud','Longitud'])
     cantidad = []
     for index, row in df.iterrows():
