@@ -30,7 +30,6 @@ app.layout = html.Div([
                                         ],
                                         labelStyle={'display': 'inline-block'}
                             ),    
-                    dcc.Graph(id='mapa_distribucion_noticias_fig', 
-                        # figure=similitud_influencers()
-                        )
+                    dcc.Graph(id='mapa_distribucion_noticias_fig',
+                    )
 ])

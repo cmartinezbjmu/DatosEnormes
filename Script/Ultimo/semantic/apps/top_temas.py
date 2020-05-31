@@ -7,7 +7,7 @@ import dash_table
 import re
 import psycopg2
 from app import app
-# from scripts.similaridad_entidades import similitud_influencers
+from scripts.similaridad_entidades import similitud_influencers
 from time import sleep
 from bson.objectid import ObjectId
 
@@ -28,6 +28,6 @@ app.explanation = ''' En esta página se encuentra el análisis realizado a
 
 app.layout = html.Div([ 
                   dcc.Graph(id='similitud_influencers_fig', 
-                            # figure=similitud_influencers()
+                             figure=similitud_influencers()
                             )
 ])

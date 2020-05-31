@@ -31,5 +31,8 @@ def relaciones_politicas_map(politicos):
         p = []
         for resultado in resultados:
             p.append(resultado["Nombre"]['value'])
-        relaciones_politicas[politico.replace('_', ' ')]=p
+        try:    
+            relaciones_politicas[politico.replace('_', ' ')]=p
+        except:
+            pass
     return relaciones_politicas
