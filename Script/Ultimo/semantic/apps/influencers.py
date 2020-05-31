@@ -28,6 +28,6 @@ app.layout = html.Div([
                                         ],
                                         labelStyle={'display': 'inline-block'}
                             ),    
-                    dcc.Graph(id='mapa_distribucion_noticias_fig',
+                    dcc.Graph(id='mapa_distribucion_noticias_fig'
                     )
 ])

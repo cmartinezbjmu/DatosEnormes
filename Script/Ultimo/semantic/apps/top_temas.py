@@ -27,6 +27,6 @@ app.explanation = ''' En esta página se encuentra el análisis realizado a
 
 app.layout = html.Div([ 
                   html.Button(id='similitud_influencers_button',children="Generar gráfico"),
-                  dcc.Graph(id='similitud_influencers_fig',
+                  dcc.Graph(id='similitud_influencers_fig'
                            )
 ])

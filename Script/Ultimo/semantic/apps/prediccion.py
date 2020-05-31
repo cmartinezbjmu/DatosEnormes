@@ -53,5 +53,5 @@ app.layout = html.Div([
               ),
               dcc.Graph(id='network_politico_fig'),
               dcc.Graph(id='politico_network_treemap_fig')])
-          ]),
+          ])
   ])
