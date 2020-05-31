@@ -12,19 +12,11 @@ from bson.objectid import ObjectId
 
 app = dash.Dash(__name__)
 
-app.titulo = "Top temas y hashtags"
+app.titulo = "Similitud de entidades"
 
-app.explanation = ''' En esta página se encuentra el análisis realizado a 
-                      los hashtags durante la etapa de recolección de tweets,
-                      para así analizar la duración de los hashtag más comentados
-                      y los temas más relevantes en la red. Por otra parte, 
-                      se encuentrar los top 10 temas que sehan comentado en los tweet,
-                      estos temas fueron obtenidos con el contenido de las palabras de
-                      los tweets
-                      
-
-                    '''
-
+app.explanation = '''Análisis de similitud entre entidades selecionadas 
+                     (políticos y periodistas) consultados en DBpedia.
+                  '''
 app.layout = html.Div([ 
                   html.Button(id='similitud_influencers_button',children="Generar gráfico"),
                   dcc.Graph(id='similitud_influencers_fig'

@@ -13,11 +13,11 @@ from bson.objectid import ObjectId
 
 app = dash.Dash(__name__)
 
-app.titulo = "Análisis de influencers"
+app.titulo = "Distribución de noticias o tweets en Colombia"
 
-app.explanation = '''Análisis de tendencias de apoyo, emociones y coherencia en
-                     las interacciones de los usuarios de twitter y las cuentas
-                     consideradas de importancia (influencers) para este estudio.
+app.explanation = '''Análisis de la distribución de las noticias o tweets por las diferentes
+                    regiones del pais. Teniendo en cuenta las menciones que hacen de las ciudades 
+                    dentro de cada texto.
                     '''
 
 app.layout = html.Div([ 
