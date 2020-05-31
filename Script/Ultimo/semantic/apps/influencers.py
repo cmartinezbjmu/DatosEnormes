@@ -24,9 +24,7 @@ app.layout = html.Div([
                     dcc.RadioItems(id='seleccion_data',
                                     options=[
                                             {'label': 'Tweets', 'value': 0},
-                                            {'label': 'Noticias', 'value': 1},
-                                            {'label': 'Ambos', 'value': 2}
-                                            
+                                            {'label': 'Noticias', 'value': 1}
                                         ],
                                         labelStyle={'display': 'inline-block'}
                             ),    

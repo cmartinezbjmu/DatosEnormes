@@ -39,14 +39,14 @@ app.layout = html.Div([
         dcc.Tab(label='Relación entre políticos', children=[
               dcc.Dropdown(
               id='ddown_politicos_1',
-              value='',
+              #value='',
               options=[       
                   {'label': politico, 'value': politico} for politico in politicos
               ]
               ),
               dcc.Dropdown(
               id='ddown_politicos_2',
-              value='',
+              #value='',
               options=[       
                   {'label': politico, 'value': politico} for politico in politicos
               ]

@@ -254,11 +254,12 @@ def similitud_documentos_network(value):
     [dash.dependencies.Input('model-figura-documentos', 'hoverData')]
 )
 def similitud_documentos_network(hoverData):
-    df=base_documentos()
-    points=json.dumps(hoverData, indent=2)
-    texto=json.loads(points)["points"][0]["text"]
-    documento=df.at[int(texto.split('<br>')[0].split()[1]),'tweet']
-    return documento
+    if hoverData:
+        df=base_documentos()
+        points=json.dumps(hoverData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        documento=df.at[int(texto.split('<br>')[0].split()[1]),'tweet']
+        return documento
 
 ###############
 # Mostrar las noticias relacionadas
@@ -301,7 +302,7 @@ def similitud_documentos_network(n):
     dash.dependencies.Input('ddown_politicos_2', 'value')]
 )
 def network_politicos_figura(select1, select2):
-    if (select1 != '') and (select2 != ''):
+    if (select1 != None):
         politicos = [select1, select2]
         fig = crear_network_map(politicos)
         return fig
