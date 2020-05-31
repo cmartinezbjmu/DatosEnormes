@@ -236,7 +236,9 @@ def network_politicos_seleccion(clickData):
 )
 def network_politicos_figura(select):
     if (select == 0):
-        fig = generar_mapa()
+        fig = generar_mapa(0)
+    else:
+        fig = generar_mapa(1)        
         return fig 
 
 if __name__ == '__main__':

@@ -45,7 +45,37 @@ def obtener_tweets():
     df = df.drop_duplicates(['id'], keep='last')
     return df, data
 
-def buscar_entidades(data):
+def obtener_noticias():
+    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+    database = client["Grupo03"]
+    collection = database["RSS_feed"]
+
+    query = {}
+    query["noticia"] = {
+        u"$ne": u""
+    }
+    query["$and"] = [
+        {
+            u"noticia": {
+                u"$exists": True
+            }
+        }
+    ]
+    projection = {}
+    projection["noticia"] = 1.0
+    projection["_id"] = 1.0    
+
+    cursor = collection.find(query, projection = projection)
+    data = []
+    try:
+        for doc in cursor:
+            data.append(doc['noticia'])
+    finally:
+        client.close()
+    df = pd.DataFrame(data)
+    return df, data
+
+def buscar_entidades_tweets(data):
     ciudades = []
     for tweet in range(len(data)):
         doc = nlp(data[tweet][3])
@@ -53,6 +83,19 @@ def buscar_entidades(data):
         for tupla in tuplas:
             if tupla[1] == 'LOC':
                 ciudades.append(tupla[0])
+    return ciudades
+
+def buscar_entidades_noticias(data):
+    ciudades = []
+    for tweet in range(len(data)):
+        try:
+            doc = nlp(data[tweet])
+            tuplas = [(X.text, X.label_) for X in doc.ents]
+            for tupla in tuplas:
+                if tupla[1] == 'LOC':
+                    ciudades.append(tupla[0])
+        except:
+            pass
     return ciudades
 
 def buscar_ciudad(city):
@@ -100,9 +143,14 @@ def crear_mapa(df):
         )
     return fig    
 
-def generar_mapa():
-    df, data = obtener_tweets()
-    ciudades = buscar_entidades(data)
+def generar_mapa(seleccion):
+    if seleccion == 0:
+        df, data = obtener_tweets()
+        ciudades = buscar_entidades_tweets(data)
+    else:
+        df, data = obtener_noticias()
+        ciudades = buscar_entidades_noticias(data)
+
     diccionario = []
     for ciudad in ciudades:  
         try:
