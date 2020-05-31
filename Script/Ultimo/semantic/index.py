@@ -222,10 +222,11 @@ def network_politicos_figura(n_clicks):
     [dash.dependencies.Input('network_politicos_fig', 'clickData')]
 )
 def network_politicos_seleccion(clickData):
-    points=json.dumps(clickData, indent=2)
-    texto=json.loads(points)["points"][0]["text"]
-    fig = crear_figura_treemap_network(texto)
-    return fig
+    if clickData:
+        points=json.dumps(clickData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        fig = crear_figura_treemap_network(texto)
+        return fig
     
 ##############################
 ##### Modelo de similitud ####
@@ -312,10 +313,11 @@ def network_politicos_figura(select1, select2):
     [dash.dependencies.Input('network_politico_fig', 'clickData')]
 )
 def network_politicos_seleccion(clickData):
-    points=json.dumps(clickData, indent=2)
-    texto=json.loads(points)["points"][0]["text"]
-    fig = crear_figura_treemap_network(texto)
-    return fig
+    if clickData:
+        points=json.dumps(clickData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        fig = crear_figura_treemap_network(texto)
+        return fig
 
 ##########################################
 # Distribucion noticias por departamento
