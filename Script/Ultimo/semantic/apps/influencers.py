@@ -20,14 +20,17 @@ app.explanation = '''Análisis de tendencias de apoyo, emociones y coherencia en
                      consideradas de importancia (influencers) para este estudio.
                     '''
 
-app.layout = html.Div([    
+app.layout = html.Div([ 
+                html.Div([   
                     dcc.RadioItems(id='seleccion_data',
                                     options=[
                                             {'label': 'Tweets', 'value': 0},
                                             {'label': 'Noticias', 'value': 1}
                                         ],
                                         labelStyle={'display': 'inline-block'}
-                            ),    
-                    dcc.Graph(id='mapa_distribucion_noticias_fig'
-                    )
+                                )
+                ]),
+                html.Div([
+                    dcc.Graph(id='mapa_distribucion_noticias_fig')
+                ])
 ])
