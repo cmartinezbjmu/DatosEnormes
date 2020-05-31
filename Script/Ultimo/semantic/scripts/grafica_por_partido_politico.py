@@ -175,6 +175,8 @@ def crear_figura(edge_trace, node_trace):
     return fig
 
 def crear_network_map(politicos):
+    edge_trace = None
+    node_trace = None
     relaciones_politicas = relaciones_politicas_map(politicos)
     relaciones_politicas, influencers, filtrado, nombres_politicos = lista_politicos(relaciones_politicas)
     posicion = crear_posiciones_random(filtrado)

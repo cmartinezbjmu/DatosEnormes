@@ -27,6 +27,7 @@ from assets.pys.correlacion_temas import get_base as base_documentos
 from assets.pys.correlacion_temas import obtener_pares_persona
 from assets.pys.correlacion_temas import red_similitud
 from scripts.agrupacion_noticias_departamento import generar_mapa
+from scripts.similaridad_entidades import similitud_influencers
 from joblib import dump, load
 import pickle
 import random
@@ -221,10 +222,11 @@ def network_politicos_figura(n_clicks):
     [dash.dependencies.Input('network_politicos_fig', 'clickData')]
 )
 def network_politicos_seleccion(clickData):
-    points=json.dumps(clickData, indent=2)
-    texto=json.loads(points)["points"][0]["text"]
-    fig = crear_figura_treemap_network(texto)
-    return fig
+    if clickData:
+        points=json.dumps(clickData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        fig = crear_figura_treemap_network(texto)
+        return fig
     
 ##############################
 ##### Modelo de similitud ####
@@ -311,10 +313,11 @@ def network_politicos_figura(select1, select2):
     [dash.dependencies.Input('network_politico_fig', 'clickData')]
 )
 def network_politicos_seleccion(clickData):
-    points=json.dumps(clickData, indent=2)
-    texto=json.loads(points)["points"][0]["text"]
-    fig = crear_figura_treemap_network(texto)
-    return fig
+    if clickData:
+        points=json.dumps(clickData, indent=2)
+        texto=json.loads(points)["points"][0]["text"]
+        fig = crear_figura_treemap_network(texto)
+        return fig
 
 ##########################################
 # Distribucion noticias por departamento
@@ -329,6 +332,19 @@ def network_politicos_figura(select):
     else:
         fig = generar_mapa(1)        
         return fig 
+
+##########################################
+# Similitud entre entidades
+
+@app.callback(
+    dash.dependencies.Output('similitud_influencers_fig', 'figure'),
+    [dash.dependencies.Input('similitud_influencers_button', 'n_clicks')]
+)
+def network_politicos_figura(n_clicks):
+    if n_clicks:
+        fig = similitud_influencers()
+        return fig
+
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", port=8000, debug=True)
