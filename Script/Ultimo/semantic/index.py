@@ -275,9 +275,9 @@ def similitud_documentos_network(clickData,vector):
         points=json.dumps(clickData, indent=2)
         texto=json.loads(points)["points"][0]["text"]
         texto = texto.split('<br>')[0].split()[1]
-    indices=obtener_pares_similares(int(texto),eval(vector))
-    documentos=df.loc[indices , 'tweet'].to_list()
-    return html.Ul([html.Li(x) for x in documentos])
+        indices=obtener_pares_similares(int(texto),eval(vector))
+        documentos=df.loc[indices , 'tweet'].to_list()
+        return html.Ul([html.Li(x) for x in documentos])
 
 ###########################
 ### Mostrar pie de temas
@@ -287,12 +287,13 @@ def similitud_documentos_network(clickData,vector):
     [dash.dependencies.Input('model-buttemas', 'n_clicks')]
 )
 def similitud_documentos_network(n):
-    df=base_documentos()
     if n:
-        df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
-        temas=df.groupby('prediccion_temas').count().reset_index()
-    fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
-    return fig
+        df=base_documentos()
+        if n:
+            df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
+            temas=df.groupby('prediccion_temas').count().reset_index()
+        fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
+        return fig
 ##########################################
 # Network politico
 
