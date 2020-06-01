@@ -19,9 +19,8 @@ app.titulo = "Panel de control"
 app.explanation = '''
                   Desde esta página podras obtener los datos más relevantes de la
                   base de datos, así como actualizar la base de datos obteniendo 
-                  más tweets, también puedes calibrar los modelos de predicción
-                  que corresponden al análisis de sentiemientos, tendencia y coherencia
-                    '''
+                  más tweets, o más RSS
+                  '''
 
 
 app.layout =  html.Div(

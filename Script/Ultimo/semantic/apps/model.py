@@ -20,14 +20,16 @@ app = dash.Dash(__name__)
 app.titulo = "Modelos de Similitud Semántica"
 
 app.explanation = '''
-                    En la siguiente aplicación podrás darnos tus opiniones y ayudar a entrenar el modelo de inteligencia artificial
-                    con el cual se puede predecir la percepción de las personas respecto a los tweets más sonados en estos momentos.
-                    En la primera pestaña de la página (TWEET - RESPUESTA) encuentras los tweets que personas influyentes de
-                    Colombia y Argentina escriben y las respuestas que tienen de sus seguidores en tweeter.
-                    En la segunda (TWEET) encontrarás los tweets de las personas influyentes de cada país, para así,
-                    poder dar tu opinión acerca de la percepción emocional que tienes respecto a lo que se escribe.
-                    Selecciona en los menús desplegables tu percepción acerca de los tweets y dale click al botón para obtener
-                    mas tweets. ¡GRACIAS POR TU APOYO!
+                    En la siguiente aplicación en la primera parte se puede obtener todos los temas relevantes 
+                    de los que se han mencionado durante la captura de información, solamente de debe hacer CLICK
+                    en el botón.
+                    En la segunda gráfica es posible obtener los modelos de similitud entre documentos
+                    recolectados a través de tweets y RSS, esto se puede realizar eligiendo la persona de interés
+                    en la caja de personas, además es posible ajustar el nivel de similitud del modelo
+                    arrastrando el slider entre más a la izquierda menos nivel de similitud por lo tanto más
+                    redes, entre más a la derecha la similitud es mayor, por lo tanto se tienen menos redes. 
+                    Pasando el mouse encima del nodo se puede ver el documento, al hacer click podrás ver todas las 
+                    relaciones que tiene este documento
                     '''
 
 
