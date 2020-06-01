@@ -9,7 +9,10 @@ import psycopg2
 from app import app
 from time import sleep
 from bson.objectid import ObjectId
+from assets.pys.correlacion_temas import get_base as base_documentos
 
+df=base_documentos()
+personas=df.screen_name.value_counts().index.tolist()
 
 
 app = dash.Dash(__name__)
@@ -36,14 +39,14 @@ app.layout = html.Div([
             id='model-pietemas'
         ),
         html.Button(id='model-buttemas',children="Calibrar Temas")
-    ],className='drop-der-test'),
-    html.Div([
-        html.H3('Distribución de lugares'),
-        dcc.Graph(
-            id='model-pieciudades'
-        ),
-        html.Button(id='model-butciudades',children="Calibrar Lugares")
-    ],className='drop-izq'),
+    ]),
+    # html.Div([
+    #     html.H3('Distribución de lugares'),
+    #     dcc.Graph(
+    #         id='model-pieciudades'
+    #     ),
+    #     html.Button(id='model-butciudades',children="Calibrar Lugares")
+    # ],className='drop-izq'),
     html.H5("Seleccione la sensibilidad de la similitud"),     
     dcc.Slider(
         id='model-slider',
@@ -54,6 +57,12 @@ app.layout = html.Div([
     ),
     dcc.Tabs(children=[
         dcc.Tab(id='model-documentos',label='Documentos',children=[
+            dcc.Dropdown(
+                id='model-dropdown',
+                options=[
+                    {'label': i, 'value': i} for i in personas
+                ],
+            ),
             dcc.Graph(
                 id='model-figura-documentos'
             ),

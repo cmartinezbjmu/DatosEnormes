@@ -26,6 +26,7 @@ from scripts.treemap_politico import crear_figura_treemap_network
 from assets.pys.correlacion_temas import get_base as base_documentos
 from assets.pys.correlacion_temas import obtener_pares_persona
 from assets.pys.correlacion_temas import red_similitud
+from assets.pys.predecir_temas import get_base_temas
 from scripts.agrupacion_noticias_departamento import generar_mapa
 from scripts.similaridad_entidades import similitud_influencers
 from joblib import dump, load
@@ -237,11 +238,12 @@ def network_politicos_seleccion(clickData):
 @app.callback(
     [dash.dependencies.Output('model-figura-documentos', 'figure'),
      dash.dependencies.Output('model-vector', 'children')],
-    [dash.dependencies.Input('model-slider', 'value')]
+    [dash.dependencies.Input('model-slider', 'value'),
+     dash.dependencies.Input('model-dropdown', 'value')]
 )
-def similitud_documentos_network(value):
+def similitud_documentos_network(value,persona):
     df = base_documentos()
-    edges,text=obtener_pares_persona('ZuluagaCamila',value,'tweet',df)
+    edges,text=obtener_pares_persona(persona,value,'tweet',df)
     fig =red_similitud(edges,text)
     datalist=str(edges)
     return fig , datalist 
@@ -286,11 +288,12 @@ def similitud_documentos_network(clickData,vector):
     [dash.dependencies.Input('model-buttemas', 'n_clicks')]
 )
 def similitud_documentos_network(n):
-    df=base_documentos()
+    df=get_base_temas()
     if n:
-        df['prediccion_temas']=df['tweet'].apply(lambda x: label_tema(clf_temas.predict(loaded_temas.transform([x]))[0]))
-        temas=df.groupby('prediccion_temas').count().reset_index()
-    fig = px.pie(temas, values='tweet', names='prediccion_temas', color_discrete_sequence=px.colors.sequential.RdBu)
+        temas=df.groupby('temas').count().reset_index()
+    fig = px.pie(temas, values='tweet', names='temas', color_discrete_sequence=px.colors.sequential.RdBu)
+    fig.update_traces(textposition='inside')
+    fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
     return fig
 ##########################################
 # Network politico

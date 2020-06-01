@@ -43,62 +43,65 @@ non_words.extend(spanish_stopwords)
 non_words.extend(['¿', '¡'])
 non_words.extend(map(str,range(10)))
 
-
-client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
-database = client["Grupo03"]
-collection = database["COL_tweets"]
-
-query = {}
-projection = {}
-projection["created_at"] = 1.0
-projection["user"] = 1.0
-projection["full_text"] = 1.0
-projection["hashtags"] = 1.0
-projection["id"] = 1.0
-
-cursor = collection.find(query, projection = projection)
-data = []
-hashtag = []
-try:
-    for doc in cursor:
-        for i in range(len(doc['hashtags'])):
-            hashtag.append(doc['hashtags'][i]['text'])
-        data.append([doc['id'], doc['created_at'], doc['user']['screen_name'], doc['full_text'], hashtag])
-        hashtag = []
-finally:
-    client.close()
-
-df = pd.DataFrame(data,columns=['id', 'created_at', 'screen_name', 'tweet', 'hastags'])
-
-df = df.drop_duplicates(['id'], keep='last')
-
-
-
-hastags_list = []
-for sublist in df['hastags'].to_list():
-    for item in sublist:
-        hastags_list.append(item)
-
-temas=[]
-for i in range(len(hastags_list)):
-    palabras = re.findall('[A-Z][^A-Z]*', hastags_list[i])
-    palabras = [c.lower() for c in palabras if c.lower() not in non_words]
-    temas.extend(palabras)
-
-temas = [k for k, v in Counter(temas).items() if v > 1]
-temas = [tema for tema in temas if len(tema)>4]        
-
-df['temas']=df['hastags'].apply(lambda x: ' '.join(re.findall('[A-Z][^A-Z]*', ' , '.join(x))).lower())
-
-
-
-for i in df.index:
-    for palabras in df.at[i,'temas'].split():
-        for tema in temas:
-            if tema in palabras:
-                df.at[i,'temas']=palabras
+def get_base_temas():
+    client = MongoClient("mongodb://bigdata-mongodb-04.virtual.uniandes.edu.co:8087/")
+    database = client["Grupo03"]
+    collection = database["COL_tweets"]
+    
+    query = {}
+    projection = {}
+    projection["created_at"] = 1.0
+    projection["user"] = 1.0
+    projection["full_text"] = 1.0
+    projection["hashtags"] = 1.0
+    projection["id"] = 1.0
+    
+    cursor = collection.find(query, projection = projection)
+    data = []
+    hashtag = []
+    try:
+        for doc in cursor:
+            for i in range(len(doc['hashtags'])):
+                hashtag.append(doc['hashtags'][i]['text'])
+            data.append([doc['id'], doc['created_at'], doc['user']['screen_name'], doc['full_text'], hashtag])
+            hashtag = []
+    finally:
+        client.close()
+    
+    df = pd.DataFrame(data,columns=['id', 'created_at', 'screen_name', 'tweet', 'hastags'])
+    
+    df = df.drop_duplicates(['id'], keep='last')
+    
+    
+    
+    hastags_list = []
+    for sublist in df['hastags'].to_list():
+        for item in sublist:
+            hastags_list.append(item)
+    
+    temas=[]
+    for i in range(len(hastags_list)):
+        palabras = re.findall('[A-Z][^A-Z]*', hastags_list[i])
+        palabras = [c.lower() for c in palabras if c.lower() not in non_words]
+        temas.extend(palabras)
+    
+    temas = [k for k, v in Counter(temas).items() if v > 1]
+    temas = [tema for tema in temas if len(tema)>4]        
+    
+    df['temas']=df['hastags'].apply(lambda x: ' '.join(re.findall('[A-Z][^A-Z]*', ' , '.join(x))).lower())
+    
+    
+    
+    for i in df.index:
+        for palabras in df.at[i,'temas'].split():
+            for tema in temas:
+                if tema in palabras:
+                    df.at[i,'temas']=palabras
+    return df
                 
-                
+df=get_base_temas()
+df.screen_name.unique()
+
 ## Función de correr el modelo
 def correr_modelo(val, X_train_tfidf, y_train):
     if val=='NB':
@@ -115,9 +118,9 @@ def correr_modelo(val, X_train_tfidf, y_train):
                 
 
 def main(algoritmo,df,modelo, balance):
-    modelo='temas'
-    balance=1
-    algoritmo='NB'
+    # modelo='temas'
+    # balance=1
+    # algoritmo='NB'
     
     ## Definir las columnas de interés
     col = ['tweet', modelo]

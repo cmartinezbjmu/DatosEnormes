@@ -9,6 +9,7 @@ import psycopg2
 from app import app
 from time import sleep
 from bson.objectid import ObjectId
+from scripts.datos_panel import get_data as cifras_panel
 
 
 app = dash.Dash(__name__)
@@ -65,28 +66,30 @@ app.layout =  html.Div(
                                 
                                 
                                 html.Div(
-                                    [html.H6(id="panel-documentos"), html.P("No. de Documentos")],
+                                    [html.H6(id="panel-documentos",children= cifras_panel()[2]), html.P("No. de Documentos")],
                                     className="mini_container",
                                 ),
                                 html.Div(
-                                    [html.H6(id="panel-temas"), html.P("Temas")],
+                                    [html.H6(id="panel-temas",children= cifras_panel()[0]), html.P("No. de Tweets")],
                                     className="mini_container",
                                 ),
                                 html.Div(
-                                    [html.H6(id="panel-fuentes"), html.P("No de fuentes")],
+                                    [html.H6(id="panel-fuentes",children= cifras_panel()[1]), html.P("No de Noticias")],
                                     className="mini_container",
                                 ),
-                                                                html.Div(
-                                    [html.H6(id="panel-lugares"), html.P("Lugares")],
-                                    className="mini_container",
-                                ),
+                                #                                 html.Div(
+                                #     [html.H6(id="panel-lugares"), html.P("Lugares")],
+                                #     className="mini_container",
+                                # ),
 
                             ],
                             id="panel-info-container",
                             className="row container-display",
                         ),
                         html.Div(
-                            [dcc.Graph(id="panel-graph")],
+                            [dcc.Graph(id="panel-graph",
+                                       figure = go.Figure(data=[go.Pie(labels=['Tweets','Noticias'], values=[cifras_panel()[0],cifras_panel()[1]], hole=.5)])
+                                       )],
                             className="pretty_container",
                         ),
                     ],

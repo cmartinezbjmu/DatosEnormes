@@ -11,9 +11,9 @@ def obtener_tweets():
     projection["user"] = 1.0
     
     
-    cursor = collection.find(query, projection = projection)
+    cursor = collection.find(query, projection = projection).count()
 
-    return len(collection)
+    return cursor
 
 
 def obtener_noticias():
@@ -35,13 +35,13 @@ def obtener_noticias():
     projection = {}
     projection["noticia"] = 1.0    
 
-    cursor = collection.find(query, projection = projection)
+    cursor = collection.find(query, projection = projection).count()
 
-    return len(cursor)
+    return cursor
     
 
 def get_data():
     tweets = obtener_tweets()
-    noticias = obtener_noticias
+    noticias = obtener_noticias()
     total_docs = tweets + noticias
     return tweets, noticias, total_docs
