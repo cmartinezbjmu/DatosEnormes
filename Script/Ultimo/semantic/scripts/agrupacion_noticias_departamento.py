@@ -136,6 +136,8 @@ def crear_mapa(df):
     fig.update_layout(
             title_text = 'Distribución de noticias por departamento',
             showlegend = True,
+            width=700,
+            height=900,
             geo = dict(
                 scope = 'south america',
                 landcolor = 'rgb(217, 217, 217)',

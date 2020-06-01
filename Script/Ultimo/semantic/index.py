@@ -301,7 +301,7 @@ def similitud_documentos_network(n):
     dash.dependencies.Input('ddown_politicos_2', 'value')]
 )
 def network_politicos_figura(select1, select2):
-    if (select1 != '') and (select2 != ''):
+    if (select1 != None):
         politicos = [select1, select2]
         fig = crear_network_map(politicos)
         return fig
@@ -327,11 +327,12 @@ def network_politicos_seleccion(clickData):
     [dash.dependencies.Input('seleccion_data', 'value')]
 )
 def network_politicos_figura(select):
-    if (select == 0):
+    if select == 0:
         fig = generar_mapa(0)
-    else:
+        return fig
+    if select == 1:
         fig = generar_mapa(1)        
-        return fig 
+        return fig
 
 ##########################################
 # Similitud entre entidades

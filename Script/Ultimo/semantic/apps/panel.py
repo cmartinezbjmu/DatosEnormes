@@ -98,5 +98,5 @@ app.layout =  html.Div(
         ),
     ],
     id="panel-mainContainer",
-    style={"display": "flex", "flex-direction": "column"},
+    style={"display": "flex", "flex-direction": "column"}
 )

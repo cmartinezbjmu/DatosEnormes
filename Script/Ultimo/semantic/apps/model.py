@@ -33,7 +33,7 @@ app.layout = html.Div([
     html.Div([
         html.H3('Distribución de temas'),
         dcc.Graph(
-            id='model-pietemas',
+            id='model-pietemas'
         ),
         html.Button(id='model-buttemas',children="Calibrar Temas")
     ],className='drop-der-test'),
